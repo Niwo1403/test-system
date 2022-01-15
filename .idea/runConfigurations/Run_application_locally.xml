@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run locally" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="Run application locally" type="PythonConfigurationType" factoryName="Python">
     <module name="pskts" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
