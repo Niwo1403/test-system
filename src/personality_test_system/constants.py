@@ -6,7 +6,7 @@ DEFAULT_INDEX_FILE = "/index.html"
 # flask
 
 STATIC_URL_PATH = ""
-STATIC_FOLDER = "../static"
+STATIC_FOLDER = "../../static"  # relative path from directory of app.py to static dir (personality_test_system/static)
 
 PORT = 5000
 

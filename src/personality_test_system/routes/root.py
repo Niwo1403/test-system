@@ -1,8 +1,8 @@
 # 3rd party
 from flask import redirect
 # custom
-from constants import DEFAULT_INDEX_FILE
-from app import app
+from personality_test_system.constants import DEFAULT_INDEX_FILE
+from personality_test_system import app
 
 
 @app.route('/', methods=['GET'])
