@@ -21,3 +21,14 @@ class Token(db.Model):
 
     def __repr__(self):
         return f"{self.token} ({self.personality_test_name}): {self.max_usage_count}"
+
+    def is_expired(self) -> bool:
+        expired = self.max_usage_count is not None and self.max_usage_count <= 0
+        if expired:
+            db.session.delete(self)
+            db.session.commit()
+        return expired
+
+    def remove_usage(self) -> None:
+        self.max_usage_count -= 1
+        db.session.commit()
