@@ -7,5 +7,8 @@ class PersonalityTest(db.Model):
 
     name = db.Column(db.String, primary_key=True)
     description_json = db.Column(db.JSON)
-    tokens = db.relationship("PersonalityTest")
+    tokens = db.relationship("Token")
     answers = db.relationship("PersonalityTestAnswer")
+
+    def __repr__(self):
+        return f"Test '{self.name}': {self.description_json}"

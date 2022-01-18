@@ -8,3 +8,6 @@ class Token(db.Model):
     token = db.Column(db.String, primary_key=True)
     max_usage_count = db.Column(db.Integer)
     personality_test_name = db.Column(db.String, db.ForeignKey("personality_test.name"))  # references name (column) from personality_test (table)
+
+    def __repr__(self):
+        return f"{self.token} ({self.personality_test_name}): {self.max_usage_count}"
