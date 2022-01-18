@@ -1,3 +1,7 @@
+# std
+import logging
+
+
 # routes
 
 API_PREFIX = "/api"
@@ -8,6 +12,8 @@ DEFAULT_INDEX_FILE = "/index.html"
 STATIC_URL_PATH = ""
 STATIC_FOLDER = "../../static"  # relative path from directory of app.py to static dir (personality_test_system/static)
 
+LOG_LEVEL = logging.INFO
+
 PORT = 5000
 
 # database
@@ -17,3 +23,8 @@ APP_CONFIG = {
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'SQLALCHEMY_ECHO': False  # if true, all statements will be logged - maybe useful for debugging
 }
+
+# models
+
+PASSWORD_PEPPER = "personality_test_system berlin - user"
+HASH_SEPARATOR = "#"

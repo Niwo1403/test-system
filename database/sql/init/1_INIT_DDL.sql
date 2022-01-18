@@ -38,3 +38,9 @@ CREATE TABLE personality_test_answer (
     FOREIGN KEY(person_id)
         REFERENCES person(id)
 );
+
+DROP TABLE IF EXISTS "user";
+CREATE TABLE "user" (
+	username text primary key,
+	password text
+);
