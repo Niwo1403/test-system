@@ -18,9 +18,8 @@ def get_personality_test():
 
     pers_test = db.session.query(PersonalityTest).filter_by(name=token.personality_test_name).first()
     if pers_test is None:
-        abort(404)
+        abort(500)
 
     app.logger.info(f"Requested personality-test '{pers_test.name}' with token '{token.token}'.")
 
     return pers_test.description_json
-
