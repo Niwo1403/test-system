@@ -16,6 +16,6 @@ if db.session.query(PersonalityTest).first() is None:  # if no user exist, creat
     db.session.commit()
 
 if db.session.query(Token).first() is None:  # if no user exist, created default one
-    t = Token(token="asdf", personality_test_name="PersTest", max_usage_count=2)
+    t = Token(token="asdf", personality_test_names=["UnknownTest", "PersTest"], max_usage_count=2)
     db.session.add(t)
     db.session.commit()
