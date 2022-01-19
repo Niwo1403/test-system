@@ -9,7 +9,7 @@ class PersonalityTestAnswer(db.Model):
     date = db.Column(db.TIMESTAMP)
     answer_set = db.Column(db.JSON)
     personality_test_name = db.Column(db.String, db.ForeignKey("personality_test.name"))
-    person_id = db.Column(db.String, db.ForeignKey("person.id"))
+    person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
 
     def __repr__(self):
         return (f"{self.id}:\n\t"

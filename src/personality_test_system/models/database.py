@@ -11,3 +11,4 @@ db = SQLAlchemy(app)
 
 def _create_tables_if_not_exist() -> None:
     db.create_all()
+    db.session.commit()
