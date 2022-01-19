@@ -12,9 +12,7 @@ DROP TABLE IF EXISTS token;
 CREATE TABLE token (
 	token text primary key,
 	max_usage_count int,
-	personality_test_name text,  -- references name (column) from personality_test (table)
-    FOREIGN KEY(personality_test_name)
-        REFERENCES personality_test(name)
+	personality_test_names text[]  -- references name (column) from personality_test (table)
 );
 
 DROP TABLE IF EXISTS person;
