@@ -15,11 +15,11 @@ def post_token():
     max_usage_count = request.args.get("max_usage_count", type=int)
     personality_test_names = request.args.get("personality_test_name", type=str)
     if not all((personality_test_names, username, password)):
-        abort(400)
+        abort(400, "Missing arguments.")
 
     user = db.session.query(User).filter_by(username=username).first()
     if user is None or not user.validate_password(password):
-        abort(401)
+        abort(401, "User doesn't exist or password is wrong.")
     app.logger.info(f"Requested token with username '{username}' and valid password.")
 
     token = Token.generate_token(max_usage_count, loads(personality_test_names))
