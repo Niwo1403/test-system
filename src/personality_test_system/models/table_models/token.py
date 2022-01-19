@@ -20,7 +20,7 @@ class Token(db.Model):
         return cls(token=token_hash, max_usage_count=max_usage_count, personality_test_name=personality_test_name)
 
     def __repr__(self):
-        return f"{self.token} ({self.personality_test_name}): {self.max_usage_count}"
+        return f"{self.token} (Test: {self.personality_test_name}, usages: {self.max_usage_count})"
 
     def is_expired(self) -> bool:
         expired = self.max_usage_count is not None and self.max_usage_count <= 0
