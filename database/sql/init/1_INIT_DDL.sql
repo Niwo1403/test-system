@@ -28,7 +28,7 @@ CREATE TABLE person (
 
 DROP TABLE IF EXISTS personality_test_answer;
 CREATE TABLE personality_test_answer (
-	answer_id int primary key,
+	id int primary key,
 	date timestamp,
 	answer_set json,
 	personality_test_name text,  -- references name (column) from personality_test (table)

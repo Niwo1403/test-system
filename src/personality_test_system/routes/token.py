@@ -12,7 +12,7 @@ def post_token():
     password = request.args.get("password", type=str)
     max_usage_count = request.args.get("max_usage_count", type=int)
     personality_test_name = request.args.get("personality_test_name", type=str)
-    if personality_test_name is None or username is None or password is None:
+    if not all((personality_test_name, username, password)):
         abort(400)
 
     user = db.session.query(User).filter_by(username=username).first()
