@@ -1,5 +1,6 @@
 # std
 import logging
+from os import environ
 
 
 # routes
@@ -19,7 +20,7 @@ PORT = 5000
 # database
 
 APP_CONFIG = {
-    'SQLALCHEMY_DATABASE_URI': "sqlite:///:memory:",  # TODO: Adjust... postgresql://scott:tiger@localhost/mydatabase
+    'SQLALCHEMY_DATABASE_URI': environ["DATABASE_URL"],
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'SQLALCHEMY_ECHO': False  # if true, all statements will be logged - maybe useful for debugging
 }
