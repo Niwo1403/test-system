@@ -1,6 +1,6 @@
 # custom
 from .person import Person
-from .personality_test import PersonalityTest
-from .personality_test_answer import PersonalityTestAnswer
+from .test import Test
+from .test_answer import TestAnswer
 from .token import Token
 from .user import User

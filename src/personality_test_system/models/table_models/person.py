@@ -10,7 +10,7 @@ class Person(db.Model):
     gender = db.Column(db.String)
     age = db.Column(db.Integer)
     position = db.Column(db.String)
-    answers = db.relationship("PersonalityTestAnswer")
+    answers = db.relationship("TestAnswer")
 
     def __repr__(self):
         return (f"{self.id}:\n\t"

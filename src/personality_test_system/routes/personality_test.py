@@ -1,13 +1,15 @@
+# std
+import json
 # 3rd party
 from flask import request, abort
 # custom
 from personality_test_system import app
 from personality_test_system.constants import API_PREFIX
-from personality_test_system.models import db, Token, PersonalityTest
+from personality_test_system.models import db, Token, Test
 
 
-@app.route(f'{API_PREFIX}/personality-test/', methods=['GET'])
-def get_personality_test():
+@app.route(f'{API_PREFIX}/tests/', methods=['GET'])
+def get_tests():
     request_token = request.args.get("token", type=str)
     if request_token is None:
         abort(400, "Token missing.")
@@ -16,10 +18,10 @@ def get_personality_test():
     if token is None or token.is_expired():
         abort(401, "Token doesn't exist or is expired.")
 
-    pers_test = db.session.query(PersonalityTest).filter_by(name=token.personality_test_name).first()
-    if pers_test is None:
-        abort(500, "Personality test for token is missing.")
+    tests = db.session.query(Test).filter(Test.name.in_(token.test_names)).all()
 
-    app.logger.info(f"Requested personality-test '{pers_test.name}' with token '{token.token}'.")
+    test_names = ', '.join(test.name for test in tests)
+    app.logger.info(f"Requested tests '{test_names}' with token '{token.token}'.")
 
-    return pers_test.description_json
+    descriptions = json.dumps([test.description_json for test in tests])
+    return descriptions
