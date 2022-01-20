@@ -3,8 +3,8 @@ from time import time
 from hashlib import sha3_512
 from typing import Optional
 # custom
-from personality_test_system.models.database import db
-from personality_test_system.constants import PASSWORD_PEPPER, HASH_SEPARATOR
+from test_system.models.database import db
+from test_system.constants import PASSWORD_PEPPER, HASH_SEPARATOR
 
 
 class User(db.Model):

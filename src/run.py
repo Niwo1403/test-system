@@ -1,5 +1,5 @@
 # custom
-from personality_test_system import app, PORT
+from test_system import app, PORT
 
 
 if __name__ == '__main__':

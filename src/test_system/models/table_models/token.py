@@ -3,7 +3,7 @@ from hashlib import sha3_512
 from datetime import datetime
 from typing import List
 # custom
-from personality_test_system.models.database import db
+from test_system.models.database import db
 
 
 class Token(db.Model):

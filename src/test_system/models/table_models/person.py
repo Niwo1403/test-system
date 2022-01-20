@@ -1,5 +1,5 @@
 # custom
-from personality_test_system.models.database import db
+from test_system.models.database import db
 
 
 class Person(db.Model):

@@ -1,9 +1,9 @@
 # 3rd party
 from flask import request, abort
 # custom
-from personality_test_system import app
-from personality_test_system.constants import API_PREFIX
-from personality_test_system.models import db, Person, Test, TestAnswer
+from test_system import app
+from test_system.constants import API_PREFIX
+from test_system.models import db, Person, Test, TestAnswer
 
 
 @app.route(f'{API_PREFIX}/test-answer/', methods=['POST'])
