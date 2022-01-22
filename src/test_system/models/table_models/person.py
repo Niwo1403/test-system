@@ -13,8 +13,8 @@ class Person(db.Model):
     answers = db.relationship("TestAnswer")
 
     def __repr__(self):
-        return (f"{self.id}:\n\t"
-                f"name: {self.name}\n\t"
-                f"gender: {self.gender}\n\t"
-                f"age: {self.age}\n\t"
+        return (f"id: {self.id}, "
+                f"name: {self.name}, "
+                f"gender: {self.gender}, "
+                f"age: {self.age}, "
                 f"position: {self.position}")
