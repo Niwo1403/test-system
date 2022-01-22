@@ -5,7 +5,7 @@ from flask import request, abort
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import db, Token, Test
+from test_system.models import Token, Test
 
 
 @app.route(f'{API_PREFIX}/tests/', methods=['GET'])
@@ -14,11 +14,11 @@ def get_tests():
     if request_token is None:
         abort(400, "Token missing.")
 
-    token = db.session.query(Token).filter_by(token=request_token).first()
+    token = Token.query.filter_by(token=request_token).first()
     if token is None or token.is_expired():
         abort(401, "Token doesn't exist or is expired.")
 
-    tests = db.session.query(Test).filter(Test.name.in_(token.test_names)).all()
+    tests = Test.query.filter(Test.name.in_(token.test_names)).all()
 
     test_names = ', '.join(test.name for test in tests)
     app.logger.info(f"Requested tests '{test_names}' with token '{token.token}'.")

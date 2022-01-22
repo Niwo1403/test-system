@@ -17,7 +17,7 @@ def post_token():
     if not all((test_names, username, password)):
         abort(400, "Missing arguments.")
 
-    user = db.session.query(User).filter_by(username=username).first()
+    user = User.query.filter_by(username=username).first()
     if user is None or not user.validate_password(password):
         abort(401, "User doesn't exist or password is wrong.")
     app.logger.info(f"Requested token with username '{username}' and valid password.")

@@ -17,7 +17,7 @@ def post_test_answer():
     if not all((answer_set, test_name, person_name, person_age, person_gender)):
         abort(400, "Argument missing.")
 
-    corresponding_test = db.session.query(Test).filter_by(name=test_name).first()
+    corresponding_test = Test.query.filter_by(name=test_name).first()
     if corresponding_test is None:
         abort(404, "Test doesn't exist.")  # Test not found
 
