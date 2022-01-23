@@ -1,4 +1,0 @@
-BEGIN;
-\i 1_INIT_DDL.sql
-\i 2_INIT_DML.sql
-COMMIT;
