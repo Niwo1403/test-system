@@ -13,7 +13,7 @@ def post_person():
     person_age = request.args.get("person-age", type=int)
     person_position = request.args.get("person-position", type=str)
     if not all((person_name, person_age, person_gender)):
-        abort(400, "Argument missing.")
+        abort(400, "Argument missing or not valid.")
 
     person = Person(name=person_name, gender=person_gender, age=person_age, position=person_position)
     db.session.add(person)

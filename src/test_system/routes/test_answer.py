@@ -12,7 +12,7 @@ def post_test_answer():
     answer_set = request.args.get("answer-set", type=str)
     person_id = request.args.get("person-id", type=str)
     if not all((answer_set, test_name, person_id)):
-        abort(400, "Argument missing.")
+        abort(400, "Argument missing or not valid.")
 
     corresponding_test = Test.query.filter_by(name=test_name).first()
     if corresponding_test is None:

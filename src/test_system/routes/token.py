@@ -15,7 +15,7 @@ def post_token():
     max_usage_count = request.args.get("max_usage_count", type=int)
     test_names = request.args.get("test_names", type=str)
     if not all((test_names, username, password)):
-        abort(400, "Missing arguments.")
+        abort(400, "Argument missing or not valid.")
 
     user = User.query.filter_by(username=username).first()
     if user is None or not user.validate_password(password):
