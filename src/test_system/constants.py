@@ -24,8 +24,3 @@ APP_CONFIG = {
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
     'SQLALCHEMY_ECHO': False  # if true, all statements will be logged - maybe useful for debugging
 }
-
-# models
-
-PASSWORD_PEPPER = "personality_test_system berlin - user"
-HASH_SEPARATOR = "#"
