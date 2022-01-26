@@ -18,19 +18,19 @@ def get_tests():
     if token is None or token.is_expired():
         abort(401, "Token doesn't exist or is expired.")
 
-    evaluable_test = Test.query.filter_by(name=token.evaluable_test_name).first()
-    if evaluable_test is None:
-        abort(404, "Evaluable test doesn't exist.")
-    if not evaluable_test.evaluable:
-        abort(500, "Requested evaluable test isn't evaluable.")
-
+    personal_data_test = Test.get_category_test_or_abort(token.personal_data_test_name,
+                                                         assert_category=Test.CATEGORIES.PERSONAL_DATA_TEST)
+    evaluable_test = Test.get_category_test_or_abort(token.evaluable_test_name,
+                                                     assert_category=Test.CATEGORIES.EVALUABLE_TEST)
     pre_collection_tests = Test.query.filter(Test.name.in_(token.pre_collection_test_names)).all()
 
     pre_collection_test_names = ', '.join(test.name for test in pre_collection_tests)
-    app.logger.info(f"Requested pre collection tests '{pre_collection_test_names}' "
+    app.logger.info(f"Requested personal data test '{personal_data_test.name}', "
+                    f"pre collection tests '{pre_collection_test_names}' "
                     f"and evaluable test '{evaluable_test.name}' with token '{token.token}'.")
 
     tests = {
+        "personal_data_test": personal_data_test.description_json,
         "pre_collection_tests": [test.description_json for test in pre_collection_tests],
         "evaluable_test": evaluable_test.description_json
     }
