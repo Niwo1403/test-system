@@ -1,3 +1,32 @@
-body > p {
-	color: #ff0000;
+form {
+	text-align: left;
+	margin: 20vh auto;
+	padding: 5vh 5vh;
+	width: 50%;
+	font-size: calc(120px - 6vw);
+	border-radius: 20px;
+	background-color: #e0e0e0;
+}
+
+input[type="submit"] {
+	cursor: pointer;
+	border: 2px solid #555555;
+	border-radius: 100px;
+}
+
+input[type="submit"]:hover {
+	background-color: lightgray;
+}
+
+form > div > input[type="submit"] {
+	font-size: calc(75px - 4vw);
+}
+
+form > textarea {
+ 	width: calc(100% - 6px);  /* subtract horizontal border, padding & margin (here 6px: 2 padding & 1 border per site) */
+	margin-top: 5px;
+}
+
+.child-align-right {
+	text-align: right;
 }
