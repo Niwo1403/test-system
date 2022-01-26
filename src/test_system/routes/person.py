@@ -21,4 +21,4 @@ def post_person():
 
     app.logger.info(f"Created person ({person}).")
 
-    return str(person.id)
+    return str(person.id), 201

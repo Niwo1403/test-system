@@ -37,5 +37,5 @@ def post_token():
     db.session.commit()
     app.logger.info(f"Created and saved token: {token}")
 
-    return token.token
+    return token.token, 201
 

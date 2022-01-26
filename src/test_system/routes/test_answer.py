@@ -26,4 +26,4 @@ def post_test_answer():
 
     app.logger.info(f"Created answer for test '{answer.test_name}' for person '{person}'.")
 
-    return str(answer.id)
+    return str(answer.id), 201
