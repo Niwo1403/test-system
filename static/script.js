@@ -1,3 +1,4 @@
+const API_PREFIX = "/api";
 
 function getTokenFromUrl() {
     const url = new URL(window.location.href);
@@ -9,6 +10,24 @@ function loadTestForPassedToken() {
     if (token === null) {
         alert("Token missing.");
     } else {
-        document.getElementById("token_res").innerHTML = "Token: " + token;
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            if (this.status === 200) {
+                const jsonResp = JSON.parse(this.responseText);
+                processTests(jsonResp);
+            } else {
+                displayError(this.responseText);
+            }
+        }
+        xhr.open("GET", API_PREFIX + "/tests/?token=" + token, true);
+        xhr.send();
     }
+}
+
+function displayError(responseText) {
+    document.getElementById("token_res").innerHTML = "ERROR: <br>" + responseText;
+}
+
+function processTests(testsJson) {
+    document.getElementById("token_res").innerHTML = "Token resp: <br>" + JSON.stringify(testsJson);
 }
