@@ -1,21 +1,31 @@
+# std
+from json import loads as json_loads
 # 3rd party
 from flask import request, abort
+from schema import Schema, And, Use, Optional, Or, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
 from test_system.models import db, Person
 
+PERSONA_DATA_SCHEMA = Schema({"name": And(str, len),
+                              "age": And(int, lambda n: 1 <= n <= 200),
+                              "gender": And(Use(Person.GENDERS), Person.GENDERS),
+                              Optional("position", default=None): Or(None, str)})
+
 
 @app.route(f'{API_PREFIX}/person/', methods=['POST'])
 def post_person():
-    person_name = request.args.get("person-name", type=str)
-    person_gender = request.args.get("person-gender", type=Person.GENDERS)
-    person_age = request.args.get("person-age", type=int)
-    person_position = request.args.get("person-position", type=str)
-    if not all((person_name, person_age, person_gender)):
-        abort(400, "Argument missing or not valid.")
+    personal_data = json_loads(request.data.decode())
+    try:
+        personal_data = PERSONA_DATA_SCHEMA.validate(personal_data)
+    except SchemaError:
+        abort(400, "Data validation failed.")
 
-    person = Person(name=person_name, gender=person_gender, age=person_age, position=person_position)
+    person = Person(name=personal_data["name"],
+                    gender=personal_data["gender"],
+                    age=personal_data["age"],
+                    position=personal_data["position"])
     db.session.add(person)
     db.session.commit()  # required to generate id of person
 
