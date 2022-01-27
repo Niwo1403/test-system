@@ -27,6 +27,14 @@ form > textarea {
 	margin-top: 5px;
 }
 
+#error-frame {
+	display: none;
+}
+
+#test-element {
+	width: 100%;
+}
+
 .child-align-right {
 	text-align: right;
 }

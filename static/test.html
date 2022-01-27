@@ -3,9 +3,21 @@
     <head>
         <meta charset="UTF-8">
         <title>Persönlichkeitstest</title>
+        <!-- surveyJS import -->
+		<script src="https://unpkg.com/jquery"></script>
+        <script src="https://unpkg.com/survey-jquery@1.9.2/survey.jquery.min.js"></script>
+        <link href="https://unpkg.com/survey-core@1.9.2/modern.min.css" type="text/css" rel="stylesheet"/>
+        <!-- custom import -->
+		<link rel="stylesheet" href="./style.css" />
         <script src="./script.js"></script>
+        <script src="./test.js"></script>
     </head>
     <body onload="loadTestForPassedToken();">
-        <p id="token_res">Loading...</p>
+        <div id="error-frame">
+            <p id="error-msg"></p>
+            <button onclick="backToLogin();">Zurück zur Token Eingabe</button>
+        </div>
+
+        <div id="test-element"></div>
     </body>
 </html>
