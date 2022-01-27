@@ -1,3 +1,5 @@
+# std
+from json import loads as json_loads
 # 3rd party
 from flask import request, abort
 # custom
@@ -9,16 +11,16 @@ from test_system.models import db, Person, Test, TestAnswer
 @app.route(f'{API_PREFIX}/test-answer/', methods=['POST'])
 def post_test_answer():
     test_name = request.args.get("test-name", type=str)
-    answer_set = request.args.get("answer-set", type=str)
     person_id = request.args.get("person-id", type=str)
-    if not all((answer_set, test_name, person_id)):
+    if not all((test_name, person_id)):
         abort(400, "Argument missing or not valid.")
 
     Test.get_category_test_or_abort(test_name, Test.CATEGORIES.PRE_COLLECT_TEST)
-
     person = Person.query.filter_by(id=person_id).first()
     if person is None:
         abort(404, "Person doesn't exist.")  # Person not found
+
+    answer_set = json_loads(request.data.decode())
 
     answer = TestAnswer(date=db.func.now(), answer_set=answer_set, test_name=test_name, person_id=person.id)
     db.session.add(answer)
