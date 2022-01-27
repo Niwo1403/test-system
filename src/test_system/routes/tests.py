@@ -30,9 +30,9 @@ def get_tests():
                     f"and evaluable test '{evaluable_test.name}' with token '{token.token}'.")
 
     tests = {
-        "personal_data_test": personal_data_test.description_json,
-        "pre_collection_tests": [test.description_json for test in pre_collection_tests],
-        "evaluable_test": evaluable_test.description_json
+        "personal_data_test": personal_data_test.get_named_description_dict(),
+        "pre_collection_tests": [test.get_named_description_dict() for test in pre_collection_tests],
+        "evaluable_test": evaluable_test.get_named_description_dict()
     }
     tests_json = json.dumps(tests)
     return tests_json
