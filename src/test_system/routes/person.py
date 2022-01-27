@@ -9,7 +9,7 @@ from test_system.models import db, Person
 @app.route(f'{API_PREFIX}/person/', methods=['POST'])
 def post_person():
     person_name = request.args.get("person-name", type=str)
-    person_gender = request.args.get("person-gender", type=str)
+    person_gender = request.args.get("person-gender", type=Person.GENDERS)
     person_age = request.args.get("person-age", type=int)
     person_position = request.args.get("person-position", type=str)
     if not all((person_name, person_age, person_gender)):
