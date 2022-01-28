@@ -18,9 +18,8 @@
 		</form>
 
 		<script>
-			const token = getTokenFromUrl();
-			if (token !== null) {
-				document.getElementById("token_input").value = token;
+			if (INITIAL_TOKEN !== null) {
+				document.getElementById("token_input").value = INITIAL_TOKEN;
 			}
 		</script>
 	</body>
