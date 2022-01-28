@@ -13,8 +13,10 @@ PERSONA_DATA_SCHEMA = Schema({"name": And(str, len),
                               "gender": And(Use(Person.GENDERS), Person.GENDERS),
                               Optional("position", default=None): Or(None, str)})
 
+ROUTE = f"{API_PREFIX}/person/"  # as variable for tests
 
-@app.route(f'{API_PREFIX}/person/', methods=['POST'])
+
+@app.route(ROUTE, methods=['POST'])
 def post_person():
     personal_data = json_loads(request.data.decode())
     try:

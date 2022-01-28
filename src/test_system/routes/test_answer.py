@@ -7,8 +7,10 @@ from test_system import app
 from test_system.constants import API_PREFIX
 from test_system.models import db, Person, Test, TestAnswer
 
+ROUTE = f'{API_PREFIX}/test-answer/'
 
-@app.route(f'{API_PREFIX}/test-answer/', methods=['POST'])
+
+@app.route(ROUTE, methods=['POST'])
 def post_test_answer():
     test_name = request.args.get("test-name", type=str)
     person_id = request.args.get("person-id", type=str)

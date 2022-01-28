@@ -7,8 +7,10 @@ from test_system import app
 from test_system.constants import API_PREFIX
 from test_system.models import Token, Test
 
+ROUTE = f'{API_PREFIX}/tests/'
 
-@app.route(f'{API_PREFIX}/tests/', methods=['GET'])
+
+@app.route(ROUTE, methods=['GET'])
 def get_tests():
     request_token = request.args.get("token", type=str)
     if request_token is None:

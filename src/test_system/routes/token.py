@@ -7,8 +7,10 @@ from test_system import app
 from test_system.constants import API_PREFIX
 from test_system.models import db, Token, User, Test
 
+ROUTE = f'{API_PREFIX}/token/'
 
-@app.route(f'{API_PREFIX}/token/', methods=['POST'])
+
+@app.route(ROUTE, methods=['POST'])
 def post_token():
     username = request.args.get("username", type=str)
     password = request.args.get("password", type=str)
