@@ -13,3 +13,9 @@ load_dotenv(path_join(FILE_DIR, ".env"), override=True)  # load test env variabl
 from test_system import app  # must not be at top of file
 
 app.config['TESTING'] = True
+
+
+@fixture()
+def client():
+    with app.test_client() as client:
+        yield client

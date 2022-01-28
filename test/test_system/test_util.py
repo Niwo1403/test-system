@@ -2,7 +2,7 @@
 from test_system import util
 
 
-def test_generate_hash(test_var):
+def test_generate_hash():
     test_password = "test password"
     test_username = "test username"
     generated_salted_hash = util.generate_hash(test_password, test_username)
