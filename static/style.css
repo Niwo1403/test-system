@@ -35,6 +35,21 @@ form > textarea {
 	width: 100%;
 }
 
+#certificate-view {
+	width: 80%;
+	height: 85vh;
+}
+
+#certificate-view-title {
+	text-align: center;
+	height: 6vh;
+	margin: 2vh 0;
+}
+
 .child-align-right {
 	text-align: right;
+}
+
+.child-align-center {
+	text-align: center;
 }

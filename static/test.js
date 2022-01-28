@@ -1,5 +1,3 @@
-const API_PREFIX = "/api";
-
 let personId = null;
 let tests = null;
 let pre_collect_index = 0;
