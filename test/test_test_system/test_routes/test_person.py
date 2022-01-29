@@ -1,9 +1,11 @@
 # std
 from json import dumps as json_dumps
+from typing import Callable, ContextManager
 # 3rd party
 from flask.testing import FlaskClient
 # custom
 from test_system.routes.person import ROUTE
+from test_system.models import Person, db
 
 
 def test_post_person__with_success(client: FlaskClient):
@@ -16,8 +18,18 @@ def test_post_person__with_success(client: FlaskClient):
         resp = client.post(ROUTE, data=json_dumps(test_data))
         assert resp.status_code == 201, f"Can't POST person to {ROUTE} with data {data_name}: {test_data}"
 
+        person_id = resp.data.decode()
+        person = Person.query.filter_by(id=person_id).first()
+        assert person is not None, "Could not write person to database"
 
-def test_post_person__with_bad_request(client: FlaskClient):
+        db_data = {"name": person.name, "age": person.age, "gender": person.gender.value}  # use .value for enums
+        if "position" in test_data:
+            db_data["position"] = person.position
+        assert db_data == test_data, "Person written to database, got wrong data"
+
+
+def test_post_person__with_bad_request(client: FlaskClient,
+                                       raise_if_insert_in_tables: Callable[[db.Model], ContextManager]):
     test_cases = {
         "data with missing attr": {"name": "Max M.", "age": 18, "position": "POS"},
         "data with age out of range": {"name": "Max M.", "age": -1, "gender": "s", "position": "POS"},
@@ -26,6 +38,7 @@ def test_post_person__with_bad_request(client: FlaskClient):
         "data with name empty": {"name": "", "age": 18, "gender": "s", "position": "POS"}
     }
 
-    for data_name, test_data in test_cases.items():
-        resp = client.post(ROUTE, data=json_dumps(test_data))
-        assert resp.status_code == 400, f"Got wrong status code at {ROUTE} for {data_name}: {test_data}"
+    with raise_if_insert_in_tables(Person):
+        for data_name, test_data in test_cases.items():
+            resp = client.post(ROUTE, data=json_dumps(test_data))
+            assert resp.status_code == 400, f"Got wrong status code at {ROUTE} for {data_name}: {test_data}"
