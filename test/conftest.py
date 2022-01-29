@@ -20,6 +20,15 @@ app.config['TESTING'] = True
 
 @fixture()
 def client():
+    """
+    Used as client to simulate the sending of a requests to the flask backend.
+
+    E.g.:
+
+    resp = client.get(route)
+
+    resp = client.post(route, data=data_as_str)
+    """
     with app.test_client() as client:
         yield client
 
@@ -60,3 +69,28 @@ def raise_if_insert_in_tables():
                 remove(table, self.IDENTIFIER, self._on_db_changed)
 
     return DatabaseInsertDetector
+
+
+@fixture(scope='function')
+def session(request):
+    """
+    Creates a temporary database session for testing.
+    Can be used to add rows or commit added, deleted & manipulated rows
+    without actually changing the database after it.
+
+    The database session commits will automatically be rolled back,
+    after the test. The changes won't be present, in an other test.
+    """
+    connection = db.engine.connect()
+    transaction = connection.begin()
+
+    session = db.create_scoped_session(options={"bind": connection, "binds": {}})
+    db.session = session
+
+    def teardown_db_connection():
+        transaction.rollback()
+        connection.close()
+        session.remove()
+    request.addfinalizer(teardown_db_connection)
+
+    return session
