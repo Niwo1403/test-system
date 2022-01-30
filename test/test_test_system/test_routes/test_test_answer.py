@@ -6,22 +6,22 @@ from test_system.models import Person, Test, TestAnswer
 from test_system.routes.test_answer import ROUTE
 
 
-test_answer = {"a": True}
+test_answer = {"Question A": "Answer A"}
 
 
 @fixture()
 def person():
-    return Person(id=1, name="Test Name", age=100, gender=Person.GENDERS.s)
+    return Person(id=1, name="Test name", age=33, gender=Person.GENDERS.s)
 
 
 @fixture()
 def test():
-    return Test(name="TestPreCol", description_json={"a": "b"}, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
+    return Test(name="PreColTest", description_json={"a": "b"}, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
 
 
 @fixture()
 def personal_data_test():
-    return Test(name="TestPersonalData", description_json={"a": "b"}, test_category=Test.CATEGORIES.PERSONAL_DATA_TEST)
+    return Test(name="PersonalDataTest", description_json={"a": "b"}, test_category=Test.CATEGORIES.PERSONAL_DATA_TEST)
 
 
 def test_post_test_answer__with_success(client, session, person, test):
