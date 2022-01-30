@@ -34,7 +34,7 @@ def client():
 
 
 @fixture()
-def raise_if_insert_in_tables():
+def raise_if_change_in_tables():
     """
     Fixture to get a DatabaseChangeDetector to throw an AssertionError
     in case any passed table gets an insert statement.
@@ -42,8 +42,8 @@ def raise_if_insert_in_tables():
 
     E.g. trying to insert data in TableA, TableB or TableC within the following with statement will fail:
 
-    def test_a_function(raise_if_insert_in_tables):
-        with raise_if_insert_in_tables(TableA, TableB, TableC):
+    def test_a_function(raise_if_change_in_tables):
+        with raise_if_change_in_tables(TableA, TableB, TableC):
             # your test code goes here... (insert into tables will raise exception)
 
     :return: A DatabaseChangeDetector to be used with a "with" statement.

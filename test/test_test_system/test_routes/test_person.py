@@ -29,7 +29,7 @@ def test_post_person__with_success(client: FlaskClient):
 
 
 def test_post_person__with_bad_request(client: FlaskClient,
-                                       raise_if_insert_in_tables: Callable[[db.Model], ContextManager]):
+                                       raise_if_change_in_tables: Callable[[db.Model], ContextManager]):
     test_cases = {
         "data with missing attr": {"name": "Max M.", "age": 18, "position": "POS"},
         "data with age out of range": {"name": "Max M.", "age": -1, "gender": "s", "position": "POS"},
@@ -38,7 +38,7 @@ def test_post_person__with_bad_request(client: FlaskClient,
         "data with name empty": {"name": "", "age": 18, "gender": "s", "position": "POS"}
     }
 
-    with raise_if_insert_in_tables(Person):
+    with raise_if_change_in_tables(Person):
         for data_name, test_data in test_cases.items():
             resp = client.post(ROUTE, data=json_dumps(test_data))
             assert resp.status_code == 400, f"Got wrong status code at {ROUTE} for {data_name}: {test_data}"

@@ -42,25 +42,25 @@ def test_post_test_answer__with_success(client, session, person, test):
            answer.person_id == person.id, f"TestAnswer written to database, got wrong data: {answer}"
 
 
-def test_post_test_answer__with_bad_request(client, session, raise_if_insert_in_tables, person, test):
+def test_post_test_answer__with_bad_request(client, session, raise_if_change_in_tables, person, test):
     session.add_all((person, test))
     session.commit()
 
     test_arguments = [{"person-id": person.id}]
 
-    with raise_if_insert_in_tables(Person, Test, TestAnswer):
+    with raise_if_change_in_tables(Person, Test, TestAnswer):
         for query_string in test_arguments:
             resp = client.post(ROUTE, data=json_dumps(test_answer), query_string=query_string)
             assert resp.status_code == 400, f"Got wrong status code at {ROUTE} for arguments: {query_string}"
 
 
-def test_post_test_answer__with_wrong_test(client, session, raise_if_insert_in_tables, person, personal_data_test):
+def test_post_test_answer__with_wrong_test(client, session, raise_if_change_in_tables, person, personal_data_test):
     session.add_all((person, personal_data_test))
     session.commit()
 
     unknown_test_name = "?`?`?`?`?`?`?`?`?`?`?`?`?`?`?"
 
-    with raise_if_insert_in_tables(Person, Test, TestAnswer):
+    with raise_if_change_in_tables(Person, Test, TestAnswer):
         resp = client.post(ROUTE,
                            data=json_dumps(test_answer),
                            query_string={"test-name": unknown_test_name, "person-id": person.id})
@@ -73,11 +73,11 @@ def test_post_test_answer__with_wrong_test(client, session, raise_if_insert_in_t
                                          f"with wrong test category: {personal_data_test.name}")
 
 
-def test_post_test_answer__with_wrong_person(client, session, raise_if_insert_in_tables, test):
+def test_post_test_answer__with_wrong_person(client, session, raise_if_change_in_tables, test):
     session.add(test)
     session.commit()
 
-    with raise_if_insert_in_tables(Person, Test, TestAnswer):
+    with raise_if_change_in_tables(Person, Test, TestAnswer):
         resp = client.post(ROUTE,
                            data=json_dumps(test_answer),
                            query_string={"test-name": test.name, "person-id": -1})
