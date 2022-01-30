@@ -36,7 +36,7 @@ def client():
 @fixture()
 def raise_if_insert_in_tables():
     """
-    Fixture to get a DatabaseInsertDetector to throw an AssertionError
+    Fixture to get a DatabaseChangeDetector to throw an AssertionError
     in case any passed table gets an insert statement.
 
 
@@ -46,29 +46,34 @@ def raise_if_insert_in_tables():
         with raise_if_insert_in_tables(TableA, TableB, TableC):
             # your test code goes here... (insert into tables will raise exception)
 
-    :return: A DatabaseInsertDetector to be used with a "with" statement.
+    :return: A DatabaseChangeDetector to be used with a "with" statement.
     """
 
-    class DatabaseInsertDetector(ContextManager):
+    class DatabaseChangeDetector(ContextManager):
 
-        IDENTIFIER = "after_insert"
+        IDENTIFIERS = ["after_insert", "after_update", "after_delete"]
 
         @staticmethod
-        def _on_db_changed(mapper, connection, target):
-            assert False, f"Database got insertion for {mapper} with data: {target}"
+        def _on_db_change(mapper, connection, target):
+            assert False, f"Database got change for {mapper} concerning data: {target}"
 
         def __init__(self, *tables: db.Model):
             self.tables = tables
 
-        def __enter__(self):
+        def __iter__(self):
             for table in self.tables:
-                listen(table, self.IDENTIFIER, self._on_db_changed)
+                for identifier in self.IDENTIFIERS:
+                    yield table, identifier
+
+        def __enter__(self):
+            for table, identifier in self:
+                listen(table, identifier, self._on_db_change)
 
         def __exit__(self, exc_type, exc_val, exc_tb):
-            for table in self.tables:
-                remove(table, self.IDENTIFIER, self._on_db_changed)
+            for table, identifier in self:
+                remove(table, identifier, self._on_db_change)
 
-    return DatabaseInsertDetector
+    return DatabaseChangeDetector
 
 
 @fixture(scope='function')
