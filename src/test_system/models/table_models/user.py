@@ -15,7 +15,7 @@ class User(db.Model):
         super(User, self).__init__(**kwargs)
 
     def __repr__(self):
-        return f"{self.username}: {self.password}"
+        return f"User {self.username}: {self.password[:25]}..."
 
     def validate_password(self, test_password: str):
         salt = self.password.split(HASH_SEPARATOR)[0]

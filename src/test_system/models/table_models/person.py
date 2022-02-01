@@ -23,8 +23,8 @@ class Person(db.Model):
     GENDERS = Gender
 
     def __repr__(self):
-        return (f"id: {self.id}, "
+        return (f"Person {self.id} ("
                 f"name: {self.name}, "
                 f"gender: {self.gender}, "
                 f"age: {self.age}, "
-                f"position: {self.position}")
+                f"position: {self.position})")

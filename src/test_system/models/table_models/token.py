@@ -31,9 +31,11 @@ class Token(db.Model):
                    evaluable_test_name=evaluable_test_name)
 
     def __repr__(self):
-        return (f"{self.token} (personal data test: {self.personal_data_test_name}, "
+        return (f"Token '{self.token}' ("
+                f"personal data test: {self.personal_data_test_name}, "
                 f"pre collection Tests: {self.pre_collection_test_names}, "
-                f"evaluable test: {self.evaluable_test_name}, usages: {self.max_usage_count})")
+                f"evaluable test: {self.evaluable_test_name}, "
+                f"usages: {self.max_usage_count})")
 
     def is_expired(self) -> bool:
         expired = self.max_usage_count is not None and self.max_usage_count <= 0
