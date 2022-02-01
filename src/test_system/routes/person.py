@@ -31,6 +31,6 @@ def post_person():
     db.session.add(person)
     db.session.commit()  # required to generate id of person
 
-    app.logger.info(f"Created person ({person}).")
+    app.logger.info(f"Created {person}")
 
     return str(person.id), 201

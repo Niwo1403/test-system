@@ -29,7 +29,7 @@ def post_token():
     Test.get_category_test_or_abort(personal_data_test_name, Test.CATEGORIES.PERSONAL_DATA_TEST)
     Test.get_category_test_or_abort(evaluable_test_name, Test.CATEGORIES.EVALUABLE_TEST)
 
-    app.logger.info(f"Requested token with username '{username}' and valid password.")
+    app.logger.info(f"Requested token with username '{username}' and valid password")
 
     token = Token.generate_token(max_usage_count,
                                  personal_data_test_name,
@@ -37,7 +37,7 @@ def post_token():
                                  evaluable_test_name)
     db.session.add(token)
     db.session.commit()
-    app.logger.info(f"Created and saved token: {token}")
+    app.logger.info(f"Created {token}")
 
     return token.token, 201
 

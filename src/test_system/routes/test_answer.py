@@ -28,6 +28,6 @@ def post_test_answer():
     db.session.add(answer)
     db.session.commit()
 
-    app.logger.info(f"Created answer for test '{answer.test_name}' for person '{person}'.")
+    app.logger.info(f"Created answer for test '{answer.test_name}' for {person}")
 
     return str(answer.id), 201

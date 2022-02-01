@@ -29,7 +29,7 @@ def get_tests():
     pre_collection_test_names = ', '.join(test.name for test in pre_collection_tests)
     app.logger.info(f"Requested personal data test '{personal_data_test.name}', "
                     f"pre collection tests '{pre_collection_test_names}' "
-                    f"and evaluable test '{evaluable_test.name}' with token '{token.token}'.")
+                    f"and evaluable test '{evaluable_test.name}' with token '{token.token}'")
 
     tests = {
         "personal_data_test": personal_data_test.get_named_description_dict(),
