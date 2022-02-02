@@ -13,7 +13,7 @@ ROUTE = f'{API_PREFIX}/test-answer/'
 @app.route(ROUTE, methods=['POST'])
 def post_test_answer():
     test_name = request.args.get("test-name", type=str)
-    person_id = request.args.get("person-id", type=str)
+    person_id = request.args.get("person-id", type=int)
     if not all((test_name, person_id)):
         abort(400, "Argument missing or not valid.")
 
