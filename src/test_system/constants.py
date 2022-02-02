@@ -41,7 +41,7 @@ class DefaultCertificateFonts:
 
 
 class DefaultCertificatePdfConfig:
-    LOGO_PATH = "./logo.png"
+    LOGO_PATH = "../static/certificate_background.png"  # path relative to run.py
     TITLE = "Persöhnlichkeitstest Zertifikat"
     HEADER_BORDER = 1
     BODY_TEXT_ALIGN = "C"
