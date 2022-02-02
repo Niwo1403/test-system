@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 # custom
 from test_system.models.database import db
-from test_system.models import TestAnswer
+from .test_answer import TestAnswer
 
 
 class Token(db.Model):
