@@ -8,7 +8,6 @@ class TestAnswer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.TIMESTAMP)
     answer_set = db.Column(db.JSON)
-    was_evaluated_with_token = db.Column(db.BOOLEAN, default=False)
     test_name = db.Column(db.String, db.ForeignKey("test.name"))
     person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
 
@@ -18,4 +17,3 @@ class TestAnswer(db.Model):
                 f"person_id: {self.person_id},"
                 f"date: {self.date},"
                 f"answer_set: {self.answer_set})")
-

@@ -37,7 +37,6 @@ def test_post_test_answer__with_success(client, session, person, test):
     answer = TestAnswer.query.filter_by(id=test_answer_id).first()
     assert answer is not None, "Could not write TestAnswer to database"
     assert answer.answer_set == test_answer and \
-           answer.was_evaluated_with_token is False and \
            answer.test_name == test.name and \
            answer.person_id == person.id, f"TestAnswer written to database, got wrong data: {answer}"
 

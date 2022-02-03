@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 # custom
 from test_system.models.database import db
-from .test_answer import TestAnswer
+from .answer.evaluable_answer.evaluable_test_answer import EvaluableTestAnswer
 
 
 class Token(db.Model):
@@ -45,8 +45,8 @@ class Token(db.Model):
             db.session.commit()
         return expired
 
-    def use_for(self, test_answer: TestAnswer) -> None:
-        test_answer.was_evaluated_with_token = True
+    def use_for(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
+        evaluable_test_answer.was_evaluated_with_token = True
         self.max_usage_count -= 1
         db.session.commit()
         self.is_expired(remove_if_expired=True)
