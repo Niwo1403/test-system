@@ -26,8 +26,8 @@ def post_token():
         abort(401, "User doesn't exist or password is wrong.")
 
     # Test if personal data and evaluable test exist
-    Test.get_category_test_or_abort(personal_data_test_name, Test.CATEGORIES.PERSONAL_DATA_TEST)
-    Test.get_category_test_or_abort(evaluable_test_name, Test.CATEGORIES.EVALUABLE_TEST)
+    Test.get_category_test_or_abort(personal_data_test_name, Test.CATEGORIES.PERSONAL_DATA_TEST, 400)
+    Test.get_category_test_or_abort(evaluable_test_name, Test.CATEGORIES.EVALUABLE_TEST, 400)
 
     app.logger.info(f"Requested token with username '{username}' and valid password")
 

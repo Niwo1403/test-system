@@ -25,13 +25,15 @@ class Test(db.Model):
     CATEGORIES = TestCategory
 
     @classmethod
-    def get_category_test_or_abort(cls, test_name: str, assert_category: TestCategory) -> "Test":
+    def get_category_test_or_abort(cls, test_name: str, assert_category: TestCategory,
+                                   wrong_category_status_code: int = 500) -> "Test":
         test: Test = cls.query.filter_by(name=test_name).first()
         if assert_category is not None:
             if test is None:
                 abort(404, f"The {assert_category.value} test doesn't exist.")
             if test.test_category != assert_category:
-                abort(500, f"Trying to use {test.test_category.value} test as {assert_category.value} test.")
+                abort(wrong_category_status_code,
+                      f"Trying to use {test.test_category.value} test as {assert_category.value} test.")
         return test
 
     def __repr__(self):
