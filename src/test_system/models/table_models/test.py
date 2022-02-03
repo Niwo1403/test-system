@@ -26,7 +26,7 @@ class Test(db.Model):
 
     @classmethod
     def get_category_test_or_abort(cls, test_name: str, assert_category: TestCategory) -> "Test":
-        test = cls.query.filter_by(name=test_name).first()
+        test: Test = cls.query.filter_by(name=test_name).first()
         if assert_category is not None:
             if test is None:
                 abort(404, f"The {assert_category.value} test doesn't exist.")

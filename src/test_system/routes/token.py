@@ -21,7 +21,7 @@ def post_token():
     if not all((personal_data_test_name, pre_collection_test_names, evaluable_test_name, username, password)):
         abort(400, "Argument missing or not valid.")
 
-    user = User.query.filter_by(username=username).first()
+    user: User = User.query.filter_by(username=username).first()
     if user is None or not user.validate_password(password):
         abort(401, "User doesn't exist or password is wrong.")
 

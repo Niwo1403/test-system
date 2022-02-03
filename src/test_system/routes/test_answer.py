@@ -18,7 +18,7 @@ def post_test_answer():
         abort(400, "Argument missing or not valid.")
 
     Test.get_category_test_or_abort(test_name, Test.CATEGORIES.PRE_COLLECT_TEST)
-    person = Person.query.filter_by(id=person_id).first()
+    person: Person = Person.query.filter_by(id=person_id).first()
     if person is None:
         abort(404, "Person doesn't exist.")  # Person not found
 

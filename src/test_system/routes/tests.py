@@ -1,5 +1,6 @@
 # std
 import json
+from typing import List
 # 3rd party
 from flask import request, abort
 # custom
@@ -16,7 +17,7 @@ def get_tests():
     if request_token is None:
         abort(400, "Token missing.")
 
-    token = Token.query.filter_by(token=request_token).first()
+    token: Token = Token.query.filter_by(token=request_token).first()
     if token is None or token.is_expired(remove_if_expired=True):
         abort(401, "Token doesn't exist or is expired.")
 
@@ -24,7 +25,7 @@ def get_tests():
                                                          assert_category=Test.CATEGORIES.PERSONAL_DATA_TEST)
     evaluable_test = Test.get_category_test_or_abort(token.evaluable_test_name,
                                                      assert_category=Test.CATEGORIES.EVALUABLE_TEST)
-    pre_collection_tests = Test.query.filter(Test.name.in_(token.pre_collection_test_names)).all()
+    pre_collection_tests: List[Test] = Test.query.filter(Test.name.in_(token.pre_collection_test_names)).all()
 
     pre_collection_test_names = ', '.join(test.name for test in pre_collection_tests)
     app.logger.info(f"Requested personal data test '{personal_data_test.name}', "
