@@ -17,7 +17,11 @@ def post_test_answer():
     if not all((test_name, person_id)):
         abort(400, "Argument missing or not valid.")
 
-    Test.get_category_test_or_abort(test_name, Test.CATEGORIES.PRE_COLLECT_TEST)
+    test: Test = Test.query.filter_by(name=test_name).first()
+    if test is None:
+        abort(404, "Test doesn't exist.")
+    if test.test_category == Test.CATEGORIES.PERSONAL_DATA_TEST:
+        abort(400, "Can't post test-answer of personal data test.")
     person: Person = Person.query.filter_by(id=person_id).first()
     if person is None:
         abort(404, "Person doesn't exist.")  # Person not found
@@ -29,5 +33,9 @@ def post_test_answer():
     db.session.commit()
 
     app.logger.info(f"Created answer for test '{answer.test_name}' for {person}")
+
+    if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
+        pass  # TODO: add saving
+        app.logger.info(f"Created evaluable answer")
 
     return str(answer.id), 201
