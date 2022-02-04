@@ -8,4 +8,4 @@ class EvaluableQuestionAnswer(db.Model):  # belongs to EvaluableTestAnswer
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer)
     question_name_id = db.Column(db.Integer, db.ForeignKey("evaluable_question_name.id"))
-    test_answer_id = db.Column(db.Integer, db.ForeignKey("evaluated_test_answer.id"))
+    test_answer_id = db.Column(db.Integer, db.ForeignKey("evaluable_test_answer.id"))
