@@ -5,7 +5,7 @@ from flask import request, abort
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import db, Person, Test, TestAnswer
+from test_system.models import db, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
 
 ROUTE = f'{API_PREFIX}/test-answer/'
 
@@ -35,7 +35,14 @@ def post_test_answer():
     app.logger.info(f"Created answer for test '{answer.test_name}' for {person}")
 
     if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
-        pass  # TODO: add saving
-        app.logger.info(f"Created evaluable answer")
+        evaluable_answer = EvaluableTestAnswer(test_answer_id=answer.id)
+        db.session.add(evaluable_answer)
+        db.session.commit()
+        answers = EvaluableQuestionAnswer.create_answers(answer.answer_set, evaluable_answer=evaluable_answer)
+        db.session.add_all(answers)
+        db.session.commit()
 
-    return str(answer.id), 201
+        app.logger.info(f"Created {evaluable_answer} with {len(answers)} EvaluableQuestionAnswers")
+        return str(evaluable_answer.id), 201
+
+    return "", 201

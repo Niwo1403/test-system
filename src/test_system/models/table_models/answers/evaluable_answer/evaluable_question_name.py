@@ -9,6 +9,19 @@ class EvaluableQuestionName(db.Model):
     category = db.Column(db.String)
     name = db.Column(db.String)
 
+    @classmethod
+    def get_id_for(cls, question_category, question_name) -> int:
+        """
+        If EvaluableQuestionName with given question_category and question_name doesn't exist,
+        it will be created and added to database.
+        """
+        evaluable_question_name = cls.query.filter_by(category=question_category, name=question_name).first()
+        if evaluable_question_name is None:
+            evaluable_question_name = cls(category=question_category, name=question_name)
+            db.session.add(evaluable_question_name)
+            db.session.commit()
+        return evaluable_question_name.id
+
     def __repr__(self):
         return (f"EvaluableQuestionName {self.id} ("
                 f"value: {self.category}, "
