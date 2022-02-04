@@ -5,7 +5,7 @@ from flask import request, abort, send_file
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import EvaluableTestAnswer, Person, Token
+from test_system.models import EvaluableTestAnswer, Person, Token, TestAnswer
 from test_system.managers.certificate_manager import CertificateManager
 
 ROUTE = f'{API_PREFIX}/certificate/'
@@ -22,7 +22,8 @@ def get_certificate():
     evaluable_answer: EvaluableTestAnswer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer_id).first()
     if evaluable_answer is None:
         abort(404, "TestAnswer not found.")
-    person: Person = Person.query.filter_by(id=evaluable_answer.person_id).first()
+    person_id = evaluable_answer.test_answer.person_id
+    person: Person = Person.query.filter_by(id=person_id).first()
     if person is None:
         abort(404, "Person for TestAnswer not found.")
     token: Token = Token.query.filter_by(token=token_str).first()

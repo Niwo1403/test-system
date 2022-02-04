@@ -24,8 +24,7 @@ class CertificateManager:
             self.pdf.add_default_cell(f'Position: {self.person.position}')
 
     def _add_answer_text(self):
-        test_answer_id = self.evaluable_test_answer.test_answer_id
-        test_answer = TestAnswer.query.filter_by(id=test_answer_id)
+        test_answer = self.evaluable_test_answer.test_answer
         self.pdf.add_default_cell(f'Test abgegeben am: {test_answer.date}')
         self.pdf.add_default_cell(f'Test Name: {test_answer.test_name}')
         self.pdf.add_default_cell(f'Test Antworten: {test_answer.answer_set}')

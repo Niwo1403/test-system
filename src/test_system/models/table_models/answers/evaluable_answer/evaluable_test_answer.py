@@ -8,6 +8,7 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
     id = db.Column(db.Integer, primary_key=True)
     was_evaluated_with_token = db.Column(db.BOOLEAN, default=False)
     test_answer_id = db.Column(db.Integer, db.ForeignKey("test_answer.id"))
+    test_answer = db.relationship("TestAnswer")
     question_answers = db.relationship("EvaluableQuestionAnswer")
 
     def __repr__(self):
