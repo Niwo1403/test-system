@@ -5,7 +5,7 @@ from flask import request, abort, send_file
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import EvaluableTestAnswer, Person, Token, TestAnswer
+from test_system.models import EvaluableTestAnswer, Person, Token
 from test_system.managers.certificate_manager import CertificateManager
 
 ROUTE = f'{API_PREFIX}/certificate/'
