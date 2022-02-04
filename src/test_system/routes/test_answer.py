@@ -45,4 +45,4 @@ def post_test_answer():
         app.logger.info(f"Created {evaluable_answer} with {len(answers)} EvaluableQuestionAnswers")
         return str(evaluable_answer.id), 201
 
-    return "", 201
+    return str(answer.id), 201
