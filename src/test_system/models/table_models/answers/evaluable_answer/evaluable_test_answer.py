@@ -14,4 +14,4 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
         return (f"EvaluableTestAnswer {self.id} ("
                 f"was_evaluated_with_token: {self.was_evaluated_with_token}, "
                 f"test_answer_id: {self.test_answer_id}, "
-                f"question_answers: {self.question_answers})")
+                f"question_answers count: {len(self.question_answers)})")
