@@ -9,10 +9,10 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
     was_evaluated_with_token = db.Column(db.BOOLEAN, default=False)
     test_answer_id = db.Column(db.Integer, db.ForeignKey("test_answer.id"))
     test_answer = db.relationship("TestAnswer")
-    question_answers = db.relationship("EvaluableQuestionAnswer")
+    evaluable_question_answers = db.relationship("EvaluableQuestionAnswer")
 
     def __repr__(self):
         return (f"EvaluableTestAnswer {self.id} ("
                 f"was_evaluated_with_token: {self.was_evaluated_with_token}, "
                 f"test_answer_id: {self.test_answer_id}, "
-                f"question_answers count: {len(self.question_answers)})")
+                f"evaluable_question_answers count: {len(self.evaluable_question_answers)})")
