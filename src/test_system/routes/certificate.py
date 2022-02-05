@@ -21,11 +21,13 @@ def get_certificate():
 
     evaluable_answer: EvaluableTestAnswer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer_id).first()
     if evaluable_answer is None:
-        abort(404, "TestAnswer not found.")
-    person_id = evaluable_answer.test_answer.person_id
-    person: Person = Person.query.filter_by(id=person_id).first()
+        abort(404, "EvaluableTestAnswer not found.")
+    test_answer = evaluable_answer.test_answer
+    if test_answer is None:
+        abort(404, "TestAnswer of EvaluableTestAnswer not found.")
+    person: Person = test_answer.answerer
     if person is None:
-        abort(404, "Person for TestAnswer not found.")
+        abort(404, "Person, who answered TestAnswer not found.")
     token: Token = Token.query.filter_by(token=token_str).first()
     if (token is None or token.is_expired()) and not evaluable_answer.was_evaluated_with_token:
         abort(401, "Token not found or invalid.")

@@ -18,7 +18,6 @@ class Person(db.Model):
     gender = db.Column(db.Enum(Gender))
     age = db.Column(db.Integer)
     position = db.Column(db.String)
-    answers = db.relationship("TestAnswer")
 
     GENDERS = Gender
 

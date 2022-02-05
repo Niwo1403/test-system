@@ -11,6 +11,8 @@ class TestAnswer(db.Model):
     test_name = db.Column(db.String, db.ForeignKey("test.name"))
     person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
 
+    answerer = db.relationship("Person")
+
     def __repr__(self):
         return (f"Answer {self.id} ("
                 f"test: {self.test_name},"

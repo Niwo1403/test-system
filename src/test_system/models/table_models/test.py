@@ -20,21 +20,25 @@ class Test(db.Model):
     name = db.Column(db.String, primary_key=True)
     description_json = db.Column(db.JSON)
     test_category = db.Column(db.Enum(TestCategory))
-    answers = db.relationship("TestAnswer")
 
     CATEGORIES = TestCategory
 
     @classmethod
     def get_category_test_or_abort(cls, test_name: str, assert_category: TestCategory,
-                                   wrong_category_status_code: int = 500) -> "Test":
+                                   wrong_category_status_code: int = 400) -> "Test":
         test: Test = cls.query.filter_by(name=test_name).first()
         if assert_category is not None:
-            if test is None:
-                abort(404, f"The {assert_category.value} test doesn't exist.")
-            if test.test_category != assert_category:
-                abort(wrong_category_status_code,
-                      f"Trying to use {test.test_category.value} test as {assert_category.value} test.")
+            cls.assert_test_existence_and_category(test, assert_category, wrong_category_status_code)
         return test
+
+    @staticmethod
+    def assert_test_existence_and_category(test: "Test", assert_category: TestCategory,
+                                           wrong_category_status_code: int = 500) -> None:
+        if test is None:
+            abort(404, f"The {assert_category.value} test doesn't exist.")
+        if test.test_category != assert_category:
+            abort(wrong_category_status_code,
+                  f"Trying to use {test.test_category.value} test as {assert_category.value} test.")
 
     def __repr__(self):
         return f"Test '{self.name}' ({self.test_category}): {self.description_json}"
