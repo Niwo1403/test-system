@@ -1,8 +1,15 @@
+// SurveyJS library initialisation & constants
+Survey.StylesManager.applyTheme("modern");
+const defaultLocale = "de";
+const surveyLocalization = Survey.surveyLocalization.locales[defaultLocale];  // surveyLocalization.pagePrevText, surveyLocalization.pageNextText
+const originalCompleteText = surveyLocalization.completeText;
+surveyLocalization.completeText = "Weiter";
+
+
+// tests & site state:
 let personId = null;
 let tests = null;
 let pre_collect_index = 0;
-
-Survey.StylesManager.applyTheme("modern");
 
 
 function displayError(responseText) {
@@ -36,6 +43,7 @@ function startTests() {
 
 function displaySurvey(test, respHandler) {
 	window.survey = new Survey.Model(test.description);
+    survey.locale = defaultLocale;
 	survey.onComplete.add(function (sender) {
         respHandler(sender.data, test.name);
     });
@@ -46,6 +54,7 @@ function displaySurvey(test, respHandler) {
 function displayNextSurvey() {
     const pre_collection_tests = tests["pre_collection_tests"];
     if (pre_collect_index >= pre_collection_tests.length) {
+        surveyLocalization.completeText = originalCompleteText;
         displaySurvey(tests["evaluable_test"], postEvaluableTest);
     } else {
         displaySurvey(pre_collection_tests[pre_collect_index], postPreCollectTest);
