@@ -23,7 +23,7 @@ function loadTestForPassedToken() {
                 displayError(this.responseText);
             }
         }
-        xhr.open("GET", API_PREFIX + "/tests/?token=" + INITIAL_TOKEN, true);
+        xhr.open("GET", buildApiUrl("tests/", true), true);
         xhr.send();
     }
 }
@@ -44,7 +44,6 @@ function displaySurvey(test, respHandler) {
 
 /** Used after personal data was collected, to load pre collect or evaluable test. */
 function displayNextSurvey() {
-
     const pre_collection_tests = tests["pre_collection_tests"];
     if (pre_collect_index >= pre_collection_tests.length) {
         displaySurvey(tests["evaluable_test"], postEvaluableTest);
@@ -71,21 +70,23 @@ function postAnswer(route, jsonAnswer, onSuccess) {
 }
 
 function postPerson(jsonAnswer, _) {
-    postAnswer(API_PREFIX + "/person/?token=" + INITIAL_TOKEN, jsonAnswer, function (responseText) {
+    postAnswer(buildApiUrl("person/", true), jsonAnswer, function (responseText) {
         personId = JSON.parse(responseText);
         displayNextSurvey();
     });
 }
 
 function postPreCollectTest(jsonAnswer, testName) {
-    postAnswer(API_PREFIX + "/test-answer/?test-name=" + testName + "&person-id=" + personId,
+    postAnswer(buildApiUrl("test-answer/", false,
+            {"test-name": testName, "person-id": personId}),
         jsonAnswer, function (_) { displayNextSurvey(); });
 }
 
-function postEvaluableTest(jsonAnswer, _) {
-    postAnswer(API_PREFIX + "/test-answer/?test-name=PreCol&person-id=" + personId,
+function postEvaluableTest(jsonAnswer, testName) {
+    postAnswer(buildApiUrl("test-answer/", false, {"test-name": testName, "person-id": personId}),
         jsonAnswer, function (responseText) {
-        window.location.href = "/result.html?token=" + INITIAL_TOKEN + "&test-answer-id=" + responseText;
+        window.location.href = buildUrl("result.html", true,
+            {"evaluable-test-answer-id": responseText});
     });
     pre_collect_index = 0;
 }
