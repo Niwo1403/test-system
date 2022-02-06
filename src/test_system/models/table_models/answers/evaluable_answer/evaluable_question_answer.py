@@ -22,9 +22,9 @@ class EvaluableQuestionAnswer(db.Model):  # belongs to EvaluableTestAnswer
         for question_category, category_answers in answer_set.items():
             for question_name, answer_value in category_answers.items():
                 question_name_id = EvaluableQuestionName.get_id_for(question_category, question_name)
-                evaluable_question_answer = EvaluableQuestionAnswer(value=answer_value,
-                                                                    question_name_id=question_name_id,
-                                                                    test_answer_id=evaluable_answer_id)
+                evaluable_question_answer = cls(value=answer_value,
+                                                evaluable_question_name_id=question_name_id,
+                                                evaluable_test_answer_id=evaluable_answer_id)
                 answers.append(evaluable_question_answer)
         return answers
 
