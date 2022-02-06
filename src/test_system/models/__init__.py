@@ -76,17 +76,54 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
         ]
     }, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
     pers_test = Test(name="PersTest", description_json={
-        "title": "Persöhnlichkeitstest",
+        "title": "Persöhnliche Daten",
+        "description": "Matrix Test",
         "logoPosition": "right",
         "pages": [
             {
                 "name": "page1",
                 "elements": [
                     {
-                        "type": "text",
-                        "name": "result",
-                        "title": "Lorem ipsum",
-                        "isRequired": True
+                        "type": "matrix",
+                        "name": "ABC",
+                        "title": "Kategorie ABC",
+                        "isRequired": True,
+                        "columns": [
+                            {
+                                "value": "1",
+                                "text": "tgnz"
+                            },
+                            {
+                                "value": "2",
+                                "text": "tnz"
+                            },
+                            {
+                                "value": "3",
+                                "text": "ttz"
+                            },
+                            {
+                                "value": "4",
+                                "text": "tz"
+                            },
+                            {
+                                "value": "5",
+                                "text": "tvz"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "value": "Row 1",
+                                "text": "Frage 1"
+                            },
+                            {
+                                "value": "Row 2",
+                                "text": "Frage 2"
+                            },
+                            {
+                                "value": "Row 3",
+                                "text": "Frage 3"
+                            }
+                        ]
                     }
                 ]
             }
