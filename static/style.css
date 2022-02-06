@@ -1,11 +1,10 @@
+button {
+	cursor: pointer;
+}
+
 form {
 	text-align: left;
-	margin: 20vh auto;
-	padding: 5vh 5vh;
-	width: 50%;
 	font-size: calc(120px - 6vw);
-	border-radius: 20px;
-	background-color: #e0e0e0;
 }
 
 input[type="submit"] {
@@ -29,6 +28,21 @@ form > textarea {
 
 #error-frame {
 	display: none;
+	text-align: center;
+	font-size: calc(70px - 4vw);
+}
+
+#error-button {
+	margin: 3vh;
+	font-size: calc(100px - 6vw);
+}
+
+.centered-gray-container {
+	margin: 20vh auto;
+	padding: 5vh 5vh;
+	width: 50%;
+	border-radius: 20px;
+	background-color: #e0e0e0;
 }
 
 #test-element {
