@@ -4,7 +4,7 @@ from .database import _create_tables_if_not_exist, db
 
 _create_tables_if_not_exist()  # must be run after import of models ("from .table_models import *")
 
-# TODO: remove in production:
+
 if User.query.first() is None:  # if no user exist, assume database is empty & create development examples
     default_user = User(username="admin", password="admin")
     person_test = Test(name="Person", description_json={
