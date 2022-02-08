@@ -37,14 +37,6 @@ form > textarea {
 	font-size: calc(100px - 6vw);
 }
 
-.centered-gray-container {
-	margin: 20vh auto;
-	padding: 5vh 5vh;
-	width: 50%;
-	border-radius: 20px;
-	background-color: #e0e0e0;
-}
-
 #test-element {
 	width: 100%;
 }
@@ -66,4 +58,18 @@ form > textarea {
 
 .child-align-center {
 	text-align: center;
+}
+
+.centered-gray-container {
+	margin: 20vh auto;
+	padding: 5vh 5vh;
+	width: 50%;
+	border-radius: 20px;
+	background-color: #e0e0e0;
+}
+
+.loading-background {
+	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg">\
+		<text y="30" font-size="30">Lade Zertifikat...</text>\
+		</svg>');
 }
