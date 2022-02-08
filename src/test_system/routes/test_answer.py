@@ -1,5 +1,6 @@
 # std
 from json import loads as json_loads
+from json.decoder import JSONDecodeError
 # 3rd party
 from flask import request, abort
 from schema import Schema, Or, SchemaError
@@ -29,12 +30,14 @@ def post_test_answer():
     if person is None:
         abort(404, "Person doesn't exist.")  # Person not found
 
-    answer_set = json_loads(request.data.decode())
-    if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
-        try:
+    try:
+        answer_set = json_loads(request.data.decode())
+        if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
             EVALUABLE_TEST_SCHEMA.validate(answer_set)
-        except SchemaError:
-            abort(400, "Data validation failed.")
+    except (JSONDecodeError, TypeError):
+        return abort(400, "Data validation failed, wrong JSON.")
+    except SchemaError:
+        return abort(400, "Data validation failed.")
 
     answer = TestAnswer(date=db.func.now(), answer_set=answer_set, test_name=test_name, person_id=person.id)
     db.session.add(answer)

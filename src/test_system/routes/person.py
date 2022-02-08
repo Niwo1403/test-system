@@ -1,5 +1,6 @@
 # std
 from json import loads as json_loads
+from json.decoder import JSONDecodeError
 # 3rd party
 from flask import request, abort
 from schema import Schema, And, Use, Optional, Or, SchemaError
@@ -18,11 +19,13 @@ ROUTE = f"{API_PREFIX}/person/"  # as variable for tests
 
 @app.route(ROUTE, methods=['POST'])
 def post_person():
-    personal_data = json_loads(request.data.decode())
     try:
-        personal_data = PERSONA_DATA_SCHEMA.validate(personal_data)
+        personal_data = json_loads(request.data.decode())
+        PERSONA_DATA_SCHEMA.validate(personal_data)
+    except (JSONDecodeError, TypeError):
+        return abort(400, "Data validation failed, wrong JSON.")
     except SchemaError:
-        abort(400, "Data validation failed.")
+        return abort(400, "Data validation failed.")
 
     person = Person(name=personal_data["name"],
                     gender=personal_data["gender"],
