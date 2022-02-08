@@ -20,6 +20,9 @@ class EvaluableQuestionAnswer(db.Model):  # belongs to EvaluableTestAnswer
         evaluable_answer_id = evaluable_answer.id
         answers = []
         for question_category, category_answers in answer_set.items():
+            if type(category_answers) is str:  # if answer is str, name is question_category and category is None
+                category_answers = {question_category: category_answers}
+                question_category = None
             for question_name, answer_value in category_answers.items():
                 question_name_id = EvaluableQuestionName.get_id_for(question_category, question_name)
                 evaluable_question_answer = cls(value=answer_value,

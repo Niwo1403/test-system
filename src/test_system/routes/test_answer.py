@@ -2,10 +2,13 @@
 from json import loads as json_loads
 # 3rd party
 from flask import request, abort
+from schema import Schema, Or, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
 from test_system.models import db, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
+
+EVALUABLE_TEST_SCHEMA = Schema({str: Or(str, {str: str})})
 
 ROUTE = f'{API_PREFIX}/test-answer/'
 
@@ -27,6 +30,11 @@ def post_test_answer():
         abort(404, "Person doesn't exist.")  # Person not found
 
     answer_set = json_loads(request.data.decode())
+    if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
+        try:
+            EVALUABLE_TEST_SCHEMA.validate(answer_set)
+        except SchemaError:
+            abort(400, "Data validation failed.")
 
     answer = TestAnswer(date=db.func.now(), answer_set=answer_set, test_name=test_name, person_id=person.id)
     db.session.add(answer)
