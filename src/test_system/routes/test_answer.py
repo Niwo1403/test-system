@@ -33,7 +33,7 @@ def post_test_answer():
     try:
         answer_set = json_loads(request.data.decode())
         if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
-            EVALUABLE_TEST_SCHEMA.validate(answer_set)
+            answer_set = EVALUABLE_TEST_SCHEMA.validate(answer_set)
     except (JSONDecodeError, TypeError):
         return abort(400, "Data validation failed, wrong JSON.")
     except SchemaError:

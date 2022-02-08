@@ -21,7 +21,7 @@ ROUTE = f"{API_PREFIX}/person/"  # as variable for tests
 def post_person():
     try:
         personal_data = json_loads(request.data.decode())
-        PERSONA_DATA_SCHEMA.validate(personal_data)
+        personal_data = PERSONA_DATA_SCHEMA.validate(personal_data)
     except (JSONDecodeError, TypeError):
         return abort(400, "Data validation failed, wrong JSON.")
     except SchemaError:
