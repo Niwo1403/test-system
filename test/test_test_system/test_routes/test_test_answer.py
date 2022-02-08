@@ -9,7 +9,7 @@ from test_system.routes.test_answer import ROUTE
 
 test_answer = {"Question A": "Answer A"}
 test_answer_json = json_dumps(test_answer)
-evaluable_test_answer = {"Category A": {"Row 1": 1, "Row 2": 2}, "Category B": {"Row 1": 3, "Row 2": 4}}
+evaluable_test_answer = {"Category A": {"Row 1": "1", "Row 2": "2"}, "Category B": {"Row 1": "3", "Row 2": "4"}}
 evaluable_test_answer_json = json_dumps(evaluable_test_answer)
 
 
@@ -75,9 +75,24 @@ def test_post_test_answer__with_success(client, session, person, pre_collect_tes
 
 def test_post_test_answer__with_bad_request(client, session, raise_if_change_in_tables,
                                             person, pre_collect_test, evaluable_test):
-    test_arguments = [(test_answer_json, {"person-id": person.id}),
+    correct_query_string = {"test-name": evaluable_test.name, "person-id": person.id}
+    test_arguments = [
+                      # missing argument
+                      (test_answer_json, {"person-id": person.id}),
                       (evaluable_test_answer_json, {"test-name": evaluable_test.name}),
-                      (test_answer_json, {"test-name": pre_collect_test.name})]
+                      (test_answer_json, {"test-name": pre_collect_test.name}),
+                      # invalid JSON
+                      ("", correct_query_string),
+                      ("{", correct_query_string),
+                      ("{true: \"3\"}", correct_query_string),
+                      ("{'true': \"3\"}", correct_query_string)]
+
+    wrong_schema_data = [
+                         # wrong value; str value
+                         {"2": {}}, {"2": True}, {"2": None},
+                         # wrong second value; dict value
+                         {"category": {"Row 1": {}}}, {"category": {"Row 1": True}}, {"category": {"Row 1": None}}]
+    test_arguments += list(map(lambda wrong_data: (json_dumps(wrong_data), correct_query_string), wrong_schema_data))
 
     with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
         for data, query_string in test_arguments:
