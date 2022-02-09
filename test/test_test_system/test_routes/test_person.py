@@ -42,7 +42,7 @@ def test_post_person__with_bad_request(client: FlaskClient,
         test_cases[k] = json_dumps(v)
     test_cases.update({
         "data with wrong json (missing })": '{"name": "Max M.", "age": 20, "gender": "s", "position": "POS" ',
-        "data with wrong json (wrong key)": '{"name": "Max M.", "age": 20, "gender": "s", null: "POS"}'})
+        "data with wrong json (wrong key type)": '{"name": "Max M.", "age": 20, "gender": "s", null: "POS"}'})
 
     with raise_if_change_in_tables(Person):
         for data_name, test_data in test_cases.items():
