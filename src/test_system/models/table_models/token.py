@@ -3,6 +3,7 @@ from hashlib import sha3_512
 from datetime import datetime
 from typing import List
 # custom
+from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT
 from test_system.models.database import db
 from .answers import EvaluableTestAnswer
 
@@ -25,14 +26,24 @@ class Token(db.Model):
                        personal_data_test_name: str,
                        pre_collection_test_names: List[str],
                        evaluable_test_name: str) -> "Token":
-        now = datetime.now()
-        token_seed = str(now).encode()
-        token_hash = sha3_512(token_seed).hexdigest()
+        for _ in range(MAX_HASH_GENERATION_TRY_COUNT):
+            token_hash = cls._generate_hash()
+            if cls.query.filter_by(token=token_hash).first() is None:
+                break
+        else:
+            raise RuntimeError(f"Couldn't generate an unknown hash within {MAX_HASH_GENERATION_TRY_COUNT} tries.")
         return cls(token=token_hash,
                    max_usage_count=max_usage_count,
                    personal_data_test_name=personal_data_test_name,
                    pre_collection_test_names=pre_collection_test_names,
                    evaluable_test_name=evaluable_test_name)
+
+    @staticmethod
+    def _generate_hash() -> str:
+        now = datetime.now()
+        token_seed = str(now).encode()
+        token_hash = sha3_512(token_seed).hexdigest()
+        return token_hash
 
     def __repr__(self):
         return (f"Token '{self.token}' ("

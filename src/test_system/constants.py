@@ -30,6 +30,8 @@ APP_CONFIG = {
     'SQLALCHEMY_ECHO': False  # if true, all statements will be logged - maybe useful for debugging
 }
 
+MAX_HASH_GENERATION_TRY_COUNT = 1000
+
 
 # certificate pdf
 
