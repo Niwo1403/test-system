@@ -6,6 +6,7 @@ from typing import List
 from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT
 from test_system.models.database import db
 from .answers import EvaluableTestAnswer
+from .test import Test
 
 
 class Token(db.Model):
@@ -64,3 +65,9 @@ class Token(db.Model):
         self.max_usage_count -= 1
         db.session.commit()
         self.is_expired(remove_if_expired=True)
+
+    def get_pre_collect_tests(self) -> List[Test]:
+        possible_pre_collect_tests = [Test.query.filter_by(name=pre_collect_test_name).first()
+                                      for pre_collect_test_name in self.pre_collection_test_names]
+        pre_collect_tests = list(filter(lambda test: test is not None, possible_pre_collect_tests))
+        return pre_collect_tests

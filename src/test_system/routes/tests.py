@@ -25,19 +25,16 @@ def get_tests():
     Test.assert_test_existence_and_category(personal_data_test, Test.CATEGORIES.PERSONAL_DATA_TEST)
     evaluable_test = token.evaluable_test
     Test.assert_test_existence_and_category(evaluable_test, Test.CATEGORIES.EVALUABLE_TEST)
+    pre_collect_tests = token.get_pre_collect_tests()
 
-    possible_pre_collection_tests: List[Optional[Test]] = [Test.query.filter_by(name=pre_collect_test_name).first()
-                                                           for pre_collect_test_name in token.pre_collection_test_names]
-    pre_collection_tests: List[Test] = list(filter(lambda test: test is not None, possible_pre_collection_tests))
-
-    pre_collection_test_names = ', '.join(test.name for test in pre_collection_tests)
+    pre_collect_test_names = ', '.join(test.name for test in pre_collect_tests)
     app.logger.info(f"Requested personal data test '{personal_data_test.name}', "
-                    f"pre collection tests '{pre_collection_test_names}' "
+                    f"pre collect tests '{pre_collect_test_names}' "
                     f"and evaluable test '{evaluable_test.name}' with token '{token.token}'")
 
     tests = {
         "personal_data_test": personal_data_test.get_named_description_dict(),
-        "pre_collection_tests": [test.get_named_description_dict() for test in pre_collection_tests],
+        "pre_collection_tests": [test.get_named_description_dict() for test in pre_collect_tests],
         "evaluable_test": evaluable_test.get_named_description_dict()
     }
     tests_json = json.dumps(tests)
