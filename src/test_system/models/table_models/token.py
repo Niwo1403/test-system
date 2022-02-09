@@ -15,7 +15,7 @@ class Token(db.Model):
     token = db.Column(db.String, primary_key=True)
     max_usage_count = db.Column(db.Integer)
     personal_data_test_name = db.Column(db.String, db.ForeignKey("test.name"))
-    pre_collection_test_names = db.Column(db.ARRAY(db.String))  # references name (column) from test (table)
+    pre_collect_test_names = db.Column(db.ARRAY(db.String))  # references name (column) from test (table)
     evaluable_test_name = db.Column(db.String, db.ForeignKey("test.name"))
 
     personal_data_test = db.relationship("Test", foreign_keys=[personal_data_test_name])
@@ -25,7 +25,7 @@ class Token(db.Model):
     def generate_token(cls,
                        max_usage_count: int,
                        personal_data_test_name: str,
-                       pre_collection_test_names: List[str],
+                       pre_collect_test_names: List[str],
                        evaluable_test_name: str) -> "Token":
         for _ in range(MAX_HASH_GENERATION_TRY_COUNT):
             token_hash = cls._generate_hash()
@@ -36,7 +36,7 @@ class Token(db.Model):
         return cls(token=token_hash,
                    max_usage_count=max_usage_count,
                    personal_data_test_name=personal_data_test_name,
-                   pre_collection_test_names=pre_collection_test_names,
+                   pre_collect_test_names=pre_collect_test_names,
                    evaluable_test_name=evaluable_test_name)
 
     @staticmethod
@@ -49,7 +49,7 @@ class Token(db.Model):
     def __repr__(self):
         return (f"Token '{self.token}' ("
                 f"personal data test: {self.personal_data_test_name}, "
-                f"pre collection Tests: {self.pre_collection_test_names}, "
+                f"pre collect Tests: {self.pre_collect_test_names}, "
                 f"evaluable test: {self.evaluable_test_name}, "
                 f"usages: {self.max_usage_count})")
 
@@ -68,6 +68,6 @@ class Token(db.Model):
 
     def get_pre_collect_tests(self) -> List[Test]:
         possible_pre_collect_tests = [Test.query.filter_by(name=pre_collect_test_name).first()
-                                      for pre_collect_test_name in self.pre_collection_test_names]
+                                      for pre_collect_test_name in self.pre_collect_test_names]
         pre_collect_tests = list(filter(lambda test: test is not None, possible_pre_collect_tests))
         return pre_collect_tests

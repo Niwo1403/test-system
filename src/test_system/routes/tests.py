@@ -1,6 +1,5 @@
 # std
 import json
-from typing import List, Optional
 # 3rd party
 from flask import request, abort
 # custom
@@ -34,7 +33,7 @@ def get_tests():
 
     tests = {
         "personal_data_test": personal_data_test.get_named_description_dict(),
-        "pre_collection_tests": [test.get_named_description_dict() for test in pre_collect_tests],
+        "pre_collect_tests": [test.get_named_description_dict() for test in pre_collect_tests],
         "evaluable_test": evaluable_test.get_named_description_dict()
     }
     tests_json = json.dumps(tests)

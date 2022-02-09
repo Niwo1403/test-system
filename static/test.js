@@ -52,12 +52,12 @@ function displaySurvey(test, respHandler) {
 
 /** Used after personal data was collected, to load pre collect or evaluable test. */
 function displayNextSurvey() {
-    const pre_collection_tests = tests["pre_collection_tests"];
-    if (pre_collect_index >= pre_collection_tests.length) {
+    const pre_collect_tests = tests["pre_collect_tests"];
+    if (pre_collect_index >= pre_collect_tests.length) {
         surveyLocalization.completeText = originalCompleteText;
         displaySurvey(tests["evaluable_test"], postEvaluableTest);
     } else {
-        displaySurvey(pre_collection_tests[pre_collect_index], postPreCollectTest);
+        displaySurvey(pre_collect_tests[pre_collect_index], postPreCollectTest);
         pre_collect_index++;
     }
 }

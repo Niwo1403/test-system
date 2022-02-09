@@ -132,7 +132,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
     test_token = Token(token="asdf",
                        max_usage_count=2,
                        personal_data_test_name="Person",
-                       pre_collection_test_names=["PreCol", "PreCol"],
+                       pre_collect_test_names=["PreCol", "PreCol"],
                        evaluable_test_name="PersTest")
     db.session.add_all((default_user, person_test, pre_collect_test, pers_test, test_token))
     db.session.commit()
