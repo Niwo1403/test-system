@@ -7,7 +7,7 @@ from test_system.models import Token
 from test_system.routes.token import ROUTE
 
 
-def test_post_token__with_success(client: FlaskClient, username: str, password: str, test_names):
+def test_post_token__with_success(client: FlaskClient, session, username: str, password: str, test_names):
     max_usage_count = 10
     query_string = {"username": username,
                     "password": password,

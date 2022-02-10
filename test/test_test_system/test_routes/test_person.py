@@ -1,11 +1,10 @@
 # std
 from json import dumps as json_dumps
-from typing import Callable, ContextManager
 # 3rd party
 from flask.testing import FlaskClient
 # custom
 from test_system.routes.person import ROUTE
-from test_system.models import Person, db
+from test_system.models import Person
 
 
 def test_post_person__with_success(client: FlaskClient):
@@ -28,8 +27,7 @@ def test_post_person__with_success(client: FlaskClient):
         assert db_data == test_data, "Person written to database, got wrong data"
 
 
-def test_post_person__with_bad_request(client: FlaskClient,
-                                       raise_if_change_in_tables: Callable[[db.Model], ContextManager]):
+def test_post_person__with_bad_request(client: FlaskClient, raise_if_change_in_tables):
     test_cases = {
         "data with no name": {"age": 18, "gender": "s", "position": "POS"},
         "data with no age": {"name": "", "gender": "s", "position": "POS"},
