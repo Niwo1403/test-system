@@ -108,3 +108,13 @@ def session(request):
     request.addfinalizer(teardown_db_connection)
 
     return session
+
+
+@fixture()
+def username():
+    return "admin"
+
+
+@fixture()
+def password():
+    return "admin"
