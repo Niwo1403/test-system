@@ -13,7 +13,7 @@ from test_system.routes.tests import ROUTE
 def token(session, test_names) -> Token:
     token = Token.generate_token(10,
                                  test_names["PERSONAL_DATA_TEST"],
-                                 test_names["PRE_COLLECT_TEST"],
+                                 test_names["PRE_COLLECT_TESTS"],
                                  test_names["EVALUABLE_TEST"])
     session.add(token)
     session.commit()
@@ -24,7 +24,7 @@ def token(session, test_names) -> Token:
 def no_use_token(session, test_names) -> Token:
     no_use_token = Token.generate_token(0,
                                         test_names["PERSONAL_DATA_TEST"],
-                                        test_names["PRE_COLLECT_TEST"],
+                                        test_names["PRE_COLLECT_TESTS"],
                                         test_names["EVALUABLE_TEST"])
     session.add(no_use_token)
     session.commit()
@@ -34,8 +34,8 @@ def no_use_token(session, test_names) -> Token:
 @fixture()
 def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
-        Token.generate_token(10, None, test_names["PRE_COLLECT_TEST"], test_names["EVALUABLE_TEST"]),
-        Token.generate_token(10, test_names["PERSONAL_DATA_TEST"], test_names["PRE_COLLECT_TEST"], None)]
+        Token.generate_token(10, None, test_names["PRE_COLLECT_TESTS"], test_names["EVALUABLE_TEST"]),
+        Token.generate_token(10, test_names["PERSONAL_DATA_TEST"], test_names["PRE_COLLECT_TESTS"], None)]
     session.add_all(unknown_test_tokens)
     session.commit()
     return unknown_test_tokens
@@ -45,7 +45,7 @@ def unknown_test_tokens(session, test_names) -> List[Token]:
 def wrong_test_tokens(session, test_names) -> List[Token]:
     personal_data_test = test_names["PERSONAL_DATA_TEST"]
     evaluable_test = test_names["EVALUABLE_TEST"]
-    pre_collect_tests = test_names["PRE_COLLECT_TEST"]
+    pre_collect_tests = test_names["PRE_COLLECT_TESTS"]
     wrong_test_tokens = [
         Token.generate_token(10, evaluable_test, pre_collect_tests, evaluable_test),
         Token.generate_token(10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
@@ -64,8 +64,8 @@ def test_get_tests__with_success(client: FlaskClient, raise_if_change_in_tables,
     resp_tests = json_loads(resp.data.decode())
     resp_test_names = {
         "PERSONAL_DATA_TEST": resp_tests["personal_data_test"]["name"],
-        "PRE_COLLECT_TEST": [pre_collect_test_description["name"]
-                             for pre_collect_test_description in resp_tests["pre_collect_tests"]],
+        "PRE_COLLECT_TESTS": [pre_collect_test_description["name"]
+                              for pre_collect_test_description in resp_tests["pre_collect_tests"]],
         "EVALUABLE_TEST": resp_tests["evaluable_test"]["name"]
     }
 

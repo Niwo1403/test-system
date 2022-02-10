@@ -22,7 +22,7 @@ app.config['TESTING'] = True
 def test_names():
     return {
         "PERSONAL_DATA_TEST": "Person",
-        "PRE_COLLECT_TEST": ["PreCol", "PreCol"],
+        "PRE_COLLECT_TESTS": ["PreCol", "PreCol"],
         "EVALUABLE_TEST": "PersTest"
     }
 
