@@ -89,7 +89,7 @@ def session(request):
     connection = db.engine.connect()
     transaction = connection.begin()
 
-    session = db.create_scoped_session(options={"bind": connection, "binds": {}})
+    session = db.create_scoped_session(options={"bind": connection, "binds": {}, "expire_on_commit": False})
     db.session = session
 
     def teardown_db_connection():
