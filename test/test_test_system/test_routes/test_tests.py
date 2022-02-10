@@ -9,50 +9,43 @@ from test_system.models import Token, Test
 from test_system.routes.tests import ROUTE
 
 
-TEST_NAMES = {
-    "PERSONAL_DATA_TEST": "Person",
-    "PRE_COLLECT_TEST": ["PreCol", "PreCol"],
-    "EVALUABLE_TEST": "PersTest"
-}
-
-
 @fixture()
-def token(session) -> Token:
+def token(session, test_names) -> Token:
     token = Token.generate_token(10,
-                                 TEST_NAMES["PERSONAL_DATA_TEST"],
-                                 TEST_NAMES["PRE_COLLECT_TEST"],
-                                 TEST_NAMES["EVALUABLE_TEST"])
+                                 test_names["PERSONAL_DATA_TEST"],
+                                 test_names["PRE_COLLECT_TEST"],
+                                 test_names["EVALUABLE_TEST"])
     session.add(token)
     session.commit()
     return token
 
 
 @fixture()
-def no_use_token(session) -> Token:
+def no_use_token(session, test_names) -> Token:
     no_use_token = Token.generate_token(0,
-                                        TEST_NAMES["PERSONAL_DATA_TEST"],
-                                        TEST_NAMES["PRE_COLLECT_TEST"],
-                                        TEST_NAMES["EVALUABLE_TEST"])
+                                        test_names["PERSONAL_DATA_TEST"],
+                                        test_names["PRE_COLLECT_TEST"],
+                                        test_names["EVALUABLE_TEST"])
     session.add(no_use_token)
     session.commit()
     return no_use_token
 
 
 @fixture()
-def unknown_test_tokens(session) -> List[Token]:
+def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
-        Token.generate_token(10, None, TEST_NAMES["PRE_COLLECT_TEST"], TEST_NAMES["EVALUABLE_TEST"]),
-        Token.generate_token(10, TEST_NAMES["PERSONAL_DATA_TEST"], TEST_NAMES["PRE_COLLECT_TEST"], None)]
+        Token.generate_token(10, None, test_names["PRE_COLLECT_TEST"], test_names["EVALUABLE_TEST"]),
+        Token.generate_token(10, test_names["PERSONAL_DATA_TEST"], test_names["PRE_COLLECT_TEST"], None)]
     session.add_all(unknown_test_tokens)
     session.commit()
     return unknown_test_tokens
 
 
 @fixture()
-def wrong_test_tokens(session) -> List[Token]:
-    personal_data_test = TEST_NAMES["PERSONAL_DATA_TEST"]
-    evaluable_test = TEST_NAMES["EVALUABLE_TEST"]
-    pre_collect_tests = TEST_NAMES["PRE_COLLECT_TEST"]
+def wrong_test_tokens(session, test_names) -> List[Token]:
+    personal_data_test = test_names["PERSONAL_DATA_TEST"]
+    evaluable_test = test_names["EVALUABLE_TEST"]
+    pre_collect_tests = test_names["PRE_COLLECT_TEST"]
     wrong_test_tokens = [
         Token.generate_token(10, evaluable_test, pre_collect_tests, evaluable_test),
         Token.generate_token(10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
@@ -63,7 +56,7 @@ def wrong_test_tokens(session) -> List[Token]:
     return wrong_test_tokens
 
 
-def test_get_tests__with_success(client: FlaskClient, raise_if_change_in_tables, token: Token):
+def test_get_tests__with_success(client: FlaskClient, raise_if_change_in_tables, token: Token, test_names):
     with raise_if_change_in_tables(Token, Test):  # get request should not change data
         resp = client.get(ROUTE, query_string={"token": token.token})
     assert resp.status_code == 200, f"Can't GET tests from {ROUTE} with token: {token}"
@@ -76,7 +69,7 @@ def test_get_tests__with_success(client: FlaskClient, raise_if_change_in_tables,
         "EVALUABLE_TEST": resp_tests["evaluable_test"]["name"]
     }
 
-    assert resp_test_names == TEST_NAMES, f"Got tests with wrong names in response data at route {ROUTE} with {token}"
+    assert resp_test_names == test_names, f"Got tests with wrong names in response data at route {ROUTE} with {token}"
 
 
 def test_get_tests__with_bad_request(client: FlaskClient, raise_if_change_in_tables):

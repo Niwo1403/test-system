@@ -19,6 +19,15 @@ app.config['TESTING'] = True
 
 
 @fixture()
+def test_names():
+    return {
+        "PERSONAL_DATA_TEST": "Person",
+        "PRE_COLLECT_TEST": ["PreCol", "PreCol"],
+        "EVALUABLE_TEST": "PersTest"
+    }
+
+
+@fixture()
 def client():
     """
     Used as client to simulate the sending of a requests to the flask backend.
