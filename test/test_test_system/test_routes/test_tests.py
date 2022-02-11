@@ -56,7 +56,7 @@ def wrong_test_tokens(session, test_names) -> List[Token]:
     return wrong_test_tokens
 
 
-def test_get_tests__with_success(client: FlaskClient, raise_if_change_in_tables, token: Token, test_names):
+def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_in_tables, token: Token, test_names):
     with raise_if_change_in_tables(Token, Test):  # get request should not change data
         resp = client.get(ROUTE, query_string={"token": token.token})
     assert resp.status_code == 200, f"Can't GET tests from {ROUTE} with token: {token}"
@@ -72,7 +72,7 @@ def test_get_tests__with_success(client: FlaskClient, raise_if_change_in_tables,
     assert resp_test_names == test_names, f"Got tests with wrong names in response data at route {ROUTE} with {token}"
 
 
-def test_get_tests__with_bad_request(client: FlaskClient, raise_if_change_in_tables):
+def test_get_tests__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):
     test_query_strings = [
         {},
         {"token": None},
@@ -85,7 +85,7 @@ def test_get_tests__with_bad_request(client: FlaskClient, raise_if_change_in_tab
                                              f"with arguments: {query_string}")
 
 
-def test_get_tests__with_unauthorized_request(client: FlaskClient, raise_if_change_in_tables, no_use_token: Token):
+def test_get_tests__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables, no_use_token: Token):
     test_query_strings = [
         {"token": "UNKNOWN TOKEN"},
         {"token": no_use_token.token},
@@ -98,7 +98,7 @@ def test_get_tests__with_unauthorized_request(client: FlaskClient, raise_if_chan
                                              f"with arguments: {query_string}")
 
 
-def test_get_tests__with_unknown_test_in_token(client: FlaskClient, raise_if_change_in_tables,
+def test_get_tests__with_unknown_test_in_token(client: FlaskClient, session, raise_if_change_in_tables,
                                                unknown_test_tokens: List[Token]):
     with raise_if_change_in_tables(Token, Test):
         for unknown_test_token in unknown_test_tokens:
@@ -107,7 +107,7 @@ def test_get_tests__with_unknown_test_in_token(client: FlaskClient, raise_if_cha
                                              f"with unknown test in {unknown_test_token}")
 
 
-def test_get_tests__with_wrong_test_in_token(client: FlaskClient, raise_if_change_in_tables,
+def test_get_tests__with_wrong_test_in_token(client: FlaskClient, session, raise_if_change_in_tables,
                                              wrong_test_tokens: List[Token]):
     with raise_if_change_in_tables(Token, Test):
         for wrong_test_token in wrong_test_tokens:

@@ -7,7 +7,7 @@ from test_system.routes.person import ROUTE
 from test_system.models import Person
 
 
-def test_post_person__with_success(client: FlaskClient):
+def test_post_person__with_success(client: FlaskClient, session):
     test_cases = {
         "data with out position": {"name": "Max M.", "age": 18, "gender": "s"},
         "data with position": {"name": "Max M.", "age": 18, "gender": "s", "position": "POS"}
@@ -27,7 +27,7 @@ def test_post_person__with_success(client: FlaskClient):
         assert db_data == test_data, "Person written to database, got wrong data"
 
 
-def test_post_person__with_bad_request(client: FlaskClient, raise_if_change_in_tables):
+def test_post_person__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):
     test_cases = {
         "data with no name": {"age": 18, "gender": "s", "position": "POS"},
         "data with no age": {"name": "", "gender": "s", "position": "POS"},

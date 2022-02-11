@@ -2,6 +2,8 @@
 from json import dumps as json_dumps
 from typing import Dict
 from pytest import fixture
+# 3rd party
+from flask.testing import FlaskClient
 # custom
 from test_system.models import Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
 from test_system.routes.test_answer import ROUTE
@@ -45,7 +47,7 @@ def _assert_right_test_answer_data(answer: TestAnswer, person: Person, test: Tes
            answer.person_id == person.id, f"TestAnswer which was written to database has wrong data: {answer}"
 
 
-def test_post_test_answer__with_success(client, session, person, pre_collect_test, evaluable_test):
+def test_post_test_answer__with_success(client: FlaskClient, session, person, pre_collect_test, evaluable_test):
     pre_collect_resp = client.post(ROUTE,
                                    data=test_answer_json,
                                    query_string={"test-name": pre_collect_test.name, "person-id": person.id})
@@ -73,7 +75,7 @@ def test_post_test_answer__with_success(client, session, person, pre_collect_tes
         _assert_right_test_answer_data(answer, person, evaluable_test, evaluable_test_answer)
 
 
-def test_post_test_answer__with_bad_request(client, session, raise_if_change_in_tables,
+def test_post_test_answer__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,
                                             person, pre_collect_test, evaluable_test):
     correct_query_string = {"test-name": evaluable_test.name, "person-id": person.id}
     test_arguments = [
@@ -101,7 +103,8 @@ def test_post_test_answer__with_bad_request(client, session, raise_if_change_in_
                                              f"and data {data}")
 
 
-def test_post_test_answer__with_wrong_test(client, session, raise_if_change_in_tables, person, personal_data_test):
+def test_post_test_answer__with_wrong_test(client: FlaskClient, session, raise_if_change_in_tables,
+                                           person, personal_data_test):
     unknown_test_name = "?`?`?`?`?`?`?`?`?`?`?`?`?`?`?"
 
     with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
@@ -117,7 +120,7 @@ def test_post_test_answer__with_wrong_test(client, session, raise_if_change_in_t
                                          f"with wrong test category: {personal_data_test.name}")
 
 
-def test_post_test_answer__with_wrong_person(client, session, raise_if_change_in_tables,
+def test_post_test_answer__with_wrong_person(client: FlaskClient, session, raise_if_change_in_tables,
                                              pre_collect_test, evaluable_test):
     unknown_person_id = -1
     test_arguments = [(test_answer_json, {"test-name": pre_collect_test.name, "person-id": unknown_person_id}),
