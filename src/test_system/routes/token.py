@@ -18,7 +18,8 @@ def post_token():
     personal_data_test_name = request.args.get("personal-data-test-name", type=str)
     pre_collect_test_names = request.args.get("pre-collect-test-names", type=str)
     evaluable_test_name = request.args.get("evaluable-test-name", type=str)
-    if not all((personal_data_test_name, pre_collect_test_names, evaluable_test_name, username, password)):
+    if not all((personal_data_test_name, pre_collect_test_names, evaluable_test_name, username, password)) or \
+            max_usage_count is None:
         abort(400, "Argument missing or not valid.")
 
     user: User = User.query.filter_by(username=username).first()
