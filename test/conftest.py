@@ -13,7 +13,7 @@ load_dotenv(path_join(FILE_DIR, ".env"), override=True)  # load test env variabl
 
 # custom
 from test_system import app  # must not be at top of file
-from test_system.models import db
+from test_system.models import db, Token
 
 app.config['TESTING'] = True
 
@@ -118,3 +118,25 @@ def username():
 @fixture()
 def password():
     return "admin"
+
+
+@fixture()
+def token(session, test_names) -> Token:
+    token = Token.generate_token(10,
+                                 test_names["PERSONAL_DATA_TEST"],
+                                 test_names["PRE_COLLECT_TESTS"],
+                                 test_names["EVALUABLE_TEST"])
+    session.add(token)
+    session.commit()
+    return token
+
+
+@fixture()
+def no_use_token(session, test_names) -> Token:
+    no_use_token = Token.generate_token(0,
+                                        test_names["PERSONAL_DATA_TEST"],
+                                        test_names["PRE_COLLECT_TESTS"],
+                                        test_names["EVALUABLE_TEST"])
+    session.add(no_use_token)
+    session.commit()
+    return no_use_token

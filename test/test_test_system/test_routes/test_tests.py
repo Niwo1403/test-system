@@ -10,28 +10,6 @@ from test_system.routes.tests import ROUTE
 
 
 @fixture()
-def token(session, test_names) -> Token:
-    token = Token.generate_token(10,
-                                 test_names["PERSONAL_DATA_TEST"],
-                                 test_names["PRE_COLLECT_TESTS"],
-                                 test_names["EVALUABLE_TEST"])
-    session.add(token)
-    session.commit()
-    return token
-
-
-@fixture()
-def no_use_token(session, test_names) -> Token:
-    no_use_token = Token.generate_token(0,
-                                        test_names["PERSONAL_DATA_TEST"],
-                                        test_names["PRE_COLLECT_TESTS"],
-                                        test_names["EVALUABLE_TEST"])
-    session.add(no_use_token)
-    session.commit()
-    return no_use_token
-
-
-@fixture()
 def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
         Token.generate_token(10, None, test_names["PRE_COLLECT_TESTS"], test_names["EVALUABLE_TEST"]),
