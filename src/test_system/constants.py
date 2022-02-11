@@ -1,6 +1,10 @@
 # std
 import logging
 from os import environ
+from os.path import join as path_join, realpath, dirname
+
+
+FILE_DIR = dirname(realpath(__file__))
 
 
 # routes
@@ -43,7 +47,7 @@ class DefaultCertificateFonts:
 
 
 class DefaultCertificatePdfConfig:
-    LOGO_PATH = "../static/certificate_background.png"  # path relative to run.py
+    LOGO_PATH = path_join(FILE_DIR, "../../static/certificate_background.png")  # relative to this file
     TITLE = "Persöhnlichkeitstest Zertifikat"
     HEADER_BORDER = 1
     BODY_TEXT_ALIGN = "C"
