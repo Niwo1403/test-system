@@ -33,6 +33,6 @@ function backToLogin() {
 function loadResult() {
     const evaluableTestAnswerId = getArgumentFromUrl("evaluable-test-answer-id");
     const certificateView = document.getElementById("certificate-view");
-    certificateView.src = buildApiUrl("certificate/", true,
+    certificateView.data = buildApiUrl("certificate/", true,
         {"evaluable-test-answer-id": evaluableTestAnswerId});
 }
