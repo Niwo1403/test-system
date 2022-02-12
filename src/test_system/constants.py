@@ -47,7 +47,7 @@ class DefaultCertificateFonts:
 
 
 class DefaultCertificatePdfConfig:
-    LOGO_PATH = path_join(FILE_DIR, "../../static/certificate_background.png")  # relative to this file
+    LOGO_PATH = path_join(FILE_DIR, "../../static/img/certificate_background.png")  # relative to this file
     TITLE = "Persöhnlichkeitstest Zertifikat"
     HEADER_BORDER = 1
     BODY_TEXT_ALIGN = "C"
