@@ -140,3 +140,8 @@ def no_use_token(session, test_names) -> Token:
     session.add(no_use_token)
     session.commit()
     return no_use_token
+
+
+@fixture()
+def unknown_token_name() -> str:
+    return "UNKNOWN TOKEN"

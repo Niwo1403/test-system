@@ -63,9 +63,10 @@ def test_get_tests__with_bad_request(client: FlaskClient, session, raise_if_chan
                                              f"with arguments: {query_string}")
 
 
-def test_get_tests__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables, no_use_token: Token):
+def test_get_tests__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
+                                              unknown_token_name: str, no_use_token: Token):
     test_query_strings = [
-        {"token": "UNKNOWN TOKEN"},
+        {"token": unknown_token_name},
         {"token": no_use_token.token},
     ]
 
