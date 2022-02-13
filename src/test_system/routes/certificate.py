@@ -4,7 +4,7 @@ from io import BytesIO
 from flask import request, abort, send_file
 # custom
 from test_system import app
-from test_system.constants import API_PREFIX
+from test_system.constants import API_PREFIX, CERTIFICATE_MIMETYPE
 from test_system.models import EvaluableTestAnswer, Person, Token
 from test_system.managers.certificate_manager import CertificateManager
 
@@ -32,8 +32,9 @@ def get_certificate():
     if (token is None or token.is_expired()) and not evaluable_answer.was_evaluated_with_token:
         abort(401, "Token not found or invalid.")
 
-    cm = CertificateManager(evaluable_answer, person)
-    pdf_bytes = cm.generate_certificate()
+    cm = CertificateManager(person, evaluable_answer)
+    cm.add_data_to_certificate()
+    pdf = cm.get_pdf()
 
     if evaluable_answer.was_evaluated_with_token:
         app.logger.info(f"Regenerated certificate for {person}")
@@ -41,7 +42,5 @@ def get_certificate():
         token.use_for(evaluable_answer)
         app.logger.info(f"Generated certificate for {person} and used {token}")
 
-    return send_file(BytesIO(pdf_bytes),
-                     mimetype='application/pdf',
-                     as_attachment=download,
-                     download_name=f"Personality test certificate - {person.name}.pdf")
+    download_name = f"Personality test certificate - {person.name}.pdf"
+    return send_file(pdf, mimetype=CERTIFICATE_MIMETYPE, as_attachment=download, download_name=download_name)

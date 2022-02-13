@@ -55,3 +55,5 @@ class DefaultCertificatePdfConfig:
 
 DEFAULT_CERTIFICATE_FONTS = DefaultCertificateFonts
 DEFAULT_CERTIFICATE_PDF_CONFIG = DefaultCertificatePdfConfig
+
+CERTIFICATE_MIMETYPE = "application/pdf"
