@@ -56,6 +56,23 @@ def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnsw
     return unevaluated_evaluable_test_answer
 
 
+@fixture()
+def incomplete_evaluable_test_answers(session, test_names) -> List[EvaluableTestAnswer]:
+    test_answer = TestAnswer(date=db.func.now(),
+                             answer_set={},
+                             test_name=test_names["EVALUABLE_TEST"],
+                             person_id=None)
+    session.add(test_answer)
+    session.commit()
+    incomplete_evaluable_test_answers = [
+        EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=None),
+        EvaluableTestAnswer(was_evaluated_with_token=False, test_answer_id=None),
+        EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=test_answer.id),
+        EvaluableTestAnswer(was_evaluated_with_token=False, test_answer_id=test_answer.id)
+    ]
+    session.add_all(incomplete_evaluable_test_answers)
+    session.commit()
+    return incomplete_evaluable_test_answers
 
 
 @fixture()
@@ -100,3 +117,51 @@ def test_get_certificate__with_success(client: FlaskClient, session,
             PdfFileReader(BytesIO(resp.data))
         except PdfReadError as e:
             assert e is None, f"Got invalid pdf bytes from {ROUTE} for {evaluable_test_answer}"
+
+
+def test_get_certificate__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,
+                                           token: Token, evaluated_evaluable_test_answer: EvaluableTestAnswer,
+                                           unevaluated_evaluable_test_answer: EvaluableTestAnswer):
+    query_strings = [
+        {"evaluable-test-answer-id": evaluated_evaluable_test_answer.id},
+        {"evaluable-test-answer-id": evaluated_evaluable_test_answer.id, "token": None},
+        {"evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
+        {"evaluable-test-answer-id": unevaluated_evaluable_test_answer.id, "token": None},
+        {"token": token.token},
+        {"evaluable-test-answer-id": None, "token": token.token}
+    ]
+
+    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+        for query_string in query_strings:
+            resp = client.get(ROUTE, query_string=query_string)
+            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request "
+                                             f"with arguments: {query_string}")
+
+
+def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_if_change_in_tables,
+                                            token: Token, incomplete_evaluable_test_answers: List[EvaluableTestAnswer]):
+    query_strings = [
+        {"token": token.token, "evaluable-test-answer-id": str(incomplete_evaluable_test_answer.id)}
+        for incomplete_evaluable_test_answer in incomplete_evaluable_test_answers
+    ] + [{"token": token.token, "evaluable-test-answer-id": "-1"}]
+
+    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+        for query_string in query_strings:
+            resp = client.get(ROUTE, query_string=query_string)
+            assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for request with unknown data & "
+                                             f"with arguments: {query_string}")
+
+
+def test_get_certificate__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
+                                                    unknown_token_name: str, no_use_token: Token,
+                                                    unevaluated_evaluable_test_answer: EvaluableTestAnswer):
+    query_strings = [
+        {"token": unknown_token_name, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
+        {"token": no_use_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id}
+    ]
+
+    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+        for query_string in query_strings:
+            resp = client.get(ROUTE, query_string=query_string)
+            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request "
+                                             f"with arguments: {query_string}")
