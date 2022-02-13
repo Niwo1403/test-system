@@ -62,9 +62,9 @@ class Token(db.Model):
 
     def use_for(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
         evaluable_test_answer.was_evaluated_with_token = True
-        self.max_usage_count -= 1
-        db.session.commit()
-        self.is_expired(remove_if_expired=True)
+        if self.max_usage_count is not None:
+            self.max_usage_count -= 1
+            db.session.commit()
 
     def get_pre_collect_tests(self) -> List[Test]:
         possible_pre_collect_tests = [Test.query.filter_by(name=pre_collect_test_name).first()
