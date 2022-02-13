@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
 # custom
-from test_system.models import db, Person, TestAnswer, Token, EvaluableTestAnswer
+from test_system.models import db, Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
 from test_system.routes.certificate import ROUTE
 
 
@@ -30,20 +30,72 @@ def test_answer(session, token: Token, person: Person) -> TestAnswer:
     return test_answer
 
 
-@fixture()
-def evaluable_test_answers(session, test_answer) -> List[EvaluableTestAnswer]:
-    evaluable_test_answers = [EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=test_answer.id),
-                              EvaluableTestAnswer(was_evaluated_with_token=False, test_answer_id=test_answer.id)]
-    session.add_all(evaluable_test_answers)
+def _add_example_answers(session, evaluable_test_answer: EvaluableTestAnswer):
+    answers = EvaluableQuestionAnswer.create_answers({"CATEGORY A": {"QUESTION 1": "3", "QUESTION 2": "1"}},
+                                                     evaluable_test_answer)
+    session.add_all(answers)
     session.commit()
-    return evaluable_test_answers
 
 
-def test_get_certificate__with_success(client: FlaskClient, session, token: Token, evaluable_test_answers):
-    for evaluable_test_answer in evaluable_test_answers:
+@fixture()
+def evaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
+    evaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=test_answer.id)
+    session.add(evaluated_evaluable_test_answer)
+    session.commit()
+    _add_example_answers(session, evaluated_evaluable_test_answer)
+    return evaluated_evaluable_test_answer
+
+
+@fixture()
+def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
+    unevaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=False,
+                                                            test_answer_id=test_answer.id)
+    session.add(unevaluated_evaluable_test_answer)
+    session.commit()
+    _add_example_answers(session, unevaluated_evaluable_test_answer)
+    return unevaluated_evaluable_test_answer
+
+
+
+
+@fixture()
+def unlimited_token(session, test_names) -> Token:
+    unlimited_token = Token.generate_token(None,
+                                           test_names["PERSONAL_DATA_TEST"],
+                                           test_names["PRE_COLLECT_TESTS"],
+                                           test_names["EVALUABLE_TEST"])
+    session.add(unlimited_token)
+    session.commit()
+    return unlimited_token
+
+
+def test_get_certificate__with_success(client: FlaskClient, session,
+                                       token: Token, no_use_token: Token, unlimited_token: Token,
+                                       evaluated_evaluable_test_answer: EvaluableTestAnswer,
+                                       unevaluated_evaluable_test_answer: EvaluableTestAnswer):
+    test_cases = [(token, evaluated_evaluable_test_answer),
+                  (token, unevaluated_evaluable_test_answer),
+                  (unlimited_token, unevaluated_evaluable_test_answer),
+                  (no_use_token, evaluated_evaluable_test_answer)]
+
+    for token, evaluable_test_answer in test_cases:
+        pre_was_evaluated_with_token = evaluable_test_answer.was_evaluated_with_token
+        pre_max_usage_count = token.max_usage_count
         resp = client.get(ROUTE, query_string={"evaluable-test-answer-id": evaluable_test_answer.id,
                                                "token": token.token})
+
+        token = Token.query.filter_by(token=token.token).first()
+        evaluable_test_answer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer.id).first()
+        assert token is not None, f"Token was deleted while GET certificate request at {ROUTE}"
+        assert evaluable_test_answer is not None, ("EvaluableTestAnswer was deleted while GET certificate request "
+                                                   f"at {ROUTE}")
+
         assert resp.status_code == 200, f"Can't GET certificate from {ROUTE} with {evaluable_test_answer}"
+
+        assert token.max_usage_count == pre_max_usage_count if pre_was_evaluated_with_token \
+            else token.max_usage_count is None or token.max_usage_count + 1 == pre_max_usage_count, \
+            f"Got wrong max_usage_count after request with {token} & {evaluable_test_answer}"
+
         try:
             PdfFileReader(BytesIO(resp.data))
         except PdfReadError as e:
