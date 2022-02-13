@@ -46,14 +46,23 @@ def evaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer
     return evaluated_evaluable_test_answer
 
 
-@fixture()
-def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
+def _unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
     unevaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=False,
                                                             test_answer_id=test_answer.id)
     session.add(unevaluated_evaluable_test_answer)
     session.commit()
     _add_example_answers(session, unevaluated_evaluable_test_answer)
     return unevaluated_evaluable_test_answer
+
+
+@fixture()
+def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
+    return _unevaluated_evaluable_test_answer(session, test_answer)
+
+
+@fixture()
+def unevaluated_evaluable_test_answer_2(session, test_answer) -> EvaluableTestAnswer:
+    return _unevaluated_evaluable_test_answer(session, test_answer)
 
 
 @fixture()
@@ -89,10 +98,13 @@ def unlimited_token(session, test_names) -> Token:
 def test_get_certificate__with_success(client: FlaskClient, session,
                                        token: Token, no_use_token: Token, unlimited_token: Token,
                                        evaluated_evaluable_test_answer: EvaluableTestAnswer,
-                                       unevaluated_evaluable_test_answer: EvaluableTestAnswer):
+                                       unevaluated_evaluable_test_answer: EvaluableTestAnswer,
+                                       unevaluated_evaluable_test_answer_2: EvaluableTestAnswer):
     test_cases = [(token, evaluated_evaluable_test_answer),
                   (token, unevaluated_evaluable_test_answer),
-                  (unlimited_token, unevaluated_evaluable_test_answer),
+                  # EvaluableTestAnswers (like unevaluated_evaluable_test_answer) must NOT repeat,
+                  # since the unevaluated answers will be evaluated after first request!
+                  (unlimited_token, unevaluated_evaluable_test_answer_2),
                   (no_use_token, evaluated_evaluable_test_answer)]
 
     for token, evaluable_test_answer in test_cases:
