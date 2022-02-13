@@ -17,11 +17,9 @@ evaluable_test_answer_json = json_dumps(evaluable_test_answer)
 
 @fixture()
 def person(session) -> Person:
-    person = Person.query.filter_by(id=1).first()
-    if person is None:
-        person = Person(id=1, name="TestName", age=33, gender=Person.GENDERS.s)
-        session.add(person)
-        session.commit()
+    person = Person(name="TestName", age=33, gender=Person.GENDERS.s)
+    session.add(person)
+    session.commit()
     return person
 
 
