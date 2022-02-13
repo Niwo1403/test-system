@@ -44,4 +44,4 @@ def get_certificate():
     return send_file(BytesIO(pdf_bytes),
                      mimetype='application/pdf',
                      as_attachment=download,
-                     attachment_filename=f"Personality test certificate - {person.name}.pdf")
+                     download_name=f"Personality test certificate - {person.name}.pdf")

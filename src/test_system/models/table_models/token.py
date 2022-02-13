@@ -1,7 +1,7 @@
 # std
 from hashlib import sha3_512
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 # custom
 from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT
 from test_system.models.database import db
@@ -23,7 +23,7 @@ class Token(db.Model):
 
     @classmethod
     def generate_token(cls,
-                       max_usage_count: int,
+                       max_usage_count: Optional[int],
                        personal_data_test_name: str,
                        pre_collect_test_names: List[str],
                        evaluable_test_name: str) -> "Token":
