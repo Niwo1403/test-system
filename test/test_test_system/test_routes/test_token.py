@@ -73,7 +73,7 @@ def test_post_token__with_unauthorized_request(client: FlaskClient, session, rai
                                              f"with arguments: {query_string}")
 
 
-def test_get_tests__with_unknown_test_in_token(client: FlaskClient, session, raise_if_change_in_tables, correct_query_string):
+def test_post_token__with_unknown_test(client: FlaskClient, session, raise_if_change_in_tables, correct_query_string):
     unknown_test_query_strings = [
         _copy_with_update(correct_query_string, "personal-data-test-name", "UNKNOWN TEST"),
         _copy_with_update(correct_query_string, "evaluable-test-name", "UNKNOWN TEST")
@@ -86,8 +86,8 @@ def test_get_tests__with_unknown_test_in_token(client: FlaskClient, session, rai
                                              f"with arguments: {query_string}")
 
 
-def test_get_tests__with_wrong_test_in_token(client: FlaskClient, session, raise_if_change_in_tables,
-                                             correct_query_string, test_names):
+def test_post_token__with_wrong_test(client: FlaskClient, session, raise_if_change_in_tables,
+                                     correct_query_string, test_names):
     first_pre_collect_test = test_names["PRE_COLLECT_TESTS"][0]
     wrong_test_query_strings = [
         _copy_with_update(correct_query_string, "personal-data-test-name", test_names["EVALUABLE_TEST"]),
