@@ -28,6 +28,9 @@ PORT = 5000
 # database
 
 
+if environ["DATABASE_URL"].startswith("postgres://"):
+    environ["DATABASE_URL"] = environ["DATABASE_URL"].replace("postgres://", "postgresql://", 1)
+
 APP_CONFIG = {
     'SQLALCHEMY_DATABASE_URI': environ["DATABASE_URL"],
     'SQLALCHEMY_TRACK_MODIFICATIONS': False,
