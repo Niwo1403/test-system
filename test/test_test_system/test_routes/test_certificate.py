@@ -20,7 +20,14 @@ def person(session) -> Person:
 
 
 @fixture()
-def test_answer(session, token: Token, person: Person) -> TestAnswer:
+def person_with_position(session) -> Person:
+    person = Person(name="TestName", age=33, gender=Person.GENDERS.s, position="POSITION...")
+    session.add(person)
+    session.commit()
+    return person
+
+
+def _test_answer(session, token: Token, person: Person) -> TestAnswer:
     test_answer = TestAnswer(date=db.func.now(),
                              answer_set={},
                              test_name=token.evaluable_test_name,
@@ -28,6 +35,16 @@ def test_answer(session, token: Token, person: Person) -> TestAnswer:
     session.add(test_answer)
     session.commit()
     return test_answer
+
+
+@fixture()
+def test_answer(session, token: Token, person: Person) -> TestAnswer:
+    return _test_answer(session, token, person)
+
+
+@fixture()
+def test_answer_2(session, token: Token, person_with_position: Person) -> TestAnswer:
+    return _test_answer(session, token, person_with_position)
 
 
 def _add_example_answers(session, evaluable_test_answer: EvaluableTestAnswer):
@@ -61,8 +78,8 @@ def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnsw
 
 
 @fixture()
-def unevaluated_evaluable_test_answer_2(session, test_answer) -> EvaluableTestAnswer:
-    return _unevaluated_evaluable_test_answer(session, test_answer)
+def unevaluated_evaluable_test_answer_2(session, test_answer_2) -> EvaluableTestAnswer:
+    return _unevaluated_evaluable_test_answer(session, test_answer_2)
 
 
 @fixture()
