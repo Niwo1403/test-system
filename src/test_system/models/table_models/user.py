@@ -6,8 +6,8 @@ from test_system.util import generate_hash, HASH_SEPARATOR
 class User(db.Model):
     __tablename__ = "user"
 
-    username = db.Column(db.String, primary_key=True)
-    password = db.Column(db.String)
+    username: db.Column = db.Column(db.String, primary_key=True)
+    password: db.Column = db.Column(db.String)
 
     def __init__(self, /, **kwargs):
         if "password" in kwargs and "username" in kwargs:

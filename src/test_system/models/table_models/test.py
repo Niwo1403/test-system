@@ -1,6 +1,6 @@
 # std
 from enum import Enum
-from typing import Dict, Union
+from typing import Dict, Union, List
 # 3rd party
 from flask import abort
 # custom
@@ -22,6 +22,10 @@ class Test(db.Model):
     test_category = db.Column(db.Enum(TestCategory))
 
     CATEGORIES = TestCategory
+
+    @classmethod
+    def get_test_names_of_category(cls, test_category: CATEGORIES) -> List[str]:
+        return [row[0] for row in cls.query.filter_by(test_category=test_category).values(Test.name)]
 
     @classmethod
     def get_category_test_or_abort(cls, test_name: str, assert_category: TestCategory,
