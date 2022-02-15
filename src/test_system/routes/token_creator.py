@@ -32,7 +32,8 @@ def get_token_creator():
                         "name": Test.CATEGORIES.PRE_COLLECT_TEST.name,
                         "title": "Zusatz Informationen",
                         "columns": [{"name": "tests", "title": "Mehrere möglich"}],
-                        "choices": pre_collect_test_names + evaluable_test_names
+                        "choices": pre_collect_test_names + evaluable_test_names,
+                        "rowCount": 1
                     },
                     {
                         "type": "dropdown",
@@ -40,6 +41,13 @@ def get_token_creator():
                         "title": "Automatisch auswertbarer Test",
                         "isRequired": True,
                         "choices": evaluable_test_names
+                    },
+                    {
+                        "type": "text",
+                        "name": "max_usage_count",
+                        "title": "Maximale Nutzungen (leer lassen für unbegrenzte Nutzung)",
+                        "inputType": "number",
+                        "min": 0
                     },
                     {
                         "type": "text",
