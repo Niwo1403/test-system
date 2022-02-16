@@ -13,7 +13,7 @@ class TestCategory(Enum):
     PRE_COLLECT_TEST = "pre collect"
     EVALUABLE_TEST = "evaluable"
     # only for API:
-    PRE_COLLECT_TESTS = "pre collect"
+    PRE_COLLECT_TESTS = ""
 
 
 class Test(db.Model):

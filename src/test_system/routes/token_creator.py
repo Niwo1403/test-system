@@ -29,7 +29,7 @@ def get_token_creator():
                     },
                     {
                         "type": "matrixdynamic",
-                        "name": Test.CATEGORIES.PRE_COLLECT_TEST.name,
+                        "name": Test.CATEGORIES.PRE_COLLECT_TESTS.name,
                         "title": "Zusatz Informationen",
                         "columns": [{"name": "tests", "title": "Mehrere möglich"}],
                         "choices": pre_collect_test_names + evaluable_test_names,
