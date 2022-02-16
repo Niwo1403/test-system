@@ -1,7 +1,8 @@
 # std
-from json import loads
+from json import loads as json_loads, JSONDecodeError
 # 3rd party
 from flask import request, abort
+from schema import Schema, And, Use, SchemaError, Optional
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
@@ -9,18 +10,31 @@ from test_system.models import db, Token, User, Test
 
 ROUTE = f'{API_PREFIX}/token/'
 
+TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, len),
+                            Optional(Test.CATEGORIES.PRE_COLLECT_TESTS.name, default=[]): [
+                                And(Use(lambda e: e["tests"]), str, len)],
+                            Test.CATEGORIES.EVALUABLE_TEST.name: And(str, len),
+                            Optional(Token.max_usage_count.key, default=None): And(int, lambda n: 0 <= n),
+                            User.username.key: And(str, len),
+                            User.password.key: And(str, len)})
+
 
 @app.route(ROUTE, methods=['POST'])
 def post_token():
-    username = request.args.get("username", type=str)
-    password = request.args.get("password", type=str)
-    max_usage_count = request.args.get("max-usage-count", type=int)
-    personal_data_test_name = request.args.get("personal-data-test-name", type=str)
-    pre_collect_test_names = request.args.get("pre-collect-test-names", type=str)
-    evaluable_test_name = request.args.get("evaluable-test-name", type=str)
-    if not all((personal_data_test_name, pre_collect_test_names, evaluable_test_name, username, password)) or \
-            max_usage_count is None:
-        abort(400, "Argument missing or not valid.")
+    try:
+        post_token_data = json_loads(request.data.decode())
+        post_token_data = TOKEN_DATA_SCHEMA.validate(post_token_data)
+    except (JSONDecodeError, TypeError):
+        return abort(400, "Data validation failed, wrong JSON.")
+    except SchemaError:
+        return abort(400, "Data validation failed.")
+
+    personal_data_test_name = post_token_data[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
+    pre_collect_test_names = post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name]
+    evaluable_test_name = post_token_data[Test.CATEGORIES.EVALUABLE_TEST.name]
+    max_usage_count = post_token_data[Token.max_usage_count.key]
+    username = post_token_data[User.username.key]
+    password = post_token_data[User.password.key]
 
     user: User = User.query.filter_by(username=username).first()
     if user is None or not user.validate_password(password):
@@ -34,7 +48,7 @@ def post_token():
 
     token = Token.generate_token(max_usage_count,
                                  personal_data_test_name,
-                                 loads(pre_collect_test_names),
+                                 pre_collect_test_names,
                                  evaluable_test_name)
     db.session.add(token)
     db.session.commit()

@@ -13,7 +13,7 @@ class Token(db.Model):
     __tablename__ = "token"
 
     token = db.Column(db.String, primary_key=True)
-    max_usage_count = db.Column(db.Integer)
+    max_usage_count: db.Column = db.Column(db.Integer)
     personal_data_test_name = db.Column(db.String, db.ForeignKey("test.name"))
     pre_collect_test_names = db.Column(db.ARRAY(db.String))  # references name (column) from test (table)
     evaluable_test_name = db.Column(db.String, db.ForeignKey("test.name"))
