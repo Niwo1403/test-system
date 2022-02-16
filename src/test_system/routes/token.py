@@ -23,6 +23,9 @@ TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, le
 def post_token():
     try:
         post_token_data = json_loads(request.data.decode())
+        if Test.CATEGORIES.PRE_COLLECT_TESTS.name in post_token_data:
+            post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name] = list(filter(
+                len, post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name]))
         post_token_data = TOKEN_DATA_SCHEMA.validate(post_token_data)
     except (JSONDecodeError, TypeError):
         return abort(400, "Data validation failed, wrong JSON.")
