@@ -13,7 +13,7 @@ load_dotenv(path_join(FILE_DIR, ".env"), override=True)  # load test env variabl
 
 # custom
 from test_system import app  # must not be at top of file
-from test_system.models import db, Token
+from test_system.models import db, Token, Test
 
 app.config['TESTING'] = True
 
@@ -21,9 +21,9 @@ app.config['TESTING'] = True
 @fixture()
 def test_names():
     return {
-        "PERSONAL_DATA_TEST": "Person",
-        "PRE_COLLECT_TESTS": ["PreCol", "PreCol"],
-        "EVALUABLE_TEST": "PersTest"
+        Test.CATEGORIES.PERSONAL_DATA_TEST.name: "Person",
+        Test.CATEGORIES.PRE_COLLECT_TEST.name: ["PreCol", "PreCol"],
+        Test.CATEGORIES.EVALUABLE_TEST.name: "PersTest"
     }
 
 
