@@ -9,13 +9,8 @@ from test_system.models import Token, User, Test
 from test_system.routes.token import ROUTE
 
 PRE_COLLECT_TESTS = Test.CATEGORIES.PRE_COLLECT_TESTS.name
-MANDATORY_KEYS = ["PERSONAL_DATA_TEST", "EVALUABLE_TEST", "username", "password"]
-
-
-def _copy_with_update(src: Dict, key: str, new_value=None) -> Dict:
-    copy = src.copy()
-    copy[key] = new_value
-    return copy
+MANDATORY_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EVALUABLE_TEST.name,
+                  User.username.key, User.password.key]
 
 
 @fixture()

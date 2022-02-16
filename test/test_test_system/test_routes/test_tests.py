@@ -12,8 +12,10 @@ from test_system.routes.tests import ROUTE
 @fixture()
 def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
-        Token.generate_token(10, None, test_names["PRE_COLLECT_TESTS"], test_names["EVALUABLE_TEST"]),
-        Token.generate_token(10, test_names["PERSONAL_DATA_TEST"], test_names["PRE_COLLECT_TESTS"], None)]
+        Token.generate_token(10, None, test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name],
+                             test_names[Test.CATEGORIES.EVALUABLE_TEST.name]),
+        Token.generate_token(10, test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
+                             test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name], None)]
     session.add_all(unknown_test_tokens)
     session.commit()
     return unknown_test_tokens
@@ -21,9 +23,9 @@ def unknown_test_tokens(session, test_names) -> List[Token]:
 
 @fixture()
 def wrong_test_tokens(session, test_names) -> List[Token]:
-    personal_data_test = test_names["PERSONAL_DATA_TEST"]
-    evaluable_test = test_names["EVALUABLE_TEST"]
-    pre_collect_tests = test_names["PRE_COLLECT_TESTS"]
+    personal_data_test = test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
+    evaluable_test = test_names[Test.CATEGORIES.EVALUABLE_TEST.name]
+    pre_collect_tests = test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name]
     wrong_test_tokens = [
         Token.generate_token(10, evaluable_test, pre_collect_tests, evaluable_test),
         Token.generate_token(10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
@@ -41,10 +43,10 @@ def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_i
 
     resp_tests = json_loads(resp.data.decode())
     resp_test_names = {
-        "PERSONAL_DATA_TEST": resp_tests["personal_data_test"]["name"],
-        "PRE_COLLECT_TESTS": [pre_collect_test_description["name"]
-                              for pre_collect_test_description in resp_tests["pre_collect_tests"]],
-        "EVALUABLE_TEST": resp_tests["evaluable_test"]["name"]
+        Test.CATEGORIES.PERSONAL_DATA_TEST.name: resp_tests["personal_data_test"]["name"],
+        Test.CATEGORIES.PRE_COLLECT_TESTS.name: [pre_collect_test_description["name"]
+                                                 for pre_collect_test_description in resp_tests["pre_collect_tests"]],
+        Test.CATEGORIES.EVALUABLE_TEST.name: resp_tests["evaluable_test"]["name"]
     }
 
     assert resp_test_names == test_names, f"Got tests with wrong names in response data at route {ROUTE} with {token}"

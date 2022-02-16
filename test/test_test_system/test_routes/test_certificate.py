@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
 # custom
-from test_system.models import db, Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
+from test_system.models import db, Token, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
 from test_system.routes.certificate import ROUTE
 
 
@@ -86,7 +86,7 @@ def unevaluated_evaluable_test_answer_2(session, test_answer_2) -> EvaluableTest
 def incomplete_evaluable_test_answers(session, test_names) -> List[EvaluableTestAnswer]:
     test_answer = TestAnswer(date=db.func.now(),
                              answer_set={},
-                             test_name=test_names["EVALUABLE_TEST"],
+                             test_name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name],
                              person_id=None)
     session.add(test_answer)
     session.commit()
@@ -104,9 +104,9 @@ def incomplete_evaluable_test_answers(session, test_names) -> List[EvaluableTest
 @fixture()
 def unlimited_token(session, test_names) -> Token:
     unlimited_token = Token.generate_token(None,
-                                           test_names["PERSONAL_DATA_TEST"],
-                                           test_names["PRE_COLLECT_TESTS"],
-                                           test_names["EVALUABLE_TEST"])
+                                           test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
+                                           test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name],
+                                           test_names[Test.CATEGORIES.EVALUABLE_TEST.name])
     session.add(unlimited_token)
     session.commit()
     return unlimited_token
