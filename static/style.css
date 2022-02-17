@@ -7,6 +7,10 @@ form {
 	font-size: calc(120px - 6vw);
 }
 
+a {
+	line-break: anywhere;
+}
+
 input[type="submit"] {
 	cursor: pointer;
 	border: 2px solid #555555;
@@ -29,7 +33,6 @@ form > textarea {
 #error-frame {
 	display: none;
 	text-align: center;
-	font-size: calc(70px - 4vw);
 }
 
 #error-button {
@@ -52,6 +55,16 @@ form > textarea {
 	margin: 20px 0;
 }
 
+#test-result {
+	display: none;
+	margin: 100px auto;
+	padding: calc(60px - 3vw);
+	width: 80%;
+	text-align: center;
+	background-color: #eeeeee;
+	border-radius: 20px;
+}
+
 .child-align-right {
 	text-align: right;
 }
@@ -72,4 +85,19 @@ form > textarea {
 	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg">\
 		<text y="30" font-size="30">Lade Zertifikat...</text>\
 		</svg>');
+}
+
+.default-font-size {
+	font-size: calc(60px - 3vw);
+}
+
+.copy-icon {
+	cursor: pointer;
+	border: #555555 solid 2px;
+	border-radius: 5px;
+}
+
+.copy-icon:hover {
+	background: white;
+	border-color: #666666;
 }

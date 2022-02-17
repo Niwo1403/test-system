@@ -36,3 +36,15 @@ function loadResult() {
     certificateView.data = buildApiUrl("certificate/", true,
         {"evaluable-test-answer-id": evaluableTestAnswerId});
 }
+
+function copyFromElm(elmId) {
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+
+    const elm = document.getElementById(elmId);
+    const range = document.createRange();
+    range.selectNodeContents(elm);
+    selection.addRange(range);
+
+    document.execCommand('copy');
+}

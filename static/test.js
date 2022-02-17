@@ -13,6 +13,7 @@ let pre_collect_index = 0;
 
 
 function displayError(responseText) {
+    document.getElementById("test-element").style.display = "none";
     document.getElementById("error-msg").innerHTML = responseText;
     document.getElementById("error-frame").style.display = "block";
 }
@@ -33,6 +34,36 @@ function loadTestForPassedToken() {
         xhr.open("GET", buildApiUrl("tests/", true), true);
         xhr.send();
     }
+}
+
+function loadTestForTokenCreation() {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+        if (this.status === 200) {
+            const tokenCreationTest = {description: JSON.parse(this.responseText), name: "token-creator"};
+            surveyLocalization.completeText = "Token erstellen";
+            displaySurvey(tokenCreationTest, postToken);
+        } else {
+            displayError(this.responseText);
+        }
+    }
+    xhr.open("GET", buildApiUrl("token-creator/"), true);
+    xhr.send();
+}
+
+function postToken(jsonAnswer, _) {
+    postAnswer(buildApiUrl("token/"), jsonAnswer, showCreatedToken);
+}
+
+function showCreatedToken(token) {
+    document.getElementById("test-element").style.display = "none";
+    document.getElementById("test-result").style.display = "block";
+    document.getElementById("token").innerHTML = token;
+    const directLink = new URL(buildUrl("index.html", false, {"token": token}),
+        document.baseURI).href;
+    const directLinkA = document.getElementById("direct-link");
+    directLinkA.href = directLink;
+    directLinkA.innerHTML = directLink;
 }
 
 

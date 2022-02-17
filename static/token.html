@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <title>Token Erstellen</title>
+        <!-- surveyJS import -->
+		<script src="https://unpkg.com/jquery"></script>
+        <script src="https://unpkg.com/survey-jquery@1.9.2/survey.jquery.min.js"></script>
+        <link href="https://unpkg.com/survey-core@1.9.2/modern.min.css" type="text/css" rel="stylesheet"/>
+        <!-- custom import -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+		<link rel="stylesheet" href="./style.css" />
+        <script src="./script.js"></script>
+        <script src="./test.js"></script>
+    </head>
+    <body onload="loadTestForTokenCreation();">
+        <div id="error-frame" class="centered-gray-container default-font-size">
+            <p id="error-msg"></p>
+            <button id="error-button" onclick="window.location.reload();">Seite neu laden</button>
+        </div>
+
+        <div id="test-element"></div>
+        <div id="test-result" class="default-font-size">
+            <p>Generierter Token:</p>
+            <a id="token"></a>
+            <span onclick="copyFromElm('token');" class="material-icons copy-icon">content_copy</span>
+            <br><br><br>
+
+            <p>Direkter Link:</p>
+            <a id="direct-link" target="_blank"></a>
+            <span onclick="copyFromElm('direct-link');" class="material-icons copy-icon">content_copy</span>
+        </div>
+    </body>
+</html>
