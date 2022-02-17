@@ -17,6 +17,7 @@ class Token(db.Model):
     personal_data_test_name = db.Column(db.String, db.ForeignKey("test.name"))
     pre_collect_test_names = db.Column(db.ARRAY(db.String))  # references name (column) from test (table)
     evaluable_test_name = db.Column(db.String, db.ForeignKey("test.name"))
+    creation_timestamp = db.Column(db.TIMESTAMP)
 
     personal_data_test = db.relationship("Test", foreign_keys=[personal_data_test_name])
     evaluable_test = db.relationship("Test", foreign_keys=[evaluable_test_name])
@@ -45,6 +46,11 @@ class Token(db.Model):
         token_seed = str(now).encode()
         token_hash = sha3_512(token_seed).hexdigest()
         return token_hash
+
+    def __init__(self, **kwargs):
+        if "creation_timestamp" not in kwargs:
+            kwargs["creation_timestamp"] = db.func.now()
+        super(Token, self).__init__(**kwargs)
 
     def __repr__(self):
         return (f"Token '{self.token}' ("

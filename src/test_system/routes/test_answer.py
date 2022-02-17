@@ -39,7 +39,7 @@ def post_test_answer():
     except SchemaError:
         return abort(400, "Data validation failed.")
 
-    answer = TestAnswer(date=db.func.now(), answer_set=answer_set, test_name=test_name, person_id=person.id)
+    answer = TestAnswer(answer_set=answer_set, test_name=test_name, person_id=person.id)
     db.session.add(answer)
     db.session.commit()
 
