@@ -6,7 +6,7 @@ click==8.0.3
 colorama==0.4.4
 contextlib2==21.6.0
 coverage==6.3.1
-Flask==2.0.2
+Flask==2.0.3
 Flask-SQLAlchemy==2.5.1
 fpdf==1.7.2
 greenlet==1.1.2
@@ -23,11 +23,12 @@ psycopg2==2.9.3
 py==1.11.0
 pyparsing==3.0.7
 PyPDF2==1.26.0
-pytest==6.2.5
+pytest==7.0.1
 python-dotenv==0.19.2
 requests==2.27.1
 schema==0.7.5
-SQLAlchemy==1.4.29
+SQLAlchemy==1.4.31
 toml==0.10.2
+tomli==2.0.1
 urllib3==1.26.8
 Werkzeug==2.0.2
