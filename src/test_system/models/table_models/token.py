@@ -17,7 +17,7 @@ class Token(db.Model):
     personal_data_test_name = db.Column(db.String, db.ForeignKey("test.name"))
     pre_collect_test_names = db.Column(db.ARRAY(db.String))  # references name (column) from test (table)
     evaluable_test_name = db.Column(db.String, db.ForeignKey("test.name"))
-    creation_timestamp = db.Column(db.TIMESTAMP)
+    creation_timestamp: db.Column = db.Column(db.TIMESTAMP)
 
     personal_data_test = db.relationship("Test", foreign_keys=[personal_data_test_name])
     evaluable_test = db.relationship("Test", foreign_keys=[evaluable_test_name])
