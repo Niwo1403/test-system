@@ -1,6 +1,9 @@
+# 3rd party
+from sqlalchemy.exc import IntegrityError
 # custom
 from .table_models import *
 from .database import _create_tables_if_not_exist, db
+from test_system import app
 
 _create_tables_if_not_exist()  # must be run after import of models ("from .table_models import *")
 
@@ -135,4 +138,8 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                        pre_collect_test_names=["PreCol", "PreCol"],
                        evaluable_test_name="PersTest")
     db.session.add_all((default_user, person_test, pre_collect_test, pers_test, test_token))
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        app.logger.error("IntegrityError: Failed adding data to database - maybe data already exists.")
+        db.session.rollback()
