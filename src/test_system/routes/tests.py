@@ -17,7 +17,7 @@ def get_tests():
         abort(400, "Token missing.")
 
     token: Token = Token.query.filter_by(token=request_token).first()
-    if token is None or token.is_expired():
+    if token is None or token.is_invalid():
         abort(401, "Token doesn't exist or is expired.")
 
     personal_data_test = token.personal_data_test

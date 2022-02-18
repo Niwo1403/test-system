@@ -3,6 +3,7 @@ from sys import path
 from os.path import join as path_join, realpath, dirname
 from pytest import fixture
 from typing import ContextManager
+from datetime import datetime
 # 3rd party
 from dotenv import load_dotenv
 from sqlalchemy.event import listen, remove
@@ -140,6 +141,18 @@ def no_use_token(session, test_names) -> Token:
     session.add(no_use_token)
     session.commit()
     return no_use_token
+
+
+@fixture()
+def expired_token(session, test_names) -> Token:
+    expired_token = Token.generate_token(None,
+                                         test_names["PERSONAL_DATA_TEST"],
+                                         test_names["PRE_COLLECT_TESTS"],
+                                         test_names["EVALUABLE_TEST"])
+    expired_token.creation_timestamp = datetime(1000, 1, 20)
+    session.add(expired_token)
+    session.commit()
+    return expired_token
 
 
 @fixture()

@@ -176,11 +176,12 @@ def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_
 
 
 def test_get_certificate__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
-                                                    unknown_token_name: str, no_use_token: Token,
+                                                    unknown_token_name: str, no_use_token: Token, expired_token: Token,
                                                     unevaluated_evaluable_test_answer: EvaluableTestAnswer):
     query_strings = [
         {"token": unknown_token_name, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
-        {"token": no_use_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id}
+        {"token": no_use_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
+        {"token": expired_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id}
     ]
 
     with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):

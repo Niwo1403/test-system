@@ -3,7 +3,7 @@ from hashlib import sha3_512
 from datetime import datetime
 from typing import List, Optional
 # custom
-from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT
+from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT, TOKEN_PERIOD_OF_VALIDITY_IN_DAYS
 from test_system.models.database import db
 from .answers import EvaluableTestAnswer
 from .test import Test
@@ -59,12 +59,8 @@ class Token(db.Model):
                 f"evaluable test: {self.evaluable_test_name}, "
                 f"usages: {self.max_usage_count})")
 
-    def is_expired(self, remove_if_expired: bool = False) -> bool:
-        expired = self.max_usage_count is not None and self.max_usage_count <= 0
-        if remove_if_expired and expired:
-            db.session.delete(self)
-            db.session.commit()
-        return expired
+    def is_invalid(self) -> bool:
+        return self._is_expired() or self._has_no_usage_left()
 
     def use_for(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
         evaluable_test_answer.was_evaluated_with_token = True
@@ -77,3 +73,12 @@ class Token(db.Model):
                                       for pre_collect_test_name in self.pre_collect_test_names]
         pre_collect_tests = list(filter(lambda test: test is not None, possible_pre_collect_tests))
         return pre_collect_tests
+
+    def _is_expired(self) -> bool:
+        if self.creation_timestamp is None:
+            return False
+        token_age = datetime.now() - self.creation_timestamp
+        return token_age.days >= TOKEN_PERIOD_OF_VALIDITY_IN_DAYS
+
+    def _has_no_usage_left(self) -> bool:
+        return self.max_usage_count is not None and self.max_usage_count <= 0
