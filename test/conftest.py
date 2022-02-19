@@ -2,7 +2,7 @@
 from sys import path
 from os.path import join as path_join, realpath, dirname
 from pytest import fixture
-from typing import ContextManager
+from typing import ContextManager, Optional, Callable
 from datetime import datetime
 # 3rd party
 from dotenv import load_dotenv
@@ -123,49 +123,40 @@ def password():
 
 
 @fixture()
-def token(session, test_names) -> Token:
-    token = Token.generate_token(10,
-                                 test_names["PERSONAL_DATA_TEST"],
-                                 test_names[PRE_COLLECT_TESTS_KEY],
-                                 test_names["EVALUABLE_TEST"])
-    session.add(token)
-    session.commit()
-    return token
+def create_token(session, test_names) -> Callable:
+    def _create_token(usages: Optional[int] = None, expires: bool = True) -> Token:
+        token = Token.generate_token(usages,
+                                     test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
+                                     test_names[PRE_COLLECT_TESTS_KEY],
+                                     test_names[Test.CATEGORIES.EVALUABLE_TEST.name],
+                                     expires=expires)
+        session.add(token)
+        session.commit()
+        return token
+    return _create_token
 
 
 @fixture()
-def no_use_token(session, test_names) -> Token:
-    no_use_token = Token.generate_token(0,
-                                        test_names["PERSONAL_DATA_TEST"],
-                                        test_names[PRE_COLLECT_TESTS_KEY],
-                                        test_names["EVALUABLE_TEST"])
-    session.add(no_use_token)
-    session.commit()
-    return no_use_token
+def token(create_token) -> Token:
+    return create_token(usages=10)
 
 
 @fixture()
-def expired_token(session, test_names) -> Token:
-    expired_token = Token.generate_token(None,
-                                         test_names["PERSONAL_DATA_TEST"],
-                                         test_names[PRE_COLLECT_TESTS_KEY],
-                                         test_names["EVALUABLE_TEST"])
+def no_use_token(create_token) -> Token:
+    return create_token(usages=0)
+
+
+@fixture()
+def expired_token(session, create_token) -> Token:
+    expired_token = create_token(usages=None)
     expired_token.creation_timestamp = datetime(1000, 1, 20)
-    session.add(expired_token)
     session.commit()
     return expired_token
 
 
 @fixture()
-def unlimited_token(session, test_names) -> Token:
-    unlimited_token = Token.generate_token(None,
-                                           test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
-                                           test_names[PRE_COLLECT_TESTS_KEY],
-                                           test_names[Test.CATEGORIES.EVALUABLE_TEST.name],
-                                           expires=False)
-    session.add(unlimited_token)
-    session.commit()
-    return unlimited_token
+def unlimited_token(create_token) -> Token:
+    return create_token(usages=None, expires=False)
 
 
 @fixture()
