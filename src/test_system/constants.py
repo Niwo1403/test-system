@@ -13,6 +13,9 @@ FILE_DIR = dirname(realpath(__file__))
 API_PREFIX = "/api"
 DEFAULT_INDEX_FILE = "/index.html"
 
+PRE_COLLECT_TESTS_SURVEY_KEYWORD = "tests"
+EXPIRES_SURVEY_KEYWORD = "expires"
+
 
 # flask
 

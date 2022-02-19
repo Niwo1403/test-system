@@ -5,16 +5,17 @@ from flask import request, abort
 from schema import Schema, And, Use, SchemaError, Optional
 # custom
 from test_system import app
-from test_system.constants import API_PREFIX
+from test_system.constants import API_PREFIX, PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD
 from test_system.models import db, Token, User, Test
 
 ROUTE = f'{API_PREFIX}/token/'
 
 TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, len),
                             Optional(Test.CATEGORIES.PRE_COLLECT_TESTS.name, default=[]): [
-                                And(Use(lambda e: e["tests"]), str, len)],
+                                And(Use(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD]), str, len)],
                             Test.CATEGORIES.EVALUABLE_TEST.name: And(str, len),
                             Optional(Token.max_usage_count.key, default=None): And(int, lambda n: 0 <= n),
+                            EXPIRES_SURVEY_KEYWORD: bool,
                             User.username.key: And(str, len),
                             User.password.key: And(str, len)})
 
@@ -36,6 +37,7 @@ def post_token():
     pre_collect_test_names = post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name]
     evaluable_test_name = post_token_data[Test.CATEGORIES.EVALUABLE_TEST.name]
     max_usage_count = post_token_data[Token.max_usage_count.key]
+    expires = post_token_data[EXPIRES_SURVEY_KEYWORD]
     username = post_token_data[User.username.key]
     password = post_token_data[User.password.key]
 
@@ -52,7 +54,8 @@ def post_token():
     token = Token.generate_token(max_usage_count,
                                  personal_data_test_name,
                                  pre_collect_test_names,
-                                 evaluable_test_name)
+                                 evaluable_test_name,
+                                 expires=expires)
     db.session.add(token)
     db.session.commit()
     app.logger.info(f"Created {token}")

@@ -5,25 +5,28 @@ from typing import Dict, List, Callable
 # 3rd party
 from flask.testing import FlaskClient
 # custom
+from test_system.constants import PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD
 from test_system.models import Token, User, Test
 from test_system.routes.token import ROUTE
 
 PRE_COLLECT_TESTS = Test.CATEGORIES.PRE_COLLECT_TESTS.name
-MANDATORY_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EVALUABLE_TEST.name,
-                  User.username.key, User.password.key]
+MANDATORY_STRING_VALUE_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EVALUABLE_TEST.name,
+                               User.username.key, User.password.key]
+MANDATORY_KEYS = MANDATORY_STRING_VALUE_KEYS + [EXPIRES_SURVEY_KEYWORD]
 
 
 @fixture()
 def create_post_data(username, password, test_names) -> Callable:
-    def _create_post_data(without_keys: List = None, with_replacements: Dict = None) -> Dict:
+    def _create_post_data(without_keys: List = None, with_replacements: Dict = None, expires: bool = True) -> Dict:
         base_post_data = {
             Token.max_usage_count.key: 10,
+            EXPIRES_SURVEY_KEYWORD: expires,
 
             User.username.key: username,
             User.password.key: password}
         base_post_data.update(test_names)
         base_post_data[PRE_COLLECT_TESTS] = list(map(
-            lambda test_name: {"tests": test_name}, base_post_data[PRE_COLLECT_TESTS]))
+            lambda test_name: {PRE_COLLECT_TESTS_SURVEY_KEYWORD: test_name}, base_post_data[PRE_COLLECT_TESTS]))
 
         if without_keys is not None:
             for without_key in without_keys:
@@ -36,7 +39,9 @@ def create_post_data(username, password, test_names) -> Callable:
 
 def test_post_token__with_success(client: FlaskClient, session, create_post_data, test_names):
     test_cases = [create_post_data(),
+                  create_post_data(expires=False),
                   create_post_data(without_keys=[Token.max_usage_count.key]),
+                  create_post_data(without_keys=[Token.max_usage_count.key], expires=False),
                   create_post_data(without_keys=[PRE_COLLECT_TESTS]),
                   create_post_data(without_keys=[PRE_COLLECT_TESTS, Token.max_usage_count.key])]
 
@@ -52,14 +57,15 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: token.personal_data_test_name,
             PRE_COLLECT_TESTS: token.pre_collect_test_names,
             Test.CATEGORIES.EVALUABLE_TEST.name: token.evaluable_test_name,
-            Token.max_usage_count.key: token.max_usage_count
+            Token.max_usage_count.key: token.max_usage_count,
+            EXPIRES_SURVEY_KEYWORD: token.creation_timestamp is not None
         }
         # copy database_token_data as base for correct data and update it with passed test data
         # (non passed values are considered correct, since default values can be anything)
         correct_token_data = database_token_data.copy()
         correct_token_data.update(test_data)
         if PRE_COLLECT_TESTS in test_data:
-            correct_token_data[PRE_COLLECT_TESTS] = list(map(lambda e: e["tests"],
+            correct_token_data[PRE_COLLECT_TESTS] = list(map(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD],
                                                              correct_token_data[PRE_COLLECT_TESTS]))
         # drop user data, so only token data remains
         correct_token_data.pop(User.username.key, None)
@@ -74,17 +80,15 @@ def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_cha
         create_post_data(without_keys=[mandatory_key])
         for mandatory_key in MANDATORY_KEYS
     ] + [
-        create_post_data(with_replacements={mandatory_key: ""})
-        for mandatory_key in MANDATORY_KEYS
+        create_post_data(with_replacements={mandatory_key: mandatory_key_replacement})
+        for mandatory_key in MANDATORY_STRING_VALUE_KEYS
+        for mandatory_key_replacement in ["", 10, None, True, ["asdf"]]
     ] + [
-        create_post_data(with_replacements={mandatory_key: 10})
-        for mandatory_key in MANDATORY_KEYS
-    ] + [
-        create_post_data(with_replacements={mandatory_key: None})
-        for mandatory_key in MANDATORY_KEYS
+        create_post_data(with_replacements={EXPIRES_SURVEY_KEYWORD: wrong_expires_value})
+        for wrong_expires_value in ["", "asdf", 10, None, ["asdf"]]
     ] + [
         create_post_data(with_replacements={PRE_COLLECT_TESTS: wrong_pre_collect_value})
-        for wrong_pre_collect_value in ["", None, 3.14, ["asdf"]]
+        for wrong_pre_collect_value in ["asdf", None, 10, 3.14, ["asdf"]]
     ] + [
         create_post_data(with_replacements={Token.max_usage_count.key: wrong_usage_counts})
         for wrong_usage_counts in ["", None, 3.14, ["asdf"], "asdf"]

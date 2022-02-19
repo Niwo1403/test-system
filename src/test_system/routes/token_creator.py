@@ -2,7 +2,7 @@
 from json import dumps as json_dumps
 # custom
 from test_system import app
-from test_system.constants import API_PREFIX
+from test_system.constants import API_PREFIX, PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD
 from test_system.models import User, Test, Token
 
 ROUTE = f'{API_PREFIX}/token-creator/'
@@ -37,7 +37,10 @@ def get_token_creator():
                         "type": "matrixdynamic",
                         "name": Test.CATEGORIES.PRE_COLLECT_TESTS.name,
                         "title": "Zusatz Informationen",
-                        "columns": [{"name": "tests", "title": "Mehrere möglich"}],
+                        "defaultValue": [{PRE_COLLECT_TESTS_SURVEY_KEYWORD: pre_collect_test_name}
+                                         for pre_collect_test_name in last_created_token.pre_collect_test_names
+                                         ] if token_exist else None,
+                        "columns": [{"name": PRE_COLLECT_TESTS_SURVEY_KEYWORD, "title": "Mehrere möglich"}],
                         "choices": pre_collect_test_names + evaluable_test_names,
                         "rowCount": 1,
                         "allowRowsDragAndDrop": True
@@ -58,6 +61,13 @@ def get_token_creator():
                         "description": "Leer lassen für unbegrenzte Nutzung",
                         "inputType": "number",
                         "min": 0
+                    },
+                    {
+                        "type": "boolean",
+                        "name": EXPIRES_SURVEY_KEYWORD,
+                        "title": "Soll der Token zeitlich beschrenkt sein?",
+                        "defaultValue": "true",
+                        "isRequired": True
                     },
                     {
                         "type": "text",

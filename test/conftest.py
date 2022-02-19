@@ -156,5 +156,17 @@ def expired_token(session, test_names) -> Token:
 
 
 @fixture()
+def unlimited_token(session, test_names) -> Token:
+    unlimited_token = Token.generate_token(None,
+                                           test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
+                                           test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name],
+                                           test_names[Test.CATEGORIES.EVALUABLE_TEST.name],
+                                           expires=False)
+    session.add(unlimited_token)
+    session.commit()
+    return unlimited_token
+
+
+@fixture()
 def unknown_token_name() -> str:
     return "UNKNOWN TOKEN"

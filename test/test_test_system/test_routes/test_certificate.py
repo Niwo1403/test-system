@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
 # custom
-from test_system.models import db, Token, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
+from test_system.models import Token, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
 from test_system.routes.certificate import ROUTE
 
 
@@ -95,19 +95,8 @@ def incomplete_evaluable_test_answers(session, test_names) -> List[EvaluableTest
     return incomplete_evaluable_test_answers
 
 
-@fixture()
-def unlimited_token(session, test_names) -> Token:
-    unlimited_token = Token.generate_token(None,
-                                           test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
-                                           test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name],
-                                           test_names[Test.CATEGORIES.EVALUABLE_TEST.name])
-    session.add(unlimited_token)
-    session.commit()
-    return unlimited_token
-
-
 def test_get_certificate__with_success(client: FlaskClient, session,
-                                       token: Token, no_use_token: Token, unlimited_token: Token,
+                                       token: Token, unlimited_token: Token, no_use_token: Token, expired_token: Token,
                                        evaluated_evaluable_test_answer: EvaluableTestAnswer,
                                        unevaluated_evaluable_test_answer: EvaluableTestAnswer,
                                        unevaluated_evaluable_test_answer_2: EvaluableTestAnswer):
@@ -116,6 +105,7 @@ def test_get_certificate__with_success(client: FlaskClient, session,
                   # EvaluableTestAnswers (like unevaluated_evaluable_test_answer) must NOT repeat,
                   # since the unevaluated answers will be evaluated after first request!
                   (unlimited_token, unevaluated_evaluable_test_answer_2),
+                  (expired_token, evaluated_evaluable_test_answer),
                   (no_use_token, evaluated_evaluable_test_answer)]
 
     for token, evaluable_test_answer in test_cases:

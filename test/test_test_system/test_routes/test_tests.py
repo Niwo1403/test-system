@@ -36,20 +36,24 @@ def wrong_test_tokens(session, test_names) -> List[Token]:
     return wrong_test_tokens
 
 
-def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_in_tables, token: Token, test_names):
-    with raise_if_change_in_tables(Token, Test):  # get request should not change data
-        resp = client.get(ROUTE, query_string={"token": token.token})
-    assert resp.status_code == 200, f"Can't GET tests from {ROUTE} with token: {token}"
+def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_in_tables,
+                                 token: Token, unlimited_token: Token, test_names):
+    for test_token in (token, unlimited_token):
+        with raise_if_change_in_tables(Token, Test):  # get request should not change data
+            resp = client.get(ROUTE, query_string={"token": test_token.token})
+        assert resp.status_code == 200, f"Can't GET tests from {ROUTE} with token: {test_token}"
 
-    resp_tests = json_loads(resp.data.decode())
-    resp_test_names = {
-        Test.CATEGORIES.PERSONAL_DATA_TEST.name: resp_tests["personal_data_test"]["name"],
-        Test.CATEGORIES.PRE_COLLECT_TESTS.name: [pre_collect_test_description["name"]
-                                                 for pre_collect_test_description in resp_tests["pre_collect_tests"]],
-        Test.CATEGORIES.EVALUABLE_TEST.name: resp_tests["evaluable_test"]["name"]
-    }
+        resp_tests = json_loads(resp.data.decode())
+        resp_test_names = {
+            Test.CATEGORIES.PERSONAL_DATA_TEST.name: resp_tests["personal_data_test"]["name"],
+            Test.CATEGORIES.PRE_COLLECT_TESTS.name: [
+                pre_collect_test_description["name"]
+                for pre_collect_test_description in resp_tests["pre_collect_tests"]],
+            Test.CATEGORIES.EVALUABLE_TEST.name: resp_tests["evaluable_test"]["name"]
+        }
 
-    assert resp_test_names == test_names, f"Got tests with wrong names in response data at route {ROUTE} with {token}"
+        assert resp_test_names == test_names, f"Got tests with wrong names in response data at route {ROUTE} "\
+                                              f"with {test_token}"
 
 
 def test_get_tests__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):
