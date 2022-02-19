@@ -12,8 +12,6 @@ class TestCategory(Enum):
     PERSONAL_DATA_TEST = "personal data"
     PRE_COLLECT_TEST = "pre collect"
     EVALUABLE_TEST = "evaluable"
-    # only for API:
-    PRE_COLLECT_TESTS = ""
 
 
 class Test(db.Model):
