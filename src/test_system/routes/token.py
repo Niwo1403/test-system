@@ -5,13 +5,14 @@ from flask import request, abort
 from schema import Schema, And, Use, SchemaError, Optional
 # custom
 from test_system import app
-from test_system.constants import API_PREFIX, PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD
+from test_system.constants import API_PREFIX, PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD, \
+    PRE_COLLECT_TESTS_KEY
 from test_system.models import db, Token, User, Test
 
 ROUTE = f'{API_PREFIX}/token/'
 
 TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, len),
-                            Optional(Test.CATEGORIES.PRE_COLLECT_TESTS.name, default=[]): [
+                            Optional(PRE_COLLECT_TESTS_KEY, default=[]): [
                                 And(Use(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD]), str, len)],
                             Test.CATEGORIES.EVALUABLE_TEST.name: And(str, len),
                             Optional(Token.max_usage_count.key, default=None): And(int, lambda n: 0 <= n),
@@ -24,9 +25,9 @@ TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, le
 def post_token():
     try:
         post_token_data = json_loads(request.data.decode())
-        if Test.CATEGORIES.PRE_COLLECT_TESTS.name in post_token_data:
-            post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name] = list(filter(
-                len, post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name]))
+        if PRE_COLLECT_TESTS_KEY in post_token_data:
+            post_token_data[PRE_COLLECT_TESTS_KEY] = list(filter(
+                len, post_token_data[PRE_COLLECT_TESTS_KEY]))
         post_token_data = TOKEN_DATA_SCHEMA.validate(post_token_data)
     except (JSONDecodeError, TypeError):
         return abort(400, "Data validation failed, wrong JSON.")
@@ -34,7 +35,7 @@ def post_token():
         return abort(400, "Data validation failed.")
 
     personal_data_test_name = post_token_data[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
-    pre_collect_test_names = post_token_data[Test.CATEGORIES.PRE_COLLECT_TESTS.name]
+    pre_collect_test_names = post_token_data[PRE_COLLECT_TESTS_KEY]
     evaluable_test_name = post_token_data[Test.CATEGORIES.EVALUABLE_TEST.name]
     max_usage_count = post_token_data[Token.max_usage_count.key]
     expires = post_token_data[EXPIRES_SURVEY_KEYWORD]

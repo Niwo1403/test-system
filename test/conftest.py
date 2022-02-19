@@ -14,6 +14,7 @@ load_dotenv(path_join(FILE_DIR, ".env"), override=True)  # load test env variabl
 
 # custom
 from test_system import app  # must not be at top of file
+from test_system.constants import PRE_COLLECT_TESTS_KEY
 from test_system.models import db, Token, Test
 
 app.config['TESTING'] = True
@@ -23,7 +24,7 @@ app.config['TESTING'] = True
 def test_names():
     return {
         Test.CATEGORIES.PERSONAL_DATA_TEST.name: "Person",
-        Test.CATEGORIES.PRE_COLLECT_TESTS.name: ["PreCol", "PreCol"],
+        PRE_COLLECT_TESTS_KEY: ["PreCol", "PreCol"],
         Test.CATEGORIES.EVALUABLE_TEST.name: "PersTest"
     }
 
@@ -125,7 +126,7 @@ def password():
 def token(session, test_names) -> Token:
     token = Token.generate_token(10,
                                  test_names["PERSONAL_DATA_TEST"],
-                                 test_names["PRE_COLLECT_TESTS"],
+                                 test_names[PRE_COLLECT_TESTS_KEY],
                                  test_names["EVALUABLE_TEST"])
     session.add(token)
     session.commit()
@@ -136,7 +137,7 @@ def token(session, test_names) -> Token:
 def no_use_token(session, test_names) -> Token:
     no_use_token = Token.generate_token(0,
                                         test_names["PERSONAL_DATA_TEST"],
-                                        test_names["PRE_COLLECT_TESTS"],
+                                        test_names[PRE_COLLECT_TESTS_KEY],
                                         test_names["EVALUABLE_TEST"])
     session.add(no_use_token)
     session.commit()
@@ -147,7 +148,7 @@ def no_use_token(session, test_names) -> Token:
 def expired_token(session, test_names) -> Token:
     expired_token = Token.generate_token(None,
                                          test_names["PERSONAL_DATA_TEST"],
-                                         test_names["PRE_COLLECT_TESTS"],
+                                         test_names[PRE_COLLECT_TESTS_KEY],
                                          test_names["EVALUABLE_TEST"])
     expired_token.creation_timestamp = datetime(1000, 1, 20)
     session.add(expired_token)
@@ -159,7 +160,7 @@ def expired_token(session, test_names) -> Token:
 def unlimited_token(session, test_names) -> Token:
     unlimited_token = Token.generate_token(None,
                                            test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
-                                           test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name],
+                                           test_names[PRE_COLLECT_TESTS_KEY],
                                            test_names[Test.CATEGORIES.EVALUABLE_TEST.name],
                                            expires=False)
     session.add(unlimited_token)

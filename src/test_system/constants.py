@@ -40,6 +40,8 @@ APP_CONFIG = {
     'SQLALCHEMY_ECHO': False  # if true, all statements will be logged - maybe useful for debugging
 }
 
+PRE_COLLECT_TESTS_KEY = "PRE_COLLECT_TESTS"
+
 MAX_HASH_GENERATION_TRY_COUNT = 1000
 
 TOKEN_PERIOD_OF_VALIDITY_IN_DAYS = 14

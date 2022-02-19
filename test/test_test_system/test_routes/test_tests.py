@@ -7,15 +7,16 @@ from flask.testing import FlaskClient
 # custom
 from test_system.models import Token, Test
 from test_system.routes.tests import ROUTE
+from test_system.constants import PRE_COLLECT_TESTS_KEY
 
 
 @fixture()
 def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
-        Token.generate_token(10, None, test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name],
+        Token.generate_token(10, None, test_names[PRE_COLLECT_TESTS_KEY],
                              test_names[Test.CATEGORIES.EVALUABLE_TEST.name]),
         Token.generate_token(10, test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
-                             test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name], None)]
+                             test_names[PRE_COLLECT_TESTS_KEY], None)]
     session.add_all(unknown_test_tokens)
     session.commit()
     return unknown_test_tokens
@@ -25,7 +26,7 @@ def unknown_test_tokens(session, test_names) -> List[Token]:
 def wrong_test_tokens(session, test_names) -> List[Token]:
     personal_data_test = test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
     evaluable_test = test_names[Test.CATEGORIES.EVALUABLE_TEST.name]
-    pre_collect_tests = test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name]
+    pre_collect_tests = test_names[PRE_COLLECT_TESTS_KEY]
     wrong_test_tokens = [
         Token.generate_token(10, evaluable_test, pre_collect_tests, evaluable_test),
         Token.generate_token(10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
@@ -46,9 +47,8 @@ def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_i
         resp_tests = json_loads(resp.data.decode())
         resp_test_names = {
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: resp_tests["personal_data_test"]["name"],
-            Test.CATEGORIES.PRE_COLLECT_TESTS.name: [
-                pre_collect_test_description["name"]
-                for pre_collect_test_description in resp_tests["pre_collect_tests"]],
+            PRE_COLLECT_TESTS_KEY: [pre_collect_test_description["name"]
+                                    for pre_collect_test_description in resp_tests["pre_collect_tests"]],
             Test.CATEGORIES.EVALUABLE_TEST.name: resp_tests["evaluable_test"]["name"]
         }
 

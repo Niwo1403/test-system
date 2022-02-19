@@ -5,11 +5,10 @@ from typing import Dict, List, Callable
 # 3rd party
 from flask.testing import FlaskClient
 # custom
-from test_system.constants import PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD
+from test_system.constants import PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD, PRE_COLLECT_TESTS_KEY
 from test_system.models import Token, User, Test
 from test_system.routes.token import ROUTE
 
-PRE_COLLECT_TESTS = Test.CATEGORIES.PRE_COLLECT_TESTS.name
 MANDATORY_STRING_VALUE_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EVALUABLE_TEST.name,
                                User.username.key, User.password.key]
 MANDATORY_KEYS = MANDATORY_STRING_VALUE_KEYS + [EXPIRES_SURVEY_KEYWORD]
@@ -25,8 +24,8 @@ def create_post_data(username, password, test_names) -> Callable:
             User.username.key: username,
             User.password.key: password}
         base_post_data.update(test_names)
-        base_post_data[PRE_COLLECT_TESTS] = list(map(
-            lambda test_name: {PRE_COLLECT_TESTS_SURVEY_KEYWORD: test_name}, base_post_data[PRE_COLLECT_TESTS]))
+        base_post_data[PRE_COLLECT_TESTS_KEY] = list(map(
+            lambda test_name: {PRE_COLLECT_TESTS_SURVEY_KEYWORD: test_name}, base_post_data[PRE_COLLECT_TESTS_KEY]))
 
         if without_keys is not None:
             for without_key in without_keys:
@@ -42,8 +41,8 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
                   create_post_data(expires=False),
                   create_post_data(without_keys=[Token.max_usage_count.key]),
                   create_post_data(without_keys=[Token.max_usage_count.key], expires=False),
-                  create_post_data(without_keys=[PRE_COLLECT_TESTS]),
-                  create_post_data(without_keys=[PRE_COLLECT_TESTS, Token.max_usage_count.key])]
+                  create_post_data(without_keys=[PRE_COLLECT_TESTS_KEY]),
+                  create_post_data(without_keys=[PRE_COLLECT_TESTS_KEY, Token.max_usage_count.key])]
 
     for test_data in test_cases:
         resp = client.post(ROUTE, data=json_dumps(test_data))
@@ -55,7 +54,7 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
 
         database_token_data = {
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: token.personal_data_test_name,
-            PRE_COLLECT_TESTS: token.pre_collect_test_names,
+            PRE_COLLECT_TESTS_KEY: token.pre_collect_test_names,
             Test.CATEGORIES.EVALUABLE_TEST.name: token.evaluable_test_name,
             Token.max_usage_count.key: token.max_usage_count,
             EXPIRES_SURVEY_KEYWORD: token.creation_timestamp is not None
@@ -64,9 +63,9 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
         # (non passed values are considered correct, since default values can be anything)
         correct_token_data = database_token_data.copy()
         correct_token_data.update(test_data)
-        if PRE_COLLECT_TESTS in test_data:
-            correct_token_data[PRE_COLLECT_TESTS] = list(map(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD],
-                                                             correct_token_data[PRE_COLLECT_TESTS]))
+        if PRE_COLLECT_TESTS_KEY in test_data:
+            correct_token_data[PRE_COLLECT_TESTS_KEY] = list(map(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD],
+                                                                 correct_token_data[PRE_COLLECT_TESTS_KEY]))
         # drop user data, so only token data remains
         correct_token_data.pop(User.username.key, None)
         correct_token_data.pop(User.password.key, None)
@@ -87,7 +86,7 @@ def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_cha
         create_post_data(with_replacements={EXPIRES_SURVEY_KEYWORD: wrong_expires_value})
         for wrong_expires_value in ["", "asdf", 10, None, ["asdf"]]
     ] + [
-        create_post_data(with_replacements={PRE_COLLECT_TESTS: wrong_pre_collect_value})
+        create_post_data(with_replacements={PRE_COLLECT_TESTS_KEY: wrong_pre_collect_value})
         for wrong_pre_collect_value in ["asdf", None, 10, 3.14, ["asdf"]]
     ] + [
         create_post_data(with_replacements={Token.max_usage_count.key: wrong_usage_counts})
@@ -131,7 +130,7 @@ def test_post_token__with_unknown_test(client: FlaskClient, session, raise_if_ch
 
 def test_post_token__with_wrong_test(client: FlaskClient, session, raise_if_change_in_tables,
                                      create_post_data, test_names):
-    first_pre_collect_test = test_names[Test.CATEGORIES.PRE_COLLECT_TESTS.name][0]
+    first_pre_collect_test = test_names[PRE_COLLECT_TESTS_KEY][0]
     unknown_test_data = [
         create_post_data(with_replacements=replacement)
         for replacement in [{Test.CATEGORIES.PERSONAL_DATA_TEST.name: test_names[Test.CATEGORIES.EVALUABLE_TEST.name]},
