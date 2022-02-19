@@ -27,14 +27,16 @@ class Token(db.Model):
                        max_usage_count: Optional[int],
                        personal_data_test_name: str,
                        pre_collect_test_names: List[str],
-                       evaluable_test_name: str) -> "Token":
+                       evaluable_test_name: str,
+                       expires: bool = True) -> "Token":
         for _ in range(MAX_HASH_GENERATION_TRY_COUNT):
             token_hash = cls._generate_hash()
             if cls.query.filter_by(token=token_hash).first() is None:
                 break
         else:
             raise RuntimeError(f"Couldn't generate an unknown hash within {MAX_HASH_GENERATION_TRY_COUNT} tries.")
-        return cls(token=token_hash,
+        return cls(creation_timestamp=db.func.now() if expires else None,
+                   token=token_hash,
                    max_usage_count=max_usage_count,
                    personal_data_test_name=personal_data_test_name,
                    pre_collect_test_names=pre_collect_test_names,
