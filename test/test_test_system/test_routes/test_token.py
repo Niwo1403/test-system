@@ -71,7 +71,7 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
 
 def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables, create_post_data):
     bad_data = [
-        create_post_data(without_keys=mandatory_key)
+        create_post_data(without_keys=[mandatory_key])
         for mandatory_key in MANDATORY_KEYS
     ] + [
         create_post_data(with_replacements={mandatory_key: ""})
@@ -92,7 +92,7 @@ def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_cha
 
     with raise_if_change_in_tables(Token, User, Test):
         for bad_post_data in bad_data:
-            resp = client.post(ROUTE, data=bad_post_data)
+            resp = client.post(ROUTE, data=json_dumps(bad_post_data))
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request "
                                              f"with data: {bad_post_data}")
 
