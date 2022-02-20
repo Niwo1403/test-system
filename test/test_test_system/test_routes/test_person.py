@@ -15,16 +15,18 @@ def test_post_person__with_success(client: FlaskClient, session):
 
     for data_name, test_data in test_cases.items():
         resp = client.post(ROUTE, data=json_dumps(test_data))
-        assert resp.status_code == 201, f"Can't POST person to {ROUTE} with data {data_name}: {test_data}"
+        assert resp.status_code == 201, (f"Can't POST person to {ROUTE} with data {data_name}: {test_data}"
+                                         f"\n\nReceived response:\n{resp.get_data(True)}")
 
-        person_id = resp.data.decode()
+        person_id = resp.get_data(True)
         person = Person.query.filter_by(id=person_id).first()
-        assert person is not None, "Could not write person to database"
+        assert person is not None, f"Could not write person to database\n\nReceived response:\n{resp.get_data(True)}"
 
         db_data = {"name": person.name, "age": person.age, "gender": person.gender.value}  # use .value for enums
         if "position" in test_data:
             db_data["position"] = person.position
-        assert db_data == test_data, "Person written to database, got wrong data"
+        assert db_data == test_data, ("Person written to database, got wrong data"
+                                      f"\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_post_person__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):
@@ -45,4 +47,5 @@ def test_post_person__with_bad_request(client: FlaskClient, session, raise_if_ch
     with raise_if_change_in_tables(Person):
         for data_name, test_data in test_cases.items():
             resp = client.post(ROUTE, data=test_data)
-            assert resp.status_code == 400, f"Got wrong status code at {ROUTE} for {data_name}: {test_data}"
+            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for {data_name}: {test_data}"
+                                             f"\n\nReceived response:\n{resp.get_data(True)}")

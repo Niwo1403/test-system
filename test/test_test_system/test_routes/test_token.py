@@ -46,11 +46,11 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
 
     for test_data in test_cases:
         resp = client.post(ROUTE, data=json_dumps(test_data))
-        assert resp.status_code == 201, f"Can't POST token to {ROUTE} with data {test_data}\n\n{resp.data.decode()}"
+        assert resp.status_code == 201, f"Can't POST token to {ROUTE} with data {test_data}\n\n{resp.get_data(True)}"
 
-        token_hash = resp.data.decode()
+        token_hash = resp.get_data(True)
         token = Token.query.filter_by(token=token_hash).first()
-        assert token is not None, "Could not write Token to database"
+        assert token is not None, f"Could not write Token to database\n\nReceived response:\n{resp.get_data(True)}"
 
         database_token_data = {
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: token.personal_data_test_name,
@@ -71,7 +71,8 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
         correct_token_data.pop(User.password.key, None)
 
         assert database_token_data == correct_token_data and len(token_hash) == 128, \
-            f"Got token with wrong data in database at route {ROUTE} with post data {test_data}: {token}"
+            (f"Got token with wrong data in database at route {ROUTE} with post data {test_data}: {token}"
+             f"\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables, create_post_data):
@@ -96,8 +97,8 @@ def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_cha
     with raise_if_change_in_tables(Token, User, Test):
         for bad_post_data in bad_data:
             resp = client.post(ROUTE, data=json_dumps(bad_post_data))
-            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request "
-                                             f"with data: {bad_post_data}")
+            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request with data: "
+                                             f"{bad_post_data}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_post_token__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
@@ -110,8 +111,8 @@ def test_post_token__with_unauthorized_request(client: FlaskClient, session, rai
     with raise_if_change_in_tables(Token, User, Test):
         for unauthorized_post_data in unauthorized_data:
             resp = client.post(ROUTE, data=json_dumps(unauthorized_post_data))
-            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request "
-                                             f"with data: {unauthorized_post_data}")
+            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request with data: "
+                                             f"{unauthorized_post_data}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_post_token__with_unknown_test(client: FlaskClient, session, raise_if_change_in_tables, create_post_data):
@@ -124,8 +125,8 @@ def test_post_token__with_unknown_test(client: FlaskClient, session, raise_if_ch
     with raise_if_change_in_tables(Token, User, Test):
         for unknown_test_post_data in unknown_test_data:
             resp = client.post(ROUTE, data=json_dumps(unknown_test_post_data))
-            assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for unknown test name in request "
-                                             f"with data: {unknown_test_post_data}")
+            assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for unknown test name with data: "
+                                             f"{unknown_test_post_data}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_post_token__with_wrong_test(client: FlaskClient, session, raise_if_change_in_tables,
@@ -142,5 +143,5 @@ def test_post_token__with_wrong_test(client: FlaskClient, session, raise_if_chan
     with raise_if_change_in_tables(Token, User, Test):
         for unknown_test_post_data in unknown_test_data:
             resp = client.post(ROUTE, data=json_dumps(unknown_test_post_data))
-            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for wrong test name in request "
-                                             f"with data: {unknown_test_post_data}")
+            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for wrong test name with data: "
+                                             f"{unknown_test_post_data}\n\nReceived response:\n{resp.get_data(True)}")

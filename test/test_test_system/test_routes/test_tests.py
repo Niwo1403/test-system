@@ -45,9 +45,10 @@ def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_i
     for test_token in (token, unlimited_token):
         with raise_if_change_in_tables(Token, Test):  # get request should not change data
             resp = client.get(ROUTE, query_string={"token": test_token.token})
-        assert resp.status_code == 200, f"Can't GET tests from {ROUTE} with token: {test_token}"
+        assert resp.status_code == 200, (f"Can't GET tests from {ROUTE} with token: {test_token}"
+                                         f"\n\nReceived response:\n{resp.get_data(True)}")
 
-        resp_tests = json_loads(resp.data.decode())
+        resp_tests = json_loads(resp.get_data(True))
         resp_test_names = {
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: resp_tests["personal_data_test"]["name"],
             PRE_COLLECT_TESTS_KEY: [pre_collect_test_description["name"]
@@ -55,8 +56,8 @@ def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_i
             Test.CATEGORIES.EVALUABLE_TEST.name: resp_tests["evaluable_test"]["name"]
         }
 
-        assert resp_test_names == test_names, f"Got tests with wrong names in response data at route {ROUTE} "\
-                                              f"with {test_token}"
+        assert resp_test_names == test_names, (f"Got tests with wrong names in response data at route {ROUTE} "
+                                               f"with {test_token}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_tests__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):
@@ -68,8 +69,8 @@ def test_get_tests__with_bad_request(client: FlaskClient, session, raise_if_chan
     with raise_if_change_in_tables(Token, Test):
         for query_string in test_query_strings:
             resp = client.get(ROUTE, query_string=query_string)
-            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request "
-                                             f"with arguments: {query_string}")
+            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request with arguments: "
+                                             f"{query_string}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_tests__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
@@ -83,8 +84,8 @@ def test_get_tests__with_unauthorized_request(client: FlaskClient, session, rais
     with raise_if_change_in_tables(Token, Test):
         for query_string in test_query_strings:
             resp = client.get(ROUTE, query_string=query_string)
-            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request "
-                                             f"with arguments: {query_string}")
+            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request with "
+                                             f"arguments: {query_string}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_tests__with_unknown_test_in_token(client: FlaskClient, session, raise_if_change_in_tables,
@@ -92,8 +93,8 @@ def test_get_tests__with_unknown_test_in_token(client: FlaskClient, session, rai
     with raise_if_change_in_tables(Token, Test):
         for unknown_test_token in unknown_test_tokens:
             resp = client.get(ROUTE, query_string={"token": unknown_test_token.token})
-            assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for request "
-                                             f"with unknown test in {unknown_test_token}")
+            assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for request with unknown test in "
+                                             f"{unknown_test_token}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_tests__with_wrong_test_in_token(client: FlaskClient, session, raise_if_change_in_tables,
@@ -101,5 +102,5 @@ def test_get_tests__with_wrong_test_in_token(client: FlaskClient, session, raise
     with raise_if_change_in_tables(Token, Test):
         for wrong_test_token in wrong_test_tokens:
             resp = client.get(ROUTE, query_string={"token": wrong_test_token.token})
-            assert resp.status_code == 500, (f"Got wrong status code at {ROUTE} for request "
-                                             f"with wrong test in {wrong_test_token}")
+            assert resp.status_code == 500, (f"Got wrong status code at {ROUTE} for request with wrong test in "
+                                             f"{wrong_test_token}\n\nReceived response:\n{resp.get_data(True)}")

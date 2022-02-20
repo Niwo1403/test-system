@@ -116,20 +116,24 @@ def test_get_certificate__with_success(client: FlaskClient, session,
 
         token = Token.query.filter_by(token=token.token).first()
         evaluable_test_answer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer.id).first()
-        assert token is not None, f"Token was deleted while GET certificate request at {ROUTE}"
+        assert token is not None, (f"Token was deleted while GET certificate request at {ROUTE}"
+                                   f"\n\nReceived response:\n{resp.get_data(True)}")
         assert evaluable_test_answer is not None, ("EvaluableTestAnswer was deleted while GET certificate request "
-                                                   f"at {ROUTE}")
+                                                   f"at {ROUTE}\n\nReceived response:\n{resp.get_data(True)}")
 
-        assert resp.status_code == 200, f"Can't GET certificate from {ROUTE} with {evaluable_test_answer}"
+        assert resp.status_code == 200, (f"Can't GET certificate from {ROUTE} with {evaluable_test_answer}"
+                                         f"\n\nReceived response:\n{resp.get_data(True)}")
 
         assert token.max_usage_count == pre_max_usage_count if pre_was_evaluated_with_token \
             else token.max_usage_count is None or token.max_usage_count + 1 == pre_max_usage_count, \
-            f"Got wrong max_usage_count after request with {token} & {evaluable_test_answer}"
+            (f"Got wrong max_usage_count after request with {token} & {evaluable_test_answer}"
+             f"\n\nReceived response:\n{resp.get_data(True)}")
 
         try:
             PdfFileReader(BytesIO(resp.data))
         except PdfReadError as e:
-            assert e is None, f"Got invalid pdf bytes from {ROUTE} for {evaluable_test_answer}"
+            assert e is None, (f"Got invalid pdf bytes from {ROUTE} for {evaluable_test_answer}"
+                               f"\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_certificate__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,
@@ -147,8 +151,8 @@ def test_get_certificate__with_bad_request(client: FlaskClient, session, raise_i
     with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
-            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request "
-                                             f"with arguments: {query_string}")
+            assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request with arguments: "
+                                             f"{query_string}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_if_change_in_tables,
@@ -162,7 +166,7 @@ def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for request with unknown data & "
-                                             f"with arguments: {query_string}")
+                                             f"arguments: {query_string}\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_certificate__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
@@ -177,5 +181,5 @@ def test_get_certificate__with_unauthorized_request(client: FlaskClient, session
     with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
-            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request "
-                                             f"with arguments: {query_string}")
+            assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request with "
+                                             f"arguments: {query_string}\n\nReceived response:\n{resp.get_data(True)}")
