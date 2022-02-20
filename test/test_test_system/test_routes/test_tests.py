@@ -10,15 +10,20 @@ from test_system.routes.tests import ROUTE
 from test_system.constants import PRE_COLLECT_TESTS_KEY
 
 
+def _create_and_commit_token(session, *args) -> Token:
+    token = Token.generate_token(*args)
+    session.add(token)
+    session.commit()
+    return token
+
+
 @fixture()
 def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
-        Token.generate_token(10, None, test_names[PRE_COLLECT_TESTS_KEY],
-                             test_names[Test.CATEGORIES.EVALUABLE_TEST.name]),
-        Token.generate_token(10, test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
-                             test_names[PRE_COLLECT_TESTS_KEY], None)]
-    session.add_all(unknown_test_tokens)
-    session.commit()
+        _create_and_commit_token(session, 10, None, test_names[PRE_COLLECT_TESTS_KEY],
+                                 test_names[Test.CATEGORIES.EVALUABLE_TEST.name]),
+        _create_and_commit_token(session, 10, test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
+                                 test_names[PRE_COLLECT_TESTS_KEY], None)]
     return unknown_test_tokens
 
 
@@ -28,12 +33,10 @@ def wrong_test_tokens(session, test_names) -> List[Token]:
     evaluable_test = test_names[Test.CATEGORIES.EVALUABLE_TEST.name]
     pre_collect_tests = test_names[PRE_COLLECT_TESTS_KEY]
     wrong_test_tokens = [
-        Token.generate_token(10, evaluable_test, pre_collect_tests, evaluable_test),
-        Token.generate_token(10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
-        Token.generate_token(10, personal_data_test, pre_collect_tests, personal_data_test),
-        Token.generate_token(10, personal_data_test, pre_collect_tests, pre_collect_tests[0])]
-    session.add_all(wrong_test_tokens)
-    session.commit()
+        _create_and_commit_token(session, 10, evaluable_test, pre_collect_tests, evaluable_test),
+        _create_and_commit_token(session, 10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
+        _create_and_commit_token(session, 10, personal_data_test, pre_collect_tests, personal_data_test),
+        _create_and_commit_token(session, 10, personal_data_test, pre_collect_tests, pre_collect_tests[0])]
     return wrong_test_tokens
 
 
