@@ -28,7 +28,7 @@ TEST_USERNAME = "test username"
 
 
 @fixture()
-def io_replacer() -> IOReplacer:
+def hash_generation_io_replacer() -> IOReplacer:
     return IOReplacer(inputs=[TEST_USERNAME, TEST_PASSWORD])
 
 
@@ -44,7 +44,7 @@ def test_generate_hash():
     _assert_correct_test_hash(generated_salted_hash)
 
 
-def test__generate_hash_from_input(io_replacer):
+def test__generate_hash_from_input(hash_generation_io_replacer):
     util._generate_hash_from_input()
-    generated_salted_hash = io_replacer.output.split(":")[-1].strip()
+    generated_salted_hash = hash_generation_io_replacer.output.split(":")[-1].strip()
     _assert_correct_test_hash(generated_salted_hash)
