@@ -30,10 +30,10 @@ def generate_hash_token() -> str:
     return token_hash
 
 
-def generate_unknown_hash_token(is_known: Callable[[str], bool], max_tries: int = 2) -> str:
+def generate_unknown_hash_token(is_unknown: Callable[[str], bool], max_tries: int = 2) -> str:
     for _ in range(max_tries):
         token_hash = generate_hash_token()
-        if is_known(token_hash):
+        if is_unknown(token_hash):
             return token_hash
     else:
         raise RuntimeError(f"Couldn't generate an unknown hash within {max_tries} tries.")
