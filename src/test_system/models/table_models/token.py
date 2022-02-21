@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import List, Optional
 # custom
 from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT, TOKEN_PERIOD_OF_VALIDITY_IN_DAYS
+from test_system.util import generate_unknown_hash_token
 from test_system.models.database import db
 from .answers import EvaluableTestAnswer
 from .test import Test
@@ -29,25 +30,14 @@ class Token(db.Model):
                        pre_collect_test_names: List[str],
                        evaluable_test_name: str,
                        expires: bool = True) -> "Token":
-        for _ in range(MAX_HASH_GENERATION_TRY_COUNT):
-            token_hash = cls._generate_hash()
-            if cls.query.filter_by(token=token_hash).first() is None:
-                break
-        else:
-            raise RuntimeError(f"Couldn't generate an unknown hash within {MAX_HASH_GENERATION_TRY_COUNT} tries.")
+        token_hash = generate_unknown_hash_token(
+            lambda test_token: cls.query.filter_by(token=test_token).first() is None, MAX_HASH_GENERATION_TRY_COUNT)
         return cls(creation_timestamp=db.func.now() if expires else None,
                    token=token_hash,
                    max_usage_count=max_usage_count,
                    personal_data_test_name=personal_data_test_name,
                    pre_collect_test_names=pre_collect_test_names,
                    evaluable_test_name=evaluable_test_name)
-
-    @staticmethod
-    def _generate_hash() -> str:
-        now = datetime.now()
-        token_seed = str(now).encode()
-        token_hash = sha3_512(token_seed).hexdigest()
-        return token_hash
 
     def __init__(self, **kwargs):
         if "creation_timestamp" not in kwargs:

@@ -32,19 +32,19 @@ def hash_generation_io_replacer() -> IOReplacer:
     return IOReplacer(inputs=[TEST_USERNAME, TEST_PASSWORD])
 
 
-def _assert_correct_test_hash(generated_salted_hash):
+def _assert_correct_password_test_hash(generated_salted_hash):
     salt, generated_hash = generated_salted_hash.split(util.HASH_SEPARATOR)
     assert len(generated_hash) == 128, "Hash got wrong length."
-    re_generated_salted_hash = util.generate_hash(TEST_PASSWORD, TEST_USERNAME, salt=salt)
+    re_generated_salted_hash = util.generate_password_hash(TEST_PASSWORD, TEST_USERNAME, salt=salt)
     assert generated_salted_hash == re_generated_salted_hash, "Re-generation of hash failed."
 
 
-def test_generate_hash():
-    generated_salted_hash = util.generate_hash(TEST_PASSWORD, TEST_USERNAME)
-    _assert_correct_test_hash(generated_salted_hash)
+def test_generate_password_hash():
+    generated_salted_hash = util.generate_password_hash(TEST_PASSWORD, TEST_USERNAME)
+    _assert_correct_password_test_hash(generated_salted_hash)
 
 
-def test__generate_hash_from_input(hash_generation_io_replacer):
-    util._generate_hash_from_input()
+def test__generate_password_hash_from_input(hash_generation_io_replacer):
+    util._generate_password_hash_from_input()
     generated_salted_hash = hash_generation_io_replacer.output.split(":")[-1].strip()
-    _assert_correct_test_hash(generated_salted_hash)
+    _assert_correct_password_test_hash(generated_salted_hash)
