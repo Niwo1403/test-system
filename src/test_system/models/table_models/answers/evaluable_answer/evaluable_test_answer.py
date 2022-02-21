@@ -6,7 +6,7 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
     __tablename__ = "evaluable_test_answer"
 
     id = db.Column(db.Integer, primary_key=True)
-    was_evaluated_with_token = db.Column(db.BOOLEAN, default=False)
+    was_evaluated_with_token = db.Column(db.String, db.ForeignKey("token.token"), default=None)
     test_answer_id = db.Column(db.Integer, db.ForeignKey("test_answer.id"))
 
     test_answer = db.relationship("TestAnswer")
@@ -17,3 +17,6 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
                 f"was_evaluated_with_token: {self.was_evaluated_with_token}, "
                 f"test_answer_id: {self.test_answer_id}, "
                 f"evaluable_question_answers count: {len(self.evaluable_question_answers)})")
+
+    def was_evaluated(self) -> bool:
+        return self.was_evaluated_with_token is not None

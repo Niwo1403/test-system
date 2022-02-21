@@ -65,7 +65,7 @@ class Token(db.Model):
         return self._is_expired() or self._has_no_usage_left()
 
     def use_for(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
-        evaluable_test_answer.was_evaluated_with_token = True
+        evaluable_test_answer.was_evaluated_with_token = self.token
         if self.max_usage_count is not None:
             self.max_usage_count -= 1
             db.session.commit()

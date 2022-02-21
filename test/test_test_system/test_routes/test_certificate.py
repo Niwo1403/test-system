@@ -1,6 +1,6 @@
 # std
 from pytest import fixture
-from typing import List
+from typing import List, Callable
 from io import BytesIO
 # 3rd party
 from flask.testing import FlaskClient
@@ -52,16 +52,24 @@ def _add_example_answers(session, evaluable_test_answer: EvaluableTestAnswer):
 
 
 @fixture()
-def evaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
-    evaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=test_answer.id)
-    session.add(evaluated_evaluable_test_answer)
-    session.commit()
-    _add_example_answers(session, evaluated_evaluable_test_answer)
-    return evaluated_evaluable_test_answer
+def create_evaluated_evaluable_test_answer_for_token(session, test_answer) -> Callable:
+    def _create_evaluated_evaluable_test_answer_for_token(token: Token) -> EvaluableTestAnswer:
+        evaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=token.token,
+                                                              test_answer_id=test_answer.id)
+        session.add(evaluated_evaluable_test_answer)
+        session.commit()
+        _add_example_answers(session, evaluated_evaluable_test_answer)
+        return evaluated_evaluable_test_answer
+    return _create_evaluated_evaluable_test_answer_for_token
+
+
+@fixture()
+def evaluated_evaluable_test_answer(create_evaluated_evaluable_test_answer_for_token, token) -> EvaluableTestAnswer:
+    return create_evaluated_evaluable_test_answer_for_token(token)
 
 
 def _unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
-    unevaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=False,
+    unevaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=None,
                                                             test_answer_id=test_answer.id)
     session.add(unevaluated_evaluable_test_answer)
     session.commit()
@@ -80,15 +88,15 @@ def unevaluated_evaluable_test_answer_2(session, test_answer_2) -> EvaluableTest
 
 
 @fixture()
-def incomplete_evaluable_test_answers(session, test_names) -> List[EvaluableTestAnswer]:
+def incomplete_evaluable_test_answers(session, test_names, token) -> List[EvaluableTestAnswer]:
     test_answer = TestAnswer(answer_set={}, test_name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name], person_id=None)
     session.add(test_answer)
     session.commit()
     incomplete_evaluable_test_answers = [
-        EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=None),
-        EvaluableTestAnswer(was_evaluated_with_token=False, test_answer_id=None),
-        EvaluableTestAnswer(was_evaluated_with_token=True, test_answer_id=test_answer.id),
-        EvaluableTestAnswer(was_evaluated_with_token=False, test_answer_id=test_answer.id)
+        EvaluableTestAnswer(was_evaluated_with_token=token.token, test_answer_id=None),
+        EvaluableTestAnswer(was_evaluated_with_token=None, test_answer_id=None),
+        EvaluableTestAnswer(was_evaluated_with_token=token.token, test_answer_id=test_answer.id),
+        EvaluableTestAnswer(was_evaluated_with_token=None, test_answer_id=test_answer.id)
     ]
     session.add_all(incomplete_evaluable_test_answers)
     session.commit()
@@ -97,19 +105,19 @@ def incomplete_evaluable_test_answers(session, test_names) -> List[EvaluableTest
 
 def test_get_certificate__with_success(client: FlaskClient, session,
                                        token: Token, unlimited_token: Token, no_use_token: Token, expired_token: Token,
-                                       evaluated_evaluable_test_answer: EvaluableTestAnswer,
+                                       create_evaluated_evaluable_test_answer_for_token: Callable,
                                        unevaluated_evaluable_test_answer: EvaluableTestAnswer,
                                        unevaluated_evaluable_test_answer_2: EvaluableTestAnswer):
-    test_cases = [(token, evaluated_evaluable_test_answer),
+    test_cases = [(token, create_evaluated_evaluable_test_answer_for_token(token)),
                   (token, unevaluated_evaluable_test_answer),
                   # EvaluableTestAnswers (like unevaluated_evaluable_test_answer) must NOT repeat,
                   # since the unevaluated answers will be evaluated after first request!
                   (unlimited_token, unevaluated_evaluable_test_answer_2),
-                  (expired_token, evaluated_evaluable_test_answer),
-                  (no_use_token, evaluated_evaluable_test_answer)]
+                  (expired_token, create_evaluated_evaluable_test_answer_for_token(expired_token)),
+                  (no_use_token, create_evaluated_evaluable_test_answer_for_token(no_use_token))]
 
     for token, evaluable_test_answer in test_cases:
-        pre_was_evaluated_with_token = evaluable_test_answer.was_evaluated_with_token
+        token_was_evaluated_before = evaluable_test_answer.was_evaluated()
         pre_max_usage_count = token.max_usage_count
         resp = client.get(ROUTE, query_string={"evaluable-test-answer-id": evaluable_test_answer.id,
                                                "token": token.token})
@@ -124,7 +132,7 @@ def test_get_certificate__with_success(client: FlaskClient, session,
         assert resp.status_code == 200, (f"Can't GET certificate from {ROUTE} with {evaluable_test_answer}"
                                          f"\n\nReceived response:\n{resp.get_data(True)}")
 
-        assert token.max_usage_count == pre_max_usage_count if pre_was_evaluated_with_token \
+        assert token.max_usage_count == pre_max_usage_count if token_was_evaluated_before \
             else token.max_usage_count is None or token.max_usage_count + 1 == pre_max_usage_count, \
             (f"Got wrong max_usage_count after request with {token} & {evaluable_test_answer}"
              f"\n\nReceived response:\n{resp.get_data(True)}")
@@ -171,11 +179,15 @@ def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_
 
 def test_get_certificate__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
                                                     unknown_token_name: str, no_use_token: Token, expired_token: Token,
-                                                    unevaluated_evaluable_test_answer: EvaluableTestAnswer):
+                                                    unevaluated_evaluable_test_answer: EvaluableTestAnswer,
+                                                    evaluated_evaluable_test_answer: EvaluableTestAnswer):
     query_strings = [
         {"token": unknown_token_name, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
         {"token": no_use_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
-        {"token": expired_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id}
+        {"token": expired_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
+        # passed token doesn't match used token of evaluated_evaluable_test_answer
+        {"token": no_use_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id},
+        {"token": expired_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id}
     ]
 
     with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):

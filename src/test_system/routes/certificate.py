@@ -29,14 +29,15 @@ def get_certificate():
     if person is None:
         abort(404, "Person, who answered TestAnswer not found.")
     token: Token = Token.query.filter_by(token=token_str).first()
-    if (token is None or token.is_invalid()) and not evaluable_answer.was_evaluated_with_token:
+
+    if token is None or token.is_invalid() and evaluable_answer.was_evaluated_with_token != token.token:
         abort(401, "Token not found or invalid.")
 
     cm = CertificateManager(person, evaluable_answer)
     cm.add_data_to_certificate()
     pdf = cm.get_pdf()
 
-    if evaluable_answer.was_evaluated_with_token:
+    if evaluable_answer.was_evaluated():
         app.logger.info(f"Regenerated certificate for {person}")
     else:
         token.use_for(evaluable_answer)
