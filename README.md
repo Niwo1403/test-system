@@ -1,44 +1,27 @@
-# Python: Getting Started from Heroku
+# Personality test system
 
-## Running Locally
+## User manual
 
-Make sure you have Python 3.10 [installed locally](https://docs.python-guide.org/starting/installation/). To push to Heroku, you'll need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli), as well as [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql#local-setup).
+A user manual can be found at [doc/user manual.md](doc/user%20manual.md)
 
-```sh
-$ git clone <REPO LINK>
-$ cd <REPO NAME>
+## Developer manual
 
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+A developer manual can be found at [doc/developer manual.md](doc/developer%20manual.md)
 
-$ heroku local
-```
+## Overview
 
-"python3" meight also be "py" or "python", depending on your OS and installation.
-On windows use "heroku local web -f Procfile.windows" instead of "heroku local" and "venv\Scripts\activate" instead of "source venv/bin/activate".
+In the linked manuals, information about the following can be found
+- [Introduction into domain](doc/user%20manual.md#introduction)
+- [Setting up the environment](doc/developer%20manual.md#setting-up-environment)
+- [Running the application locally](doc/developer%20manual.md#run-application-locally)
+- [Running tests](doc/developer%20manual.md#run-tests)
+- [Database structure](doc/developer%20manual.md#database-er-model)
+- [REST routes](doc/developer%20manual.md#routes)
+- [Directory structure](doc/developer%20manual.md#directory-structure-of-project)
+- ...
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-
-
-
-
-
-## Deploying to Heroku OUTDATED? - DONT USE
-
-```sh
-$ heroku create
-$ git push heroku main
-
-$ heroku run python app.py
-$ heroku open
-```
-or
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-## Documentation
-
-For more information about using Python on Heroku, see these Dev Center articles:
-
-- [Python on Heroku](https://devcenter.heroku.com/categories/python)
+## Technology stack
+- **Code organisation**: git, github, PyCharm, PaaS, Heroku
+- **Database**: SQL, ORM, PostgreSQL
+- **Backend**: Python, Flask (web-framework), SQLAlchemy (ORM-framework), REST APIs, pytest, Gunicorn (WSGI server)
+- **Frontend**: HTML, JavaScript, CSS, SurveyJS
