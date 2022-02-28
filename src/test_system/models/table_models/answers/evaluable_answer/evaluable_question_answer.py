@@ -24,6 +24,8 @@ class EvaluableQuestionAnswer(db.Model):  # belongs to EvaluableTestAnswer
                 category_answers = {question_category: category_answers}
                 question_category = None
             for question_name, answer_value in category_answers.items():
+                if not answer_value.isnumeric():
+                    continue
                 question_name_id = EvaluableQuestionName.get_id_for(question_category, question_name)
                 evaluable_question_answer = cls(value=answer_value,
                                                 evaluable_question_name_id=question_name_id,

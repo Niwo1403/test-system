@@ -12,7 +12,11 @@ from test_system.routes.test_answer import ROUTE
 
 test_answer = {"Question A": "Answer A"}
 test_answer_json = json_dumps(test_answer)
-evaluable_test_answer = {"Category A": {"Row 1": "1", "Row 2": "2"}, "Category B": {"Row 1": "3", "Row 2": "4"}}
+evaluable_test_answer = {"Category A": {"Question 1": "1", "Question 2": "2"},
+                         "Category B": {"Question 1": "3", "Question 2": "4"},
+                         "Question X": "5",
+                         "Ignored question": "TEXT!"}
+evaluable_test_answer_answers_count = 5
 evaluable_test_answer_json = json_dumps(evaluable_test_answer)
 
 
@@ -72,6 +76,9 @@ def test_post_test_answer__with_success(client: FlaskClient, session, person, pr
         evaluable_answer: EvaluableTestAnswer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer_id).first()
         assert evaluable_answer is not None, ("Could not write EvaluableTestAnswer to database"
                                               f"\n\nReceived response:\n{resp.get_data(True)}")
+
+        assert len(evaluable_answer.evaluable_question_answers) == evaluable_test_answer_answers_count, \
+            f"Got wrong answer count\n\nReceived response:\n{resp.get_data(True)}"
 
         answer: TestAnswer = evaluable_answer.test_answer
         _assert_right_test_answer_data(answer, person, evaluable_test, evaluable_test_answer, resp)
