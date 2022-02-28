@@ -6,17 +6,12 @@ class TestAnswer(db.Model):
     __tablename__ = "test_answer"
 
     id = db.Column(db.Integer, primary_key=True)
-    creation_timestamp = db.Column(db.TIMESTAMP)
+    creation_timestamp = db.Column(db.TIMESTAMP, default=db.func.now())
     answer_set = db.Column(db.JSON)
     test_name = db.Column(db.String, db.ForeignKey("test.name"))
     person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
 
     answerer = db.relationship("Person")
-
-    def __init__(self, **kwargs):
-        if "creation_timestamp" not in kwargs:
-            kwargs["creation_timestamp"] = db.func.now()
-        super(TestAnswer, self).__init__(**kwargs)
 
     def __repr__(self):
         return (f"Answer {self.id} ("
