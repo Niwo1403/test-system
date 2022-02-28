@@ -62,7 +62,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
         ]
     }, test_category=Test.CATEGORIES.PERSONAL_DATA_TEST)
     pre_collect_test = Test(name="PreCol", description_json={
-        "title": "Zusetzliche persöhnliche Daten",
+        "title": "Zusätzliche Daten",
         "logoPosition": "right",
         "pages": [
             {
@@ -79,7 +79,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
         ]
     }, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
     pers_test = Test(name="PersTest", description_json={
-        "title": "Persöhnliche Daten",
+        "title": "Persöhnlichkeits Test",
         "description": "Matrix Test",
         "logoPosition": "right",
         "pages": [
