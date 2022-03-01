@@ -1,6 +1,7 @@
 # std
-from datetime import datetime
 from typing import List, Optional
+# 3rd party
+from sqlalchemy.sql.expression import text
 # custom
 from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT, TOKEN_PERIOD_OF_VALIDITY_IN_DAYS
 from test_system.util import generate_unknown_hash_token
@@ -38,6 +39,10 @@ class Token(db.Model):
                    pre_collect_test_names=pre_collect_test_names,
                    evaluable_test_name=evaluable_test_name)
 
+    @staticmethod
+    def get_earliest_valid_sql_timestamp():
+        return text(f"NOW() - INTERVAL '1 DAY' * {TOKEN_PERIOD_OF_VALIDITY_IN_DAYS}")
+
     def __init__(self, **kwargs):
         if "creation_timestamp" not in kwargs:  # do manually to enable None passing
             kwargs["creation_timestamp"] = db.func.now()
@@ -68,8 +73,10 @@ class Token(db.Model):
     def _is_expired(self) -> bool:
         if self.creation_timestamp is None:
             return False
-        token_age = datetime.now() - self.creation_timestamp
-        return token_age.days >= TOKEN_PERIOD_OF_VALIDITY_IN_DAYS
+
+        unexpired_token = Token.query.filter_by(token=self.token)\
+            .filter(Token.creation_timestamp >= Token.get_earliest_valid_sql_timestamp()).first()
+        return unexpired_token != self
 
     def _has_no_usage_left(self) -> bool:
         return self.max_usage_count is not None and self.max_usage_count <= 0
