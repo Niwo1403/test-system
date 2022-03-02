@@ -89,7 +89,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                     {
                         "type": "matrix",
                         "name": "ABC",
-                        "title": "Kategorie ABC",
+                        "titleLocation": "hidden",
                         "isRequired": True,
                         "columns": [
                             {
@@ -102,29 +102,128 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                             },
                             {
                                 "value": "3",
-                                "text": "ttz"
-                            },
-                            {
-                                "value": "4",
                                 "text": "tz"
                             },
                             {
-                                "value": "5",
+                                "value": "4",
                                 "text": "tvz"
                             }
                         ],
                         "rows": [
                             {
-                                "value": "Row 1",
+                                "value": "Question 1",
                                 "text": "Frage 1"
                             },
                             {
-                                "value": "Row 2",
+                                "value": "Question 2",
                                 "text": "Frage 2"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "matrix",
+                        "name": "DEF",
+                        "titleLocation": "hidden",
+                        "isRequired": True,
+                        "columns": [
+                            {
+                                "value": "1",
+                                "text": "tgnz"
                             },
                             {
-                                "value": "Row 3",
+                                "value": "2",
+                                "text": "tnz"
+                            },
+                            {
+                                "value": "3",
+                                "text": "tz"
+                            },
+                            {
+                                "value": "4",
+                                "text": "tvz"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "value": "Question 3",
                                 "text": "Frage 3"
+                            },
+                            {
+                                "value": "Question 4",
+                                "text": "Frage 4"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "page2",
+                "elements": [
+                    {
+                        "type": "matrix",
+                        "name": "DEF",
+                        "titleLocation": "hidden",
+                        "isRequired": True,
+                        "columns": [
+                            {
+                                "value": "1",
+                                "text": "tgnz"
+                            },
+                            {
+                                "value": "2",
+                                "text": "tnz"
+                            },
+                            {
+                                "value": "3",
+                                "text": "tz"
+                            },
+                            {
+                                "value": "4",
+                                "text": "tvz"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "value": "Question 5",
+                                "text": "Frage 5"
+                            },
+                            {
+                                "value": "Question 6",
+                                "text": "Frage 6"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "matrix",
+                        "name": "ABC",
+                        "titleLocation": "hidden",
+                        "isRequired": True,
+                        "columns": [
+                            {
+                                "value": "1",
+                                "text": "tgnz"
+                            },
+                            {
+                                "value": "2",
+                                "text": "tnz"
+                            },
+                            {
+                                "value": "3",
+                                "text": "tz"
+                            },
+                            {
+                                "value": "4",
+                                "text": "tvz"
+                            }
+                        ],
+                        "rows": [
+                            {
+                                "value": "Question 7",
+                                "text": "Frage 7"
+                            },
+                            {
+                                "value": "Question 8",
+                                "text": "Frage 8"
                             }
                         ]
                     }
