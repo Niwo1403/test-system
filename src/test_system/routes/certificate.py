@@ -33,8 +33,8 @@ def get_certificate():
     if token is None or token.is_invalid() and evaluable_answer.was_evaluated_with_token != token.token:
         abort(401, "Token not found or invalid.")
 
-    cm = CertificateManager(person, evaluable_answer)
-    cm.add_data_to_certificate()
+    cm = CertificateManager(person)
+    cm.add_answer(evaluable_answer)
     pdf = cm.get_pdf()
 
     if evaluable_answer.was_evaluated():
