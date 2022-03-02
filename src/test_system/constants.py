@@ -11,7 +11,7 @@ FILE_DIR = dirname(realpath(__file__))
 
 
 API_PREFIX = "/api"
-DEFAULT_INDEX_FILE = "/index.html"
+DEFAULT_INDEX_FILE = "/index.html"  # relative to static directory (personality_test_system/static)
 
 PRE_COLLECT_TESTS_SURVEY_KEYWORD = "tests"
 EXPIRES_SURVEY_KEYWORD = "expires"
@@ -21,7 +21,7 @@ EXPIRES_SURVEY_KEYWORD = "expires"
 
 
 STATIC_URL_PATH = ""
-STATIC_FOLDER = "../../static"  # relative path from directory of app.py to static dir (personality_test_system/static)
+STATIC_FOLDER = "../../static"  # relative path from app.py to static directory (personality_test_system/static)
 
 LOG_LEVEL = logging.INFO
 
