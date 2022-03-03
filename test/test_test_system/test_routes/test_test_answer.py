@@ -98,13 +98,6 @@ def test_post_test_answer__with_bad_request(client: FlaskClient, session, raise_
                       ("{true: \"3\"}", correct_query_string),
                       ("{'true': \"3\"}", correct_query_string)]
 
-    wrong_schema_data = [
-                         # wrong value; str value
-                         {"2": {}}, {"2": True}, {"2": None},
-                         # wrong second value; dict value
-                         {"category": {"Row 1": {}}}, {"category": {"Row 1": True}}, {"category": {"Row 1": None}}]
-    test_arguments += list(map(lambda wrong_data: (json_dumps(wrong_data), correct_query_string), wrong_schema_data))
-
     with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
         for data, query_string in test_arguments:
             resp = client.post(ROUTE, data=data, query_string=query_string)

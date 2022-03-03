@@ -3,13 +3,13 @@ from json import loads as json_loads
 from json.decoder import JSONDecodeError
 # 3rd party
 from flask import request, abort
-from schema import Schema, Or, SchemaError
+from schema import Schema, Use, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
 from test_system.models import db, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
 
-EVALUABLE_TEST_SCHEMA = Schema({str: Or(str, {str: str})})
+TEST_SCHEMA = Schema({str: Use(lambda v: v)})  # Only first key must be string
 
 ROUTE = f'{API_PREFIX}/test-answer/'
 
@@ -32,8 +32,7 @@ def post_test_answer():
 
     try:
         answer_set = json_loads(request.data.decode())
-        if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
-            answer_set = EVALUABLE_TEST_SCHEMA.validate(answer_set)
+        answer_set = TEST_SCHEMA.validate(answer_set)
     except (JSONDecodeError, TypeError):
         return abort(400, "Data validation failed, wrong JSON.")
     except SchemaError:
