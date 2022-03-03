@@ -125,12 +125,18 @@ _Note: before running the application you have to [set up the environment](#sett
 
 ## Database remarks
 
-- In case the database schema will be edited, you need to adjust it in all databases either by dropping the changed tables & object types (then the backend will create them on next usage) or by editing the schema of the tables manually
+### Changing database schema
+
+- In case the database schema will be edited, you need to adjust it in all databases either by dropping the changed tables & object types (then the backend will create them on [next run](#run-application-locally)) or by editing the schema of the tables manually
   - To add a column in pgAdmin go to: Servers \> _\<YOUR_SERVER\>_ \> _\<YOUR_DATABASE_NAME\>_ \> Schemas \> public \> Tables \> _\<TABLE_NAME\>_ \> _\<COLUMN_NAME\>_ \> Columns
     - On "Columns" right click, select "Create" \> "Column", enter column information and save
-- Some actions in the database doesn't work, while the backend is running - e.g. deleting tables, while the backend is running probably fails...
-- Note that the password in the user table is saved as [salted](https://en.wikipedia.org/wiki/Salt_(cryptography)) & [peppered](https://en.wikipedia.org/wiki/Pepper_(cryptography)) [hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
-  - If you want to change the username or password in the user table, the password must be regenerated: start the src/test_system/util.py file as main (call file directly from terminal), enter the updated username & password, and you will get the newly hashed password
+- Some actions in the database doesn't work, while the backend is running - e.g. deleting tables, while the backend is running, probably fails or loads until the backend has terminated...
+
+### Changing user password or adding user
+
+- The password in the user table is saved as [salted](https://en.wikipedia.org/wiki/Salt_(cryptography)) & [peppered](https://en.wikipedia.org/wiki/Pepper_(cryptography)) [hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
+- If you want to add or change the username or password in the [user table](user%20manual.md#user-table), the password must be regenerated
+  - Start the `src/test_system/util.py` file as main (call file directly from terminal), enter the updated username & password, and you will get the newly hashed password
 
 <br><br>
 
