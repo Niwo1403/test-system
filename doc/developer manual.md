@@ -11,7 +11,7 @@ Note: you maybe should read the [user manual introduction](user%20manual.md#intr
   - Check the option to add Python 3.10 to the PATH
 
 ### Setting up Postgres
-- Download Postgres 13.5 (or a compatible version) [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
+- Download Postgres 13.5 installer (or a compatible version) [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
   - Run downloaded installer and use presets in installer (all components, Port 5432, ...)
     - Set a local database password, when asked for (and remember it, you will need it again later)
     - Close "Stack Builder" if it is opened after finish of installation
@@ -46,11 +46,11 @@ _Note: create the venv using the Python installation, you installed earlier_
 ### Create databases
 - Chose a name for the database (e.g. personality_test_database) and run with your chosen database name instead of "\<database name\>": `psql -c "CREATE DATABASE <database name>;"`
   - On Linux you might have to run the command as sudo
-  - Adjust DATABASE_URL in .env file (in directory personality_test_system) by adding your local postgres database password (set in postgres installer) and database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
+  - Adjust DATABASE_URL in .env file (in directory personality_test_system) by adding your local postgres database password (set in [postgres installer](#setting-up-postgres)) and database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
 - Chose a name for the testing database (e.g. test_personality_test_database) and run with your chosen test database name instead of "\<testing database name\>": `psql -c "CREATE DATABASE <testing database name>;"`
   - On Linux you might have to run the command as sudo
-  - Adjust DATABASE_URL in the test .env file (in directory personality_test_system/test) by adding your local postgres database password (set in postgres installer) and test database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
-- In case git detects the .env files as changed (after entering database name & password), run `git update-index --skip-worktree <file>` for each .env file es _\<file\>_ to tell git to ignore changes in the file (otherwise you may accidentally commit your password...)
+  - Adjust DATABASE_URL in the test .env file (in directory personality_test_system/test) by adding your local postgres database password (set in [postgres installer](#setting-up-postgres)) and test database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
+- In case git detects the .env files as changed (after entering database name & password), run `git update-index --skip-worktree <file>` for each .env file es _\<file\>_ to tell git to ignore changes in the file (otherwise you may accidentally commit your database password...)
   - In case an ignored .env file shouldn't be ignored anymore, run `git update-index --no-skip-worktree <file>` with the .env file es _\<file\>_
 - If you **use PyCharm**, install the plugins _".env file support"_ & _"EnvFile"_
   - If you open a _".env"_ file in PyCharm, it will probably offer you to _"Install plugins"_ at the top - this is an easy way to install the plugins
@@ -59,7 +59,7 @@ _Note: create the venv using the Python installation, you installed earlier_
 - The tables in the database will be created, when running the application the next time (&rarr; [how to run application](#run-application-locally))
 - Verify that everything worked (after the application was started at least once): choose a table (e.g. _"tests"_) and read data from it
   - Open pgAdmin and login with your master password set earlier (this isn't your postgres password!)
-    - If you open pgAdmin the first time, you will be asked to set this master password
+    - If you open pgAdmin the first time, you will be asked to set the master password
   - To find the tables follow instructions [here](user%20manual.md#find-tables) with PostgreSQL 13 (or other version) as _\<SERVER_NAME\>_ and _\<DATABASE\>_ being the database name chosen by you (further infos: [read data](user%20manual.md#show--export-data) & [change data](user%20manual.md#change--save-data))
 
 ### Setting up Heroku
