@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "7fc6641b-9f29-4282-90e4-ed02fc8a05fe",
+		"name": "personality_test_system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET token-creator",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/token-creator/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"token-creator",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/token/?username=admin&password=admin&max-usage-count=2&personal-data-test-name=Person&pre-collect-test-names=[\"UnknownTest\", \"PersTest2\"]&evaluable-test-name=PersTest",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"token",
+						""
+					],
+					"query": [
+						{
+							"key": "username",
+							"value": "admin"
+						},
+						{
+							"key": "password",
+							"value": "admin"
+						},
+						{
+							"key": "max-usage-count",
+							"value": "2"
+						},
+						{
+							"key": "personal-data-test-name",
+							"value": "Person"
+						},
+						{
+							"key": "pre-collect-test-names",
+							"value": "[\"UnknownTest\", \"PersTest2\"]"
+						},
+						{
+							"key": "evaluable-test-name",
+							"value": "PersTest"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET tests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/tests/?token=asdf",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"tests",
+						""
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "asdf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST person",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"Max M.\", \"age\": 22, \"gender\": \"s\", \"position\": \"abc\"}"
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/person/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"person",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST test-answer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"word\":\"test word\"}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/test-answer/?test-name=PreCol&person-id=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"test-answer",
+						""
+					],
+					"query": [
+						{
+							"key": "test-name",
+							"value": "PreCol"
+						},
+						{
+							"key": "person-id",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST test-answer (with evaluable test)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"question_category\":{\"question_name\": \"3\", \"question_name2\": \"4\"},\r\n    \"another_question_name\": \"13\",\r\n    \"wrong_question_value\": \"TEXT!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/test-answer/?test-name=PersTest&person-id=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"test-answer",
+						""
+					],
+					"query": [
+						{
+							"key": "test-name",
+							"value": "PersTest"
+						},
+						{
+							"key": "person-id",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
