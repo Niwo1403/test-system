@@ -86,6 +86,8 @@
     - Select the exported CSV file in the opened menu, click import and a preview will be shown
       - In case the preview is displayed wrongly, the "Delimiter" (_de:_ Trennzeichen) may have to be adjusted
       - In case the preview is displayed correctly, click "Load" (_de:_ Laden) to import the table
+- If the data you want to access exist as "Heroku Dataclip", you can also access it directly on [Heroku Dataclips website](https://data.heroku.com/dataclips)
+  - Select a dataclip in the list to show its data; in the shown data the "CSV" button can be used 
 
 ### Change & save data
 - In the shown table (&rarr; [how to show data](#show--export-data)):
