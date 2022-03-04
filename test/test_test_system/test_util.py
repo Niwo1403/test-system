@@ -8,6 +8,12 @@ from mock import patch
 from test_system import util
 
 
+TEST_PASSWORD = "test password"
+TEST_USERNAME = "test username"
+
+hashes = ["0"*128, "0"*128, "0"*128, "0"*128]
+
+
 class IOReplacer:
 
     def __init__(self, inputs: List = None):
@@ -21,12 +27,8 @@ class IOReplacer:
     def input(self, *args, **kwargs):
         return next(self.inputs)
 
-    def print(self, *args, sep: str = " ", end: str = "\n", **kwargs):
+    def print(self, *args, sep: str = " ", end: str = "\n", **kwargs) -> None:
         self.output += sep.join(args) + end
-
-
-TEST_PASSWORD = "test password"
-TEST_USERNAME = "test username"
 
 
 @fixture()
@@ -56,9 +58,6 @@ def test_generate_hash_token():
     hash_token = util.generate_hash_token()
     assert len(hash_token) == 128, f"Hash got wrong length: {len(hash_token)}"
     assert all(map(lambda c: c in "0123456789abcdef", hash_token)), f"Hash got wrong character: {hash_token}"
-
-
-hashes = ["0"*128, "0"*128, "0"*128, "0"*128]
 
 
 @patch("test_system.util.generate_hash_token", wraps=lambda: hashes.pop(0) if hashes else "1"*128)

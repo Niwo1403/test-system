@@ -35,16 +35,16 @@ def _test_answer(session, token: Token, person: Person) -> TestAnswer:
 
 
 @fixture()
-def test_answer(session, token: Token, person: Person) -> TestAnswer:
+def test_answer(session, token, person) -> TestAnswer:
     return _test_answer(session, token, person)
 
 
 @fixture()
-def test_answer_2(session, token: Token, person_with_position: Person) -> TestAnswer:
+def test_answer_2(session, token, person_with_position) -> TestAnswer:
     return _test_answer(session, token, person_with_position)
 
 
-def _add_example_answers(session, evaluable_test_answer: EvaluableTestAnswer):
+def _add_example_answers(session, evaluable_test_answer):
     answers = EvaluableQuestionAnswer.create_answers({"CATEGORY A": {"QUESTION 1": "3", "QUESTION 2": "1"}},
                                                      evaluable_test_answer)
     session.add_all(answers)
@@ -52,7 +52,7 @@ def _add_example_answers(session, evaluable_test_answer: EvaluableTestAnswer):
 
 
 @fixture()
-def create_evaluated_evaluable_test_answer_for_token(session, test_answer) -> Callable:
+def create_evaluated_evaluable_test_answer_for_token(session, test_answer) -> Callable[[Token], EvaluableTestAnswer]:
     def _create_evaluated_evaluable_test_answer_for_token(token: Token) -> EvaluableTestAnswer:
         evaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=token.token,
                                                               test_answer_id=test_answer.id)
@@ -104,10 +104,9 @@ def incomplete_evaluable_test_answers(session, test_names, token) -> List[Evalua
 
 
 def test_get_certificate__with_success(client: FlaskClient, session,
-                                       token: Token, unlimited_token: Token, no_use_token: Token, expired_token: Token,
-                                       create_evaluated_evaluable_test_answer_for_token: Callable,
-                                       unevaluated_evaluable_test_answer: EvaluableTestAnswer,
-                                       unevaluated_evaluable_test_answer_2: EvaluableTestAnswer):
+                                       token, unlimited_token, no_use_token, expired_token,
+                                       create_evaluated_evaluable_test_answer_for_token,
+                                       unevaluated_evaluable_test_answer, unevaluated_evaluable_test_answer_2):
     test_cases = [(token, create_evaluated_evaluable_test_answer_for_token(token)),
                   (token, unevaluated_evaluable_test_answer),
                   # EvaluableTestAnswers (like unevaluated_evaluable_test_answer) must NOT repeat,
@@ -122,6 +121,7 @@ def test_get_certificate__with_success(client: FlaskClient, session,
         resp = client.get(ROUTE, query_string={"evaluable-test-answer-id": evaluable_test_answer.id,
                                                "token": token.token})
 
+        # token & evaluable_test_answer must be reloaded after extern change!
         token = Token.query.filter_by(token=token.token).first()
         evaluable_test_answer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer.id).first()
         assert token is not None, (f"Token was deleted while GET certificate request at {ROUTE}"
@@ -145,8 +145,7 @@ def test_get_certificate__with_success(client: FlaskClient, session,
 
 
 def test_get_certificate__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,
-                                           token: Token, evaluated_evaluable_test_answer: EvaluableTestAnswer,
-                                           unevaluated_evaluable_test_answer: EvaluableTestAnswer):
+                                           token, evaluated_evaluable_test_answer, unevaluated_evaluable_test_answer):
     query_strings = [
         {"evaluable-test-answer-id": evaluated_evaluable_test_answer.id},
         {"evaluable-test-answer-id": evaluated_evaluable_test_answer.id, "token": None},
@@ -164,7 +163,7 @@ def test_get_certificate__with_bad_request(client: FlaskClient, session, raise_i
 
 
 def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_if_change_in_tables,
-                                            token: Token, incomplete_evaluable_test_answers: List[EvaluableTestAnswer]):
+                                            token, incomplete_evaluable_test_answers):
     query_strings = [
         {"token": token.token, "evaluable-test-answer-id": str(incomplete_evaluable_test_answer.id)}
         for incomplete_evaluable_test_answer in incomplete_evaluable_test_answers
@@ -178,9 +177,8 @@ def test_get_certificate__with_unknown_data(client: FlaskClient, session, raise_
 
 
 def test_get_certificate__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
-                                                    unknown_token_name: str, no_use_token: Token, expired_token: Token,
-                                                    unevaluated_evaluable_test_answer: EvaluableTestAnswer,
-                                                    evaluated_evaluable_test_answer: EvaluableTestAnswer):
+                                                    unknown_token_name, no_use_token, expired_token,
+                                                    unevaluated_evaluable_test_answer, evaluated_evaluable_test_answer):
     query_strings = [
         {"token": unknown_token_name, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
         {"token": no_use_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},

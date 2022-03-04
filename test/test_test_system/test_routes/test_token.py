@@ -15,7 +15,7 @@ MANDATORY_KEYS = MANDATORY_STRING_VALUE_KEYS + [EXPIRES_SURVEY_KEYWORD]
 
 
 @fixture()
-def create_post_data(username, password, test_names) -> Callable:
+def create_post_data(username, password, test_names) -> Callable[..., Dict]:
     def _create_post_data(without_keys: List = None, with_replacements: Dict = None, expires: bool = True) -> Dict:
         base_post_data = {
             Token.max_usage_count.key: 10,
@@ -46,7 +46,8 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
 
     for test_data in test_cases:
         resp = client.post(ROUTE, data=json_dumps(test_data))
-        assert resp.status_code == 201, f"Can't POST token to {ROUTE} with data {test_data}\n\n{resp.get_data(True)}"
+        assert resp.status_code == 201, (f"Can't POST token to {ROUTE} with data {test_data}"
+                                         f"\n\nReceived response:\n{resp.get_data(True)}")
 
         token_hash = resp.get_data(True)
         token = Token.query.filter_by(token=token_hash).first()
