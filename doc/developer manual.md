@@ -173,7 +173,7 @@ In the code [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/qui
 
 ## Routes
 
-[RESTful API](https://de.wikipedia.org/wiki/Representational_State_Transfer) routes with input data and returned values (dashed borders mean the values were processed after database reading or will be processed before database writing):
+Routes with input data, the request [method](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods) and name,  and returned values (dashed borders mean the values were processed after database reading or will be processed before database writing):
 ![See image at diagrams/routes.png](diagrams/routes.png)
 
 <br><br>
@@ -197,10 +197,10 @@ _Structure of sub-package **src/test_system**:_
 - _**managers**_: contains logic
   - business logic, etc. (e.g. generating images / pdfs, analysing data, running algorithms, ...)
 - _**models**_: represent tables and contain methods to access or process data from them
-  - define database schema / tables
+  - define database schema / tables using [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/) as [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) framework
   - interfaces to manipulate database (instead of SQL queries)
-  - contains logic for data tasks like generating timestamps, manipulating table data, generate model objects, etc.
-- _**routes**_: contains controller for routes
+  - contains logic for data tasks like generating timestamps, generate model objects, etc.
+- _**routes**_: contains controller for routes using [flask](https://flask.palletsprojects.com/en/2.0.x/quickstart/)
   - validates requests
   - adds, edits, removes Models
   - send response data
