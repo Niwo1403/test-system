@@ -9,6 +9,8 @@ Note: you maybe should read the [user manual introduction](user%20manual.md#intr
 ### Setting up Python
 - Download Python installer [here](https://www.python.org/downloads/release/python-3102/) & execute it
   - Check the option to add Python 3.10 to the PATH
+- It's also recommended using an IDE like [PyCharm](https://www.jetbrains.com/de-de/pycharm/), so you may install one, if you haven't got one already
+- If you are new to Python and want to learn it, you may have a look at the [tutorial](https://docs.python.org/3/tutorial/index.html) on the Python documentation side
 
 ### Setting up Postgres
 - Download Postgres 13.5 installer (or a compatible version) [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
@@ -202,7 +204,7 @@ _Structure of sub-package **src/test_system**:_
   - contains logic for data tasks like generating timestamps, generate model objects, etc.
 - _**routes**_: contains controller for routes using [flask](https://flask.palletsprojects.com/en/2.0.x/quickstart/)
   - validates requests
-  - adds, edits, removes Models
+  - adds, edits, removes models
   - send response data
   - uses managers for more complex tasks
 - _**app**_: contains the flask app used by the sub-packages
