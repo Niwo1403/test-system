@@ -164,6 +164,9 @@ _Note: before running the application you have to [set up the environment](#sett
 ## Database ER model
 
 More basic information about the general database structure can be found [here](user%20manual.md#general-database-structure) as well
+
+In the code [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/) is used as ORM framework for database interactions 
+
 ![See image at diagrams/ER model.png](diagrams/ER%20model.png)
 
 <br><br>
