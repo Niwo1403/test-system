@@ -17,7 +17,7 @@ class User(db.Model):
     def __repr__(self):
         return f"User {self.username} (pw: ...{self.password[-10:]})"
 
-    def validate_password(self, test_password: str):
+    def is_password_valid(self, test_password: str) -> bool:
         salt = self.password.split(HASH_SEPARATOR)[0]
         hashed_test_password = generate_password_hash(test_password, self.username, salt)
         return hashed_test_password == self.password

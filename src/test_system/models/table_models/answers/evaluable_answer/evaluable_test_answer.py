@@ -19,4 +19,7 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
                 f"evaluable_question_answers count: {len(self.evaluable_question_answers)})")
 
     def was_evaluated(self) -> bool:
+        """
+        Returns True, if a certificate was generated for this answer earlier.
+        """
         return self.was_evaluated_with_token is not None

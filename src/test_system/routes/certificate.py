@@ -28,9 +28,10 @@ def get_certificate():
     person: Person = test_answer.answerer
     if person is None:
         abort(404, "Person, who answered TestAnswer not found.")
-    token: Token = Token.query.filter_by(token=token_str).first()
 
-    if token is None or token.is_invalid() and evaluable_answer.was_evaluated_with_token != token.token:
+    token: Token = Token.query.filter_by(token=token_str).first()
+    # if token was already used for this certificate earlier, it doesn't madder if the token is invalid
+    if token is None or token.is_invalid() and not token.was_used_for_answer(evaluable_answer):
         abort(401, "Token not found or invalid.")
 
     cm = CertificateManager(person)

@@ -43,7 +43,7 @@ def post_token():
     password = post_token_data[User.password.key]
 
     user: User = User.query.filter_by(username=username).first()
-    if user is None or not user.validate_password(password):
+    if user is None or not user.is_password_valid(password):
         abort(401, "User doesn't exist or password is wrong.")
 
     # Test if personal data and evaluable test exist

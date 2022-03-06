@@ -41,6 +41,9 @@ class Token(db.Model):
 
     @staticmethod
     def get_earliest_valid_sql_timestamp():
+        """
+        Returns a SQL timestamp, which will be the earliest time an unexpired token could have been created.
+        """
         return text(f"NOW() - INTERVAL '1 DAY' * {TOKEN_PERIOD_OF_VALIDITY_IN_DAYS}")
 
     def __init__(self, **kwargs):
@@ -55,16 +58,31 @@ class Token(db.Model):
                 f"evaluable test: {self.evaluable_test_name}, "
                 f"usages: {self.max_usage_count})")
 
+    def was_used_for_answer(self, evaluable_test_answer: EvaluableTestAnswer) -> bool:
+        """
+        Returns True, if this token was used to evaluate the evaluable_test_answer earlier.
+        """
+        return evaluable_test_answer.was_evaluated_with_token == self.token
+
     def is_invalid(self) -> bool:
+        """
+        Returns, whether the token is invalid - either because it is expired or because it has no usage left.
+        """
         return self._is_expired() or self._has_no_usage_left()
 
     def use_for(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
+        """
+        Should be called, when the token was used for the evaluable_test_answer.
+        """
         evaluable_test_answer.was_evaluated_with_token = self.token
         if self.max_usage_count is not None:
             self.max_usage_count -= 1
             db.session.commit()
 
     def get_pre_collect_tests(self) -> List[Test]:
+        """
+        Returns a list of Tests, which should be used as PRE_COLLECT_TESTs, for this token.
+        """
         possible_pre_collect_tests = [Test.query.filter_by(name=pre_collect_test_name).first()
                                       for pre_collect_test_name in self.pre_collect_test_names]
         pre_collect_tests = list(filter(lambda test: test is not None, possible_pre_collect_tests))

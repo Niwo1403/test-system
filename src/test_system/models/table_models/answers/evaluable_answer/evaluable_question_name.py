@@ -12,6 +12,7 @@ class EvaluableQuestionName(db.Model):
     @classmethod
     def get_id_for(cls, question_category, question_name) -> int:
         """
+        Returns the id of the EvaluableQuestionName with category question_category and name question_name.
         If EvaluableQuestionName with given question_category and question_name doesn't exist,
         it will be created and added to database.
         """

@@ -17,6 +17,10 @@ class EvaluableQuestionAnswer(db.Model):  # belongs to EvaluableTestAnswer
     @classmethod
     def create_answers(cls, answer_set: Dict[str, Dict[str, Any]],
                        evaluable_answer: EvaluableTestAnswer) -> List["EvaluableQuestionAnswer"]:
+        """
+        Creates EvaluableQuestionAnswers for all evaluable answers in the answer_set,
+        and connects them to the evaluable_answer.
+        """
         evaluable_answer_id = evaluable_answer.id
         answers = []
         for question_category, category_answers in answer_set.items():
