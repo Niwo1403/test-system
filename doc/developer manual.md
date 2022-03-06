@@ -129,6 +129,7 @@ _Note: before running the application you have to [set up the environment](#sett
 <br><br>
 
 ## Run tests
+(here "tests" refer to automated software tests, not tests from "test" table, etc.)
 
 _Note: before running the application you have to [set up the environment](#setting-up-environment), in case you haven't done it already_
 - Using **PyCharm**: run all tests with _"Run all tests"_ [run configuration](https://www.jetbrains.com/help/pycharm/running-applications.html)
