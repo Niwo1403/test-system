@@ -8,14 +8,16 @@
 	</head>
 
 	<body>
-		<form action="/test.html" class="centered-gray-container">
-			<label for="token_input">Login Token:</label><br>
-			<textarea id="token_input" name="token"></textarea><br>
+		<div class="centered-gray-container">
+			<form action="/test.html">
+				<label for="token_input">Login Token:</label><br>
+				<textarea id="token_input" name="token"></textarea><br>
 
-			<div class="child-align-right">
-				<input type="submit" value="Test starten" />
-			</div>
-		</form>
+				<div class="child-align-right">
+					<input type="submit" value="Test starten" />
+				</div>
+			</form>
+		</div>
 
 		<script>
 			if (INITIAL_TOKEN !== null) {
