@@ -21,7 +21,7 @@ In the linked manuals, information about the following can be found
 - ...
 
 ## Technology stack
-- **Code organisation**: git, github, PyCharm, PaaS, Heroku
+- **Code organisation**: git, github, PaaS, Heroku (recommended IDE: PyCharm)
 - **Database**: SQL, ORM, PostgreSQL
-- **Backend**: Python, Flask (web-framework), SQLAlchemy (ORM-framework), REST APIs, pytest, Gunicorn (WSGI server)
+- **Backend**: Python, Flask (web-framework), SQLAlchemy (ORM-framework), pytest, Gunicorn (WSGI server)
 - **Frontend**: HTML, JavaScript, CSS, SurveyJS
