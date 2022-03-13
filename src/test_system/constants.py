@@ -53,7 +53,7 @@ PRE_COLLECT_TESTS_KEY = "PRE_COLLECT_TESTS"
 MAX_HASH_GENERATION_TRY_COUNT = 1000
 """ Max tries of hash generations, when an unknown token should be created. """
 
-TOKEN_PERIOD_OF_VALIDITY_IN_DAYS = 14
+TOKEN_PERIOD_OF_VALIDITY_IN_DAYS = 21
 """ How many days a token is valid, that can expire. """
 
 
