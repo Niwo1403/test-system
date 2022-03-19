@@ -4,6 +4,8 @@ from flask.testing import FlaskClient
 # custom
 from test_system.routes.root import ROUTE
 
+# In case a database connection is required for any of the following tests, add session to its parameters!
+
 
 def test_if_file_is_accessible__via_redirect(client: FlaskClient):
     resp = client.get(ROUTE, follow_redirects=True)

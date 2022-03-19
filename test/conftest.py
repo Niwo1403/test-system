@@ -90,6 +90,8 @@ def raise_if_change_in_tables():
 @fixture(scope='function')
 def session(request):
     """
+    Should be listed in the parameters of all tests, which interact with the database in any way!
+    
     Creates a temporary database session for testing.
     Can be used to add rows or commit added, deleted & manipulated rows
     without actually changing the database after it.
