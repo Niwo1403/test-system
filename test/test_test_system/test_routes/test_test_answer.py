@@ -96,7 +96,9 @@ def test_post_test_answer__with_bad_request(client: FlaskClient, session, raise_
                       ("", correct_query_string),
                       ("{", correct_query_string),
                       ("{true: \"3\"}", correct_query_string),
-                      ("{'true': \"3\"}", correct_query_string)]
+                      ("{'true': \"3\"}", correct_query_string),
+                      # invalid schema
+                      ("{\"key\": null}", correct_query_string)]
 
     with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
         for data, query_string in test_arguments:
