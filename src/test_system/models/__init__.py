@@ -1,9 +1,9 @@
 # 3rd party
 from sqlalchemy.exc import IntegrityError
 # custom
+from test_system import app
 from .table_models import *
 from .database import _create_tables_if_not_exist, db
-from test_system import app
 
 _create_tables_if_not_exist()  # must be run after import of models ("from .table_models import *")
 

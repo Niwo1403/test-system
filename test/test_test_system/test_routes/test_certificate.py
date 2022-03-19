@@ -1,8 +1,8 @@
 # std
-from pytest import fixture
 from typing import List, Callable
 from io import BytesIO
 # 3rd party
+from pytest import fixture
 from flask.testing import FlaskClient
 from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
@@ -115,16 +115,16 @@ def test_get_certificate__with_success(client: FlaskClient, session,
                   (expired_token, create_evaluated_evaluable_test_answer_for_token(expired_token)),
                   (no_use_token, create_evaluated_evaluable_test_answer_for_token(no_use_token))]
 
-    for token, evaluable_test_answer in test_cases:
+    for test_token, evaluable_test_answer in test_cases:
         token_was_evaluated_before = evaluable_test_answer.was_evaluated()
-        pre_max_usage_count = token.max_usage_count
+        pre_max_usage_count = test_token.max_usage_count
         resp = client.get(ROUTE, query_string={"evaluable-test-answer-id": evaluable_test_answer.id,
-                                               "token": token.token})
+                                               "token": test_token.token})
 
-        # token & evaluable_test_answer must be reloaded after extern change!
-        token = Token.query.filter_by(token=token.token).first()
+        # test_token & evaluable_test_answer must be reloaded after extern change!
+        test_token = Token.query.filter_by(token=test_token.token).first()
         evaluable_test_answer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer.id).first()
-        assert token is not None, (f"Token was deleted while GET certificate request at {ROUTE}"
+        assert test_token is not None, (f"Token was deleted while GET certificate request at {ROUTE}"
                                    f"\n\nReceived response:\n{resp.get_data(True)}")
         assert evaluable_test_answer is not None, ("EvaluableTestAnswer was deleted while GET certificate request "
                                                    f"at {ROUTE}\n\nReceived response:\n{resp.get_data(True)}")
@@ -132,16 +132,16 @@ def test_get_certificate__with_success(client: FlaskClient, session,
         assert resp.status_code == 200, (f"Can't GET certificate from {ROUTE} with {evaluable_test_answer}"
                                          f"\n\nReceived response:\n{resp.get_data(True)}")
 
-        assert token.max_usage_count == pre_max_usage_count if token_was_evaluated_before \
-            else token.max_usage_count is None or token.max_usage_count + 1 == pre_max_usage_count, \
-            (f"Got wrong max_usage_count after request with {token} & {evaluable_test_answer}"
+        assert test_token.max_usage_count == pre_max_usage_count if token_was_evaluated_before \
+            else test_token.max_usage_count is None or test_token.max_usage_count + 1 == pre_max_usage_count, \
+            (f"Got wrong max_usage_count after request with {test_token} & {evaluable_test_answer}"
              f"\n\nReceived response:\n{resp.get_data(True)}")
 
         try:
             PdfFileReader(BytesIO(resp.data))
-        except PdfReadError as e:
-            assert e is None, (f"Got invalid pdf bytes from {ROUTE} for {evaluable_test_answer}"
-                               f"\n\nReceived response:\n{resp.get_data(True)}")
+        except PdfReadError as pdf_error:
+            assert pdf_error is None, (f"Got invalid pdf bytes from {ROUTE} for {evaluable_test_answer}"
+                                       f"\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_get_certificate__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,

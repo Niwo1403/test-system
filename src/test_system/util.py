@@ -48,9 +48,10 @@ def generate_unknown_hash_token(is_unknown: Callable[[str], bool], max_tries: in
     for _ in range(max_tries):
         token_hash = generate_hash_token()
         if is_unknown(token_hash):
-            return token_hash
+            break
     else:
         raise RuntimeError(f"Couldn't generate an unknown hash within {max_tries} tries.")
+    return token_hash
 
 
 if __name__ == "__main__":

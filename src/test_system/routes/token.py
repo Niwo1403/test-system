@@ -62,4 +62,3 @@ def post_token():
     app.logger.info(f"Created {token}")
 
     return token.token, 201
-

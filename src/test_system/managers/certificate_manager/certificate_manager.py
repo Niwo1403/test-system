@@ -4,9 +4,9 @@ from typing import List
 # 3rd party
 from sqlalchemy.engine import Row
 # custom
-from .pdf import PDF
 from test_system.models import db, TestAnswer, Person, \
     EvaluableQuestionAnswer, EvaluableQuestionName, EvaluableTestAnswer
+from .pdf import PDF
 
 
 class CertificateManager:

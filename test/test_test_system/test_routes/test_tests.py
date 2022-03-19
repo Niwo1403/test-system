@@ -1,8 +1,8 @@
 # std
 from json import loads as json_loads
-from pytest import fixture
 from typing import List
 # 3rd party
+from pytest import fixture
 from flask.testing import FlaskClient
 from sqlalchemy.orm import scoped_session
 # custom

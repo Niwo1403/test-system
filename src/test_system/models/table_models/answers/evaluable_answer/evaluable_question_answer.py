@@ -24,7 +24,7 @@ class EvaluableQuestionAnswer(db.Model):  # belongs to EvaluableTestAnswer
         evaluable_answer_id = evaluable_answer.id
         answers = []
         for question_category, category_answers in answer_set.items():
-            if type(category_answers) is not dict:  # if answer isn't dict, name is category and category is None
+            if not isinstance(category_answers, dict):  # if answer isn't dict, name is category and category is None
                 category_answers = {question_category: category_answers}
                 question_category = None
             for question_name, answer_value in category_answers.items():

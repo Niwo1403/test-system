@@ -177,6 +177,7 @@ In the code [SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/qui
 ## Routes
 
 Routes with input data, the request [method](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods) and name,  and returned values (dashed borders mean the values were processed after database reading or will be processed before database writing):
+
 ![See image at diagrams/routes.png](diagrams/routes.png)
 
 <br><br>

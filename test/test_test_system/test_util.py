@@ -1,8 +1,8 @@
 # std
 from typing import List
+# 3rd party
 from pytest import fixture
 from _pytest.monkeypatch import MonkeyPatch
-# 3rd party
 from mock import patch
 # custom
 from test_system import util
@@ -38,7 +38,7 @@ def hash_generation_io_replacer() -> IOReplacer:
 
 def _assert_correct_password_test_hash(generated_salted_hash):
     salt, generated_hash = generated_salted_hash.split(util.HASH_SEPARATOR)
-    assert len(generated_hash) == 128, f"Hash got wrong length: len(generated_hash)"
+    assert len(generated_hash) == 128, f"Hash got wrong length: {len(generated_hash)}"
     re_generated_salted_hash = util.generate_password_hash(TEST_PASSWORD, TEST_USERNAME, salt=salt)
     assert generated_salted_hash == re_generated_salted_hash, "Re-generation of hash failed."
 

@@ -1,5 +1,3 @@
-# std
-from io import BytesIO
 # 3rd party
 from flask import request, abort, send_file
 # custom

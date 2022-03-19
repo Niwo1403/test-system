@@ -1,8 +1,8 @@
 # std
 from json import dumps as json_dumps
-from pytest import fixture
 from typing import Dict, List, Callable
 # 3rd party
+from pytest import fixture
 from flask.testing import FlaskClient
 # custom
 from test_system.constants import PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD, PRE_COLLECT_TESTS_KEY
@@ -36,7 +36,7 @@ def create_post_data(username, password, test_names) -> Callable[..., Dict]:
     return _create_post_data
 
 
-def test_post_token__with_success(client: FlaskClient, session, create_post_data, test_names):
+def test_post_token__with_success(client: FlaskClient, session, create_post_data):
     test_cases = [create_post_data(),
                   create_post_data(expires=False),
                   create_post_data(without_keys=[Token.max_usage_count.key]),

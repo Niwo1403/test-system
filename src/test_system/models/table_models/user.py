@@ -12,7 +12,7 @@ class User(db.Model):
     def __init__(self, /, **kwargs):
         if "password" in kwargs and "username" in kwargs:
             kwargs["password"] = generate_password_hash(kwargs["password"], kwargs["username"])
-        super(User, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __repr__(self):
         return f"User {self.username} (pw: ...{self.password[-10:]})"

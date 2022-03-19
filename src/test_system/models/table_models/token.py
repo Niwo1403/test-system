@@ -49,7 +49,7 @@ class Token(db.Model):
     def __init__(self, **kwargs):
         if "creation_timestamp" not in kwargs:  # do manually to enable None passing
             kwargs["creation_timestamp"] = db.func.now()
-        super(Token, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def __repr__(self):
         return (f"Token '{self.token}' ("

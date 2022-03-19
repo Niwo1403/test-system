@@ -1,10 +1,10 @@
 # std
 from sys import path
 from os.path import join as path_join, realpath, dirname
-from pytest import fixture
 from typing import ContextManager, Optional, Callable
 from datetime import datetime
 # 3rd party
+from pytest import fixture
 from dotenv import load_dotenv
 from sqlalchemy.event import listen, remove
 
