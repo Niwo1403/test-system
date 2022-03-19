@@ -11,7 +11,6 @@ ROUTE = f'{API_PREFIX}/token-creator/'
 
 @app.route(ROUTE, methods=['GET'])
 def get_token_creator():
-    app.logger.info("Token Creator has been called")
     personal_data_test_names = Test.get_test_names_of_category(Test.CATEGORIES.PERSONAL_DATA_TEST)
     pre_collect_test_names = Test.get_test_names_of_category(Test.CATEGORIES.PRE_COLLECT_TEST)
     evaluable_test_names = Test.get_test_names_of_category(Test.CATEGORIES.EVALUABLE_TEST)
@@ -87,4 +86,5 @@ def get_token_creator():
             }
         ]
     }
+    app.logger.info("Sending token-creator JSON.")
     return json_dumps(token_creator_test)
