@@ -80,7 +80,7 @@ class DefaultCertificatePdfConfig:
 
     LOGO_PATH = path_join(FILE_DIR, "../../static/img/certificate_background.png")  # relative to this file
     """ Relative path to location of background image of certificate. """
-    TITLE = "Persöhnlichkeitstest Zertifikat"
+    TITLE = "Persönlichkeitstest Zertifikat"
     """ The title on top of the certificate. """
     HEADER_BORDER = True
     """ Whether the title should be surrounded with a border. """

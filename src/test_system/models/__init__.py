@@ -11,7 +11,7 @@ _create_tables_if_not_exist()  # must be run after import of models ("from .tabl
 if User.query.first() is None:  # if no user exist, assume database is empty & create development examples
     default_user = User(username="admin", password="admin")
     person_test = Test(name="Person", description_json={
-        "title": "Persöhnliche Daten",
+        "title": "Persönliche Daten",
         "logoPosition": "right",
         "pages": [
             {
@@ -79,7 +79,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
         ]
     }, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
     pers_test = Test(name="PersTest", description_json={
-        "title": "Persöhnlichkeits Test",
+        "title": "Persönlichkeitstest",
         "description": "Matrix Test",
         "logoPosition": "right",
         "pages": [
