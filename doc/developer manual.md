@@ -22,7 +22,7 @@ Note: you maybe should read the [user manual introduction](user%20manual.md#intr
 - Ensure that the bin directory of postgres is included into your path variables by running `psql`
   - If psql command is not found, add it to the PATH variable (&rarr; [more information](https://www3.ntu.edu.sg/home/ehchua/programming/howto/Environment_Variables.html))
     - On Windows the default path of psql is: C:\Program Files\PostgreSQL\\<VERSION\>\bin
-- Also, it's recommended to set the PGUSER environment variable to your postgres username (which is "postgres" by default), otherwise your local username will possibly be used instead
+- Also, it's recommended to set the PGUSER environment variable to your postgres username (which is "postgres" by default), otherwise your local username will possibly be used instead (&rarr; [how to set environment variable](https://wisetut.com/how-to-set-environment-variables-for-windows-linux-and-macosx/))
 - Only on Windows:
   - Open Service.msc, search entry "postressql-..." and check if it's status is running
     - In case status is not running:
