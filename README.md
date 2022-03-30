@@ -16,7 +16,7 @@ In the linked manuals, information about the following can be found
 - [Running the application locally](doc/developer%20manual.md#run-application-locally)
 - [Running tests](doc/developer%20manual.md#run-tests)
 - [Database structure](doc/developer%20manual.md#database-er-model)
-- [REST routes](doc/developer%20manual.md#routes)
+- [Routes](doc/developer%20manual.md#routes)
 - [Directory structure](doc/developer%20manual.md#directory-structure-of-project)
 - ...
 
