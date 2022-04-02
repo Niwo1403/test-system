@@ -6,11 +6,11 @@ from test_system.constants import API_PREFIX, CERTIFICATE_MIMETYPE
 from test_system.models import EvaluableTestAnswer, Person, Token
 from test_system.managers.certificate_manager import CertificateManager
 
-ROUTE = f'{API_PREFIX}/certificate/'
+ROUTE = f'{API_PREFIX}/test-answer-pdf/'
 
 
 @app.route(ROUTE, methods=['GET'])
-def get_certificate():
+def get_test_answer_pdf():
     download = request.args.get("download", type=bool, default=False)
     evaluable_test_answer_id = request.args.get("evaluable-test-answer-id", type=int)
     token_str = request.args.get("token", type=str)

@@ -8,7 +8,7 @@ from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
 # custom
 from test_system.models import Token, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
-from test_system.routes.certificate import ROUTE
+from test_system.routes.test_answer_pdf import ROUTE
 
 
 @fixture()
