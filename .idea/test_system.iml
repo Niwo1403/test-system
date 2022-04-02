@@ -5,10 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.10 (personality_test_system)" jdkType="Python SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="survey-core" level="application" />
-    <orderEntry type="library" name="survey-jquery" level="application" />
-    <orderEntry type="library" name="jquery" level="application" />
   </component>
 </module>
