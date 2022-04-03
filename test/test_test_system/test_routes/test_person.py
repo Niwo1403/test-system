@@ -22,11 +22,11 @@ def test_post_person__with_success(client: FlaskClient, session):
         person = Person.query.filter_by(id=person_id).first()
         assert person is not None, f"Could not write person to database\n\nReceived response:\n{resp.get_data(True)}"
 
-        db_data = {"name": person.name, "age": person.age, "gender": person.gender.value}  # use .value for enums
-        if "position" in test_data:
-            db_data["position"] = person.position
-        assert db_data == test_data, ("Person written to database, got wrong data"
-                                      f"\n\nReceived response:\n{resp.get_data(True)}")
+        for key in person.answer_json.keys():
+            if key not in test_data:
+                test_data[key] = None
+        assert person.answer_json == test_data, ("Person written to database, got wrong data"
+                                                 f"\n\nReceived response:\n{resp.get_data(True)}")
 
 
 def test_post_person__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):

@@ -11,7 +11,7 @@ from test_system.models import db, Person
 
 PERSONA_DATA_SCHEMA = Schema({"name": And(str, len),
                               "age": And(int, lambda n: 1 <= n <= 200),
-                              "gender": And(Use(Person.GENDERS), Person.GENDERS),
+                              "gender": And(str, lambda g: g in ["m", "w", "s"]),
                               Optional("position", default=None): Or(None, str)})
 
 ROUTE = f"{API_PREFIX}/person/"  # as variable for tests
@@ -27,10 +27,7 @@ def post_person():
     except SchemaError:
         return abort(400, "Data validation failed.")
 
-    person = Person(name=personal_data["name"],
-                    gender=personal_data["gender"],
-                    age=personal_data["age"],
-                    position=personal_data["position"])
+    person = Person(answer_json=personal_data)
     db.session.add(person)
     db.session.commit()  # required to generate id of person
 

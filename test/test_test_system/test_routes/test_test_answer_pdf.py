@@ -13,7 +13,7 @@ from test_system.routes.test_answer_pdf import ROUTE
 
 @fixture()
 def person(session) -> Person:
-    person = Person(name="TestName", gender=Person.GENDERS.s, age=22)
+    person = Person(answer_json={"name": "TestName", "gender": "s", "age": 22})
     session.add(person)
     session.commit()
     return person
@@ -21,7 +21,7 @@ def person(session) -> Person:
 
 @fixture()
 def person_with_position(session) -> Person:
-    person = Person(name="TestName", age=33, gender=Person.GENDERS.s, position="POSITION...")
+    person = Person(answer_json={"name": "TestName", "age": 33, "gender": "s", "position": "POSITION..."})
     session.add(person)
     session.commit()
     return person

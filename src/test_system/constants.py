@@ -73,23 +73,29 @@ class DefaultCertificateFonts:
     """ Font config of footer information like page number. """
 
 
-class DefaultCertificatePdfConfig:
+class DefaultPdfConfig:
     """
     General configs for generating certificates.
     """
 
     LOGO_PATH = path_join(FILE_DIR, "../../static/img/certificate_background.png")  # relative to this file
     """ Relative path to location of background image of certificate. """
-    TITLE = "Persönlichkeitstest Zertifikat"
+    TITLE = "Antworten"
     """ The title on top of the certificate. """
     HEADER_BORDER = True
     """ Whether the title should be surrounded with a border. """
-    BODY_TEXT_ALIGN = "C"
+    DEFAULT_TEXT_ALIGN = "C"
     """ Where to align the text in the body (C - center, R - right, L - left). """
+    YAML_TEXT_ALIGN = "L"
+    """ Where to align the YAML text in the body (C - center, R - right, L - left). """
+    YAML_LEFT_MARGIN = 20
+    """ Left text margin of YAML text. """
+    YAML_INDENT = 5
+    """ Indent used for YAML creation. """
 
 
-DEFAULT_CERTIFICATE_FONTS = DefaultCertificateFonts
-DEFAULT_CERTIFICATE_PDF_CONFIG = DefaultCertificatePdfConfig
+DEFAULT_PDF_FONTS = DefaultCertificateFonts
+DEFAULT_PDF_CONFIG = DefaultPdfConfig
 
 CERTIFICATE_MIMETYPE = "application/pdf"
 """ Must be a valid MIME type - will be included in response header of certificates. """

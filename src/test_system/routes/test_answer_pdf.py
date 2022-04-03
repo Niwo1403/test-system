@@ -42,5 +42,4 @@ def get_test_answer_pdf():
         token.use_for(evaluable_answer)
         app.logger.info(f"Generated certificate for {person} and used {token}")
 
-    download_name = f"Personality test certificate - {person.name}.pdf"
-    return send_file(pdf, mimetype=CERTIFICATE_MIMETYPE, as_attachment=download, download_name=download_name)
+    return send_file(pdf, mimetype=CERTIFICATE_MIMETYPE, as_attachment=download, download_name="answers.pdf")
