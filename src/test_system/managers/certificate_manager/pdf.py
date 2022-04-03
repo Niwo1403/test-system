@@ -24,7 +24,8 @@ class PDF(FPDF):
         self.cell(0, margin_top, ln=self.PDF_NEWLINE_LN)
 
     def add_formatted_json(self, data: Dict):
-        formatted_answers = safe_dump(data, allow_unicode=True, indent=DEFAULT_PDF_CONFIG.YAML_INDENT).strip()
+        formatted_answers = safe_dump(data, allow_unicode=True, sort_keys=False,
+                                      indent=DEFAULT_PDF_CONFIG.YAML_INDENT).strip()
         formatted_answer_lines = formatted_answers.split("\n")
         for answer_line in formatted_answer_lines:
             self.set_x(DEFAULT_PDF_CONFIG.YAML_LEFT_MARGIN)
