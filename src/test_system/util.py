@@ -5,7 +5,7 @@ from hashlib import sha3_512
 from typing import Optional, Callable
 # no relative or custom imports in this file!
 
-PASSWORD_PEPPER = "personality_test_system berlin - user"
+PASSWORD_PEPPER = "test_systems great pepper :) ..."
 HASH_SEPARATOR = "#"
 
 
