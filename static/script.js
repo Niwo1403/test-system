@@ -32,8 +32,8 @@ function backToLogin() {
 
 function loadResult() {
     const evaluableTestAnswerId = getArgumentFromUrl("evaluable-test-answer-id");
-    const certificateView = document.getElementById("certificate-view");
-    certificateView.data = buildApiUrl("test-answer-pdf/", true,
+    const pdfView = document.getElementById("pdf-view");
+    pdfView.data = buildApiUrl("test-answer-pdf/", true,
         {"evaluable-test-answer-id": evaluableTestAnswerId});
 }
 
