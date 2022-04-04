@@ -6,7 +6,7 @@ from pytest import fixture
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 # custom
-from test_system.models import Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
+from test_system.models import Person, Test, TestAnswer, EvaluableTestAnswer
 from test_system.routes.test_answer import ROUTE
 
 
@@ -16,7 +16,6 @@ EVALUABLE_TEST_ANSWER = {"Category A": {"Question 1": "1", "Question 2": "2"},
                          "Category B": {"Question 1": "3", "Question 2": "4"},
                          "Question X": "5",
                          "Ignored question": "TEXT!"}
-EVALUABLE_TEST_ANSWER_ANSWERS_COUNT = 5
 EVALUABLE_TEST_ANSWER_JSON = json_dumps(EVALUABLE_TEST_ANSWER)
 
 
@@ -77,9 +76,6 @@ def test_post_test_answer__with_success(client: FlaskClient, session, person, pr
         assert evaluable_answer is not None, ("Could not write EvaluableTestAnswer to database"
                                               f"\n\nReceived response:\n{resp.get_data(True)}")
 
-        assert len(evaluable_answer.evaluable_question_answers) == EVALUABLE_TEST_ANSWER_ANSWERS_COUNT, \
-            f"Got wrong answer count\n\nReceived response:\n{resp.get_data(True)}"
-
         answer: TestAnswer = evaluable_answer.test_answer
         _assert_right_test_answer_data(answer, person, evaluable_test, EVALUABLE_TEST_ANSWER, resp)
 
@@ -100,7 +96,7 @@ def test_post_test_answer__with_bad_request(client: FlaskClient, session, raise_
                       # invalid schema
                       ("{\"key\": null}", correct_query_string)]
 
-    with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+    with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer):
         for data, query_string in test_arguments:
             resp = client.post(ROUTE, data=data, query_string=query_string)
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for arguments: {query_string}, "
@@ -111,7 +107,7 @@ def test_post_test_answer__with_wrong_test(client: FlaskClient, session, raise_i
                                            person, personal_data_test):
     unknown_test_name = "?`?`?`?`?`?`?`?`?`?`?`?`?`?`?"
 
-    with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+    with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer):
         resp = client.post(ROUTE,
                            data=TEST_ANSWER_JSON,
                            query_string={"test-name": unknown_test_name, "person-id": person.id})
@@ -131,7 +127,7 @@ def test_post_test_answer__with_wrong_person(client: FlaskClient, session, raise
     test_arguments = [(TEST_ANSWER_JSON, {"test-name": pre_collect_test.name, "person-id": unknown_person_id}),
                       (EVALUABLE_TEST_ANSWER_JSON, {"test-name": evaluable_test.name, "person-id": unknown_person_id})]
 
-    with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+    with raise_if_change_in_tables(Person, Test, TestAnswer, EvaluableTestAnswer):
         for data, query_string in test_arguments:
             resp = client.post(ROUTE, data=data, query_string=query_string)
             assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for data: {data} and query_string: "

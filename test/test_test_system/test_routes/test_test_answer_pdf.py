@@ -7,7 +7,7 @@ from flask.testing import FlaskClient
 from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
 # custom
-from test_system.models import Token, Person, Test, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer
+from test_system.models import Token, Person, Test, TestAnswer, EvaluableTestAnswer
 from test_system.routes.test_answer_pdf import ROUTE
 
 
@@ -28,7 +28,7 @@ def person_with_position(session) -> Person:
 
 
 def _test_answer(session, token: Token, person: Person) -> TestAnswer:
-    test_answer = TestAnswer(answer_set={}, test_name=token.evaluable_test_name, person_id=person.id)
+    test_answer = TestAnswer(answer_set={"Q": "A"}, test_name=token.evaluable_test_name, person_id=person.id)
     session.add(test_answer)
     session.commit()
     return test_answer
@@ -44,13 +44,6 @@ def test_answer_2(session, token, person_with_position) -> TestAnswer:
     return _test_answer(session, token, person_with_position)
 
 
-def _add_example_answers(session, evaluable_test_answer):
-    answers = EvaluableQuestionAnswer.create_answers({"CATEGORY A": {"QUESTION 1": "3", "QUESTION 2": "1"}},
-                                                     evaluable_test_answer)
-    session.add_all(answers)
-    session.commit()
-
-
 @fixture()
 def create_evaluated_evaluable_test_answer_for_token(session, test_answer) -> Callable[[Token], EvaluableTestAnswer]:
     def _create_evaluated_evaluable_test_answer_for_token(token: Token) -> EvaluableTestAnswer:
@@ -58,7 +51,6 @@ def create_evaluated_evaluable_test_answer_for_token(session, test_answer) -> Ca
                                                               test_answer_id=test_answer.id)
         session.add(evaluated_evaluable_test_answer)
         session.commit()
-        _add_example_answers(session, evaluated_evaluable_test_answer)
         return evaluated_evaluable_test_answer
     return _create_evaluated_evaluable_test_answer_for_token
 
@@ -73,7 +65,6 @@ def _unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAns
                                                             test_answer_id=test_answer.id)
     session.add(unevaluated_evaluable_test_answer)
     session.commit()
-    _add_example_answers(session, unevaluated_evaluable_test_answer)
     return unevaluated_evaluable_test_answer
 
 
@@ -156,7 +147,7 @@ def test_get_test_answer_pdf__with_bad_request(client: FlaskClient, session, rai
         {"evaluable-test-answer-id": None, "token": token.token}
     ]
 
-    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request with arguments: "
@@ -170,7 +161,7 @@ def test_get_test_answer_pdf__with_unknown_data(client: FlaskClient, session, ra
         for incomplete_evaluable_test_answer in incomplete_evaluable_test_answers
     ] + [{"token": token.token, "evaluable-test-answer-id": "-1"}]
 
-    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for request with unknown data & "
@@ -190,7 +181,7 @@ def test_get_test_answer_pdf__with_unauthorized_request(client: FlaskClient, ses
         {"token": expired_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id}
     ]
 
-    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer, EvaluableQuestionAnswer):
+    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request with "

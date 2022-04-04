@@ -40,11 +40,7 @@
 - Table **_"person"_**: contains the data about a person, which has answered a personality test (the person will be referenced in the actual test_answers)
   - Note: column _"gender"_ must only contain _"m"_, _"w"_ or _"s"_
 - Table **_"test_answer"_**: contains an answer for a _PRE_COLLECT_TEST_ or _EVALUABLE_TEST_, a reference to the person, which has answered the test, and a reference to the test, which was answered
-
-### Evaluable answer tables
 - Table **_"evaluable_test_answer"_**: references test answers (in table _"test_answers"_), which can be evaluated
-- Table **_"evaluable_question_name"_**: list question names and their question categories (which can be anything)
-- Table **_"evaluable_question_answer"_**: include the numeric answers for an _"evaluable_question_name"_ of an _"evaluable_test_answer"_
 
 <br><br>
 
