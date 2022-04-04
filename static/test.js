@@ -1,9 +1,9 @@
 // SurveyJS library initialisation & constants
 Survey.StylesManager.applyTheme("modern");
-const defaultLocale = "de";
+const defaultLocale = "en";
 const surveyLocalization = Survey.surveyLocalization.locales[defaultLocale];  // surveyLocalization.pagePrevText, surveyLocalization.pageNextText
 const originalCompleteText = surveyLocalization.completeText;
-surveyLocalization.completeText = "Weiter";
+surveyLocalization.completeText = "Next";
 
 
 // tests & site state:
@@ -41,7 +41,7 @@ function loadTestForTokenCreation() {
     xhr.onload = function() {
         if (this.status === 200) {
             const tokenCreationTest = {description: JSON.parse(this.responseText), name: "token-creator"};
-            surveyLocalization.completeText = "Token erstellen";
+            surveyLocalization.completeText = "Create token";
             displaySurvey(tokenCreationTest, postToken);
         } else {
             displayError(this.responseText);

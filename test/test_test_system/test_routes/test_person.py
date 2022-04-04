@@ -9,8 +9,8 @@ from test_system.models import Person
 
 def test_post_person__with_success(client: FlaskClient, session):
     test_cases = {
-        "data with out position": {"name": "Max M.", "age": 18, "gender": "s"},
-        "data with position": {"name": "Max M.", "age": 18, "gender": "s", "position": "POS"}
+        "data with out position": {"name": "Max M.", "age": 18, "gender": "d"},
+        "data with position": {"name": "Max M.", "age": 18, "gender": "d", "position": "POS"}
     }
 
     for data_name, test_data in test_cases.items():
@@ -31,18 +31,18 @@ def test_post_person__with_success(client: FlaskClient, session):
 
 def test_post_person__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables):
     test_cases = {
-        "data with no name": {"age": 18, "gender": "s", "position": "POS"},
-        "data with no age": {"name": "", "gender": "s", "position": "POS"},
+        "data with no name": {"age": 18, "gender": "d", "position": "POS"},
+        "data with no age": {"name": "", "gender": "d", "position": "POS"},
         "data with no gender": {"name": "", "age": 18, "position": "POS"},
-        "data with age out of range": {"name": "Max M.", "age": -1, "gender": "s", "position": "POS"},
+        "data with age out of range": {"name": "Max M.", "age": -1, "gender": "d", "position": "POS"},
         "data with unknown gender": {"name": "Max M.", "age": 18, "gender": "UNKNOWN", "position": "POS"},
-        "data with age wrong type": {"name": "Max M.", "age": "18", "gender": "s", "position": "POS"}
+        "data with age wrong type": {"name": "Max M.", "age": "18", "gender": "d", "position": "POS"}
     }
     for k, v in test_cases.items():
         test_cases[k] = json_dumps(v)
     test_cases.update({
-        "data with wrong json (missing })": '{"name": "Max M.", "age": 20, "gender": "s", "position": "POS" ',
-        "data with wrong json (wrong key type)": '{"name": "Max M.", "age": 20, "gender": "s", null: "POS"}'})
+        "data with wrong json (missing })": '{"name": "Max M.", "age": 20, "gender": "d", "position": "POS" ',
+        "data with wrong json (wrong key type)": '{"name": "Max M.", "age": 20, "gender": "d", null: "POS"}'})
 
     with raise_if_change_in_tables(Person):
         for data_name, test_data in test_cases.items():

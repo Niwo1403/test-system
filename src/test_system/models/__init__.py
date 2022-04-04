@@ -11,7 +11,7 @@ _create_tables_if_not_exist()  # must be run after import of models ("from .tabl
 if User.query.first() is None:  # if no user exist, assume database is empty & create development examples
     default_user = User(username="admin", password="admin")
     person_test = Test(name="Person", description_json={
-        "title": "Persönliche Daten",
+        "title": "Personal data",
         "logoPosition": "right",
         "pages": [
             {
@@ -26,7 +26,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                     {
                         "type": "text",
                         "name": "age",
-                        "title": "Alter",
+                        "title": "Age",
                         "isRequired": True,
                         "inputType": "number",
                         "min": 1,
@@ -35,34 +35,29 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                     {
                         "type": "radiogroup",
                         "name": "gender",
-                        "title": "Geschlecht",
+                        "title": "Gender",
                         "isRequired": True,
                         "choices": [
                             {
                                 "value": "m",
-                                "text": "männlich"
+                                "text": "male"
                             },
                             {
-                                "value": "w",
-                                "text": "weiblich"
+                                "value": "f",
+                                "text": "female"
                             },
                             {
-                                "value": "s",
-                                "text": "sonstiges"
+                                "value": "d",
+                                "text": "diverse"
                             }
                         ]
-                    },
-                    {
-                        "type": "text",
-                        "name": "position",
-                        "title": "Position"
                     }
                 ]
             }
         ]
     }, test_category=Test.CATEGORIES.PERSONAL_DATA_TEST)
     pre_collect_test = Test(name="PreCol", description_json={
-        "title": "Zusätzliche Daten",
+        "title": "Additional Information",
         "logoPosition": "right",
         "pages": [
             {
@@ -71,7 +66,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                     {
                         "type": "text",
                         "name": "word",
-                        "title": "Lieblingswort",
+                        "title": "Favorite word",
                         "isRequired": True
                     }
                 ]
@@ -79,7 +74,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
         ]
     }, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
     pers_test = Test(name="PersTest", description_json={
-        "title": "Persönlichkeitstest",
+        "title": "Test",
         "description": "Matrix Test",
         "logoPosition": "right",
         "pages": [
@@ -94,29 +89,29 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                         "columns": [
                             {
                                 "value": "1",
-                                "text": "tgnz"
+                                "text": "strongly disagree"
                             },
                             {
                                 "value": "2",
-                                "text": "tnz"
+                                "text": "partially disagree"
                             },
                             {
                                 "value": "3",
-                                "text": "tz"
+                                "text": "partially agree"
                             },
                             {
                                 "value": "4",
-                                "text": "tvz"
+                                "text": "strongly agree"
                             }
                         ],
                         "rows": [
                             {
                                 "value": "Question 1",
-                                "text": "Frage 1"
+                                "text": "First question"
                             },
                             {
                                 "value": "Question 2",
-                                "text": "Frage 2"
+                                "text": "Second question"
                             }
                         ]
                     },
@@ -128,29 +123,29 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                         "columns": [
                             {
                                 "value": "1",
-                                "text": "tgnz"
+                                "text": "strongly disagree"
                             },
                             {
                                 "value": "2",
-                                "text": "tnz"
+                                "text": "partially disagree"
                             },
                             {
                                 "value": "3",
-                                "text": "tz"
+                                "text": "partially agree"
                             },
                             {
                                 "value": "4",
-                                "text": "tvz"
+                                "text": "strongly agree"
                             }
                         ],
                         "rows": [
                             {
                                 "value": "Question 3",
-                                "text": "Frage 3"
+                                "text": "Third question"
                             },
                             {
                                 "value": "Question 4",
-                                "text": "Frage 4"
+                                "text": "Fourth question"
                             }
                         ]
                     }
@@ -167,29 +162,29 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                         "columns": [
                             {
                                 "value": "1",
-                                "text": "tgnz"
+                                "text": "strongly disagree"
                             },
                             {
                                 "value": "2",
-                                "text": "tnz"
+                                "text": "partially disagree"
                             },
                             {
                                 "value": "3",
-                                "text": "tz"
+                                "text": "partially agree"
                             },
                             {
                                 "value": "4",
-                                "text": "tvz"
+                                "text": "strongly agree"
                             }
                         ],
                         "rows": [
                             {
                                 "value": "Question 5",
-                                "text": "Frage 5"
+                                "text": "Fifth question"
                             },
                             {
                                 "value": "Question 6",
-                                "text": "Frage 6"
+                                "text": "Sixth question"
                             }
                         ]
                     },
@@ -201,29 +196,29 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
                         "columns": [
                             {
                                 "value": "1",
-                                "text": "tgnz"
+                                "text": "strongly disagree"
                             },
                             {
                                 "value": "2",
-                                "text": "tnz"
+                                "text": "partially disagree"
                             },
                             {
                                 "value": "3",
-                                "text": "tz"
+                                "text": "partially agree"
                             },
                             {
                                 "value": "4",
-                                "text": "tvz"
+                                "text": "strongly agree"
                             }
                         ],
                         "rows": [
                             {
                                 "value": "Question 7",
-                                "text": "Frage 7"
+                                "text": "Seventh question"
                             },
                             {
                                 "value": "Question 8",
-                                "text": "Frage 8"
+                                "text": "Eighth question"
                             }
                         ]
                     }

@@ -19,7 +19,7 @@ def get_token_creator():
     token_exist = last_created_token is not None
 
     token_creator_test = {
-        "title": "Neuen Token erstellen",
+        "title": "Create new token",
         "logoPosition": "right",
         "pages": [
             {
@@ -28,7 +28,7 @@ def get_token_creator():
                     {
                         "type": "dropdown",
                         "name": Test.CATEGORIES.PERSONAL_DATA_TEST.name,
-                        "title": "Persönliche Daten Test",
+                        "title": "Personal data test",
                         "defaultValueExpression": last_created_token.personal_data_test_name if token_exist else None,
                         "isRequired": True,
                         "choices": personal_data_test_names,
@@ -37,11 +37,11 @@ def get_token_creator():
                     {
                         "type": "matrixdynamic",
                         "name": PRE_COLLECT_TESTS_KEY,
-                        "title": "Zusatz Informationen",
+                        "title": "Additional information",
                         "defaultValue": [{PRE_COLLECT_TESTS_SURVEY_KEYWORD: pre_collect_test_name}
                                          for pre_collect_test_name in last_created_token.pre_collect_test_names
                                          ] if token_exist else None,
-                        "columns": [{"name": PRE_COLLECT_TESTS_SURVEY_KEYWORD, "title": "Mehrere möglich"}],
+                        "columns": [{"name": PRE_COLLECT_TESTS_SURVEY_KEYWORD, "title": "Multiple possible"}],
                         "choices": pre_collect_test_names + evaluable_test_names,
                         "rowCount": 1,
                         "allowRowsDragAndDrop": True
@@ -49,7 +49,7 @@ def get_token_creator():
                     {
                         "type": "dropdown",
                         "name": Test.CATEGORIES.EVALUABLE_TEST.name,
-                        "title": "Automatisch auswertbarer Test",
+                        "title": "Test whose answers will be exported",
                         "defaultValueExpression": last_created_token.evaluable_test_name if token_exist else None,
                         "isRequired": True,
                         "choices": evaluable_test_names,
@@ -58,28 +58,28 @@ def get_token_creator():
                     {
                         "type": "text",
                         "name": "max_usage_count",
-                        "title": "Maximale Nutzungen",
-                        "description": "Leer lassen für unbegrenzte Nutzung",
+                        "title": "Max usages",
+                        "description": "Leave empty for unlimited uses",
                         "inputType": "number",
                         "min": 0
                     },
                     {
                         "type": "boolean",
                         "name": EXPIRES_SURVEY_KEYWORD,
-                        "title": "Soll der Token zeitlich beschrenkt sein?",
+                        "title": "Should the token be limited in time?",
                         "defaultValue": "true",
                         "isRequired": True
                     },
                     {
                         "type": "text",
                         "name": User.username.key,
-                        "title": "Nutzername",
+                        "title": "Username",
                         "isRequired": True
                     },
                     {
                         "type": "text",
                         "name": User.password.key,
-                        "title": "Passwort",
+                        "title": "Password",
                         "isRequired": True
                     }
                 ]

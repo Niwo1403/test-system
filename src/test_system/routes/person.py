@@ -3,7 +3,7 @@ from json import loads as json_loads
 from json.decoder import JSONDecodeError
 # 3rd party
 from flask import request, abort
-from schema import Schema, And, Use, Optional, Or, SchemaError
+from schema import Schema, And, Optional, Or, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
@@ -11,7 +11,7 @@ from test_system.models import db, Person
 
 PERSONA_DATA_SCHEMA = Schema({"name": And(str, len),
                               "age": And(int, lambda n: 1 <= n <= 200),
-                              "gender": And(str, lambda g: g in ["m", "w", "s"]),
+                              "gender": And(str, lambda g: g in ["m", "f", "d"]),
                               Optional("position", default=None): Or(None, str)})
 
 ROUTE = f"{API_PREFIX}/person/"  # as variable for tests

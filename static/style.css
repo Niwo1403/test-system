@@ -1,10 +1,14 @@
+div {
+	font-size: calc(75px - 4vw);
+}
+
 button {
 	cursor: pointer;
 }
 
 form {
 	text-align: left;
-	font-size: calc(120px - 6vw);
+	font-size: calc(110px - 6vw);
 }
 
 a {
@@ -22,7 +26,7 @@ input[type="submit"]:hover {
 }
 
 form > div > input[type="submit"] {
-	font-size: calc(75px - 4vw);
+	font-size: calc(70px - 4vw);
 }
 
 form > textarea {
@@ -83,7 +87,7 @@ form > textarea {
 
 .loading-background {
 	background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg">\
-		<text y="30" font-size="30">Lade Zertifikat...</text>\
+		<text y="30" font-size="30">Loading PDF...</text>\
 		</svg>');
 }
 

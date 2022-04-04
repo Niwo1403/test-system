@@ -21,7 +21,7 @@ EVALUABLE_TEST_ANSWER_JSON = json_dumps(EVALUABLE_TEST_ANSWER)
 
 @fixture()
 def person(session) -> Person:
-    person = Person(answer_json={"name": "TestName", "age": 33, "gender": "s"})
+    person = Person(answer_json={"name": "TestName", "age": 33, "gender": "d"})
     session.add(person)
     session.commit()
     return person
