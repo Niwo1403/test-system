@@ -35,7 +35,7 @@ class PdfManager:
 
     def _add_answer(self, test_answer: TestAnswer):
         self._add_answer_header(test_answer)
-        self.pdf.add_formatted_json(test_answer.answer_set)
+        self.pdf.add_formatted_json(test_answer.answer_json)
 
     def _add_answer_header(self, test_answer: TestAnswer) -> None:
         self.pdf.add_default_cell(f'Test "{test_answer.test_name}" '

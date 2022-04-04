@@ -28,7 +28,7 @@ def person_with_position(session) -> Person:
 
 
 def _test_answer(session, token: Token, person: Person) -> TestAnswer:
-    test_answer = TestAnswer(answer_set={"Q": "A"}, test_name=token.evaluable_test_name, person_id=person.id)
+    test_answer = TestAnswer(answer_json={"Q": "A"}, test_name=token.evaluable_test_name, person_id=person.id)
     session.add(test_answer)
     session.commit()
     return test_answer
@@ -80,7 +80,7 @@ def unevaluated_evaluable_test_answer_2(session, test_answer_2) -> EvaluableTest
 
 @fixture()
 def incomplete_evaluable_test_answers(session, test_names, token) -> List[EvaluableTestAnswer]:
-    test_answer = TestAnswer(answer_set={}, test_name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name], person_id=None)
+    test_answer = TestAnswer(answer_json={}, test_name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name], person_id=None)
     session.add(test_answer)
     session.commit()
     incomplete_evaluable_test_answers = [

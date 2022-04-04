@@ -45,7 +45,7 @@ def personal_data_test() -> Test:
 def _assert_right_test_answer_data(answer: TestAnswer, person: Person, test: Test, correct_test_answer: Dict,
                                    resp: TestResponse) -> None:
     assert answer is not None, f"Could not write TestAnswer to database\n\nReceived response:\n{resp.get_data(True)}"
-    assert answer.answer_set == correct_test_answer and \
+    assert answer.answer_json == correct_test_answer and \
            answer.test_name == test.name and \
            answer.person_id == person.id, (f"TestAnswer which was written to database has wrong data: {answer}"
                                            f"\n\nReceived response:\n{resp.get_data(True)}")

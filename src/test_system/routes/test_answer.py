@@ -31,14 +31,14 @@ def post_test_answer():
         abort(404, "Person doesn't exist.")  # Person not found
 
     try:
-        answer_set = json_loads(request.data.decode())
-        answer_set = TEST_SCHEMA.validate(answer_set)
+        answer_json = json_loads(request.data.decode())
+        answer_json = TEST_SCHEMA.validate(answer_json)
     except JSONDecodeError:
         return abort(400, "Data validation failed, wrong JSON.")
     except SchemaError:
         return abort(400, "Data validation failed.")
 
-    answer = TestAnswer(answer_set=answer_set, test_name=test_name, person_id=person.id)
+    answer = TestAnswer(answer_json=answer_json, test_name=test_name, person_id=person.id)
     db.session.add(answer)
     db.session.commit()
 

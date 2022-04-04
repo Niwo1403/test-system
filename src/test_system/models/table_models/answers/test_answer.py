@@ -7,7 +7,7 @@ class TestAnswer(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     creation_timestamp = db.Column(db.TIMESTAMP, default=db.func.now())
-    answer_set = db.Column(db.JSON)
+    answer_json = db.Column(db.JSON)
     test_name = db.Column(db.String, db.ForeignKey("test.name"))
     person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
 
@@ -18,4 +18,4 @@ class TestAnswer(db.Model):
                 f"test: {self.test_name},"
                 f"person_id: {self.person_id},"
                 f"date: {self.creation_timestamp},"
-                f"answer_set: {self.answer_set})")
+                f"answer_json: {self.answer_json})")
