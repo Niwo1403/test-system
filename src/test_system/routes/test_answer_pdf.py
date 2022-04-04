@@ -4,7 +4,7 @@ from flask import request, abort, send_file
 from test_system import app
 from test_system.constants import API_PREFIX, CERTIFICATE_MIMETYPE
 from test_system.models import EvaluableTestAnswer, Person, Token
-from test_system.managers.certificate_manager import CertificateManager
+from test_system.managers.pdf_manager import PdfManager
 
 ROUTE = f'{API_PREFIX}/test-answer-pdf/'
 
@@ -28,18 +28,18 @@ def get_test_answer_pdf():
         abort(404, "Person, who answered TestAnswer not found.")
 
     token: Token = Token.query.filter_by(token=token_str).first()
-    # if token was already used for this certificate earlier, it doesn't madder if the token is invalid
+    # if token was already used for this PDF earlier, it doesn't madder if the token is invalid
     if token is None or token.is_invalid() and not token.was_used_for_answer(evaluable_answer):
         abort(401, "Token not found or invalid.")
 
-    cm = CertificateManager(person)
-    cm.add_answer(evaluable_answer)
-    pdf = cm.get_pdf()
+    pm = PdfManager(person)
+    pm.add_answer(evaluable_answer)
+    pdf = pm.get_pdf()
 
     if evaluable_answer.was_evaluated():
-        app.logger.info(f"Regenerated certificate for {person}")
+        app.logger.info(f"Regenerated PDF for {person}")
     else:
         token.use_for(evaluable_answer)
-        app.logger.info(f"Generated certificate for {person} and used {token}")
+        app.logger.info(f"Generated PDF for {person} and used {token}")
 
     return send_file(pdf, mimetype=CERTIFICATE_MIMETYPE, as_attachment=download, download_name="answers.pdf")

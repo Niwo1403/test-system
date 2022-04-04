@@ -20,6 +20,6 @@ class EvaluableTestAnswer(db.Model):  # consists of multiple EvaluableQuestionAn
 
     def was_evaluated(self) -> bool:
         """
-        Returns True, if a certificate was generated for this answer earlier.
+        Returns True, if a PDF was generated for this answer earlier.
         """
         return self.was_evaluated_with_token is not None

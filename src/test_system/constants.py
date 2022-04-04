@@ -57,7 +57,7 @@ TOKEN_PERIOD_OF_VALIDITY_IN_DAYS = 21
 """ How many days a token is valid, that can expire. """
 
 
-# certificate pdf
+# pdf
 
 
 class DefaultCertificateFonts:
@@ -75,13 +75,13 @@ class DefaultCertificateFonts:
 
 class DefaultPdfConfig:
     """
-    General configs for generating certificates.
+    General configs for generating PDFs.
     """
 
-    LOGO_PATH = path_join(FILE_DIR, "../../static/img/certificate_background.png")  # relative to this file
-    """ Relative path to location of background image of certificate. """
+    LOGO_PATH = path_join(FILE_DIR, "../../static/img/pdf_logo.png")  # relative to this file
+    """ Relative path to location of logo image for PDF. """
     TITLE = "Antworten"
-    """ The title on top of the certificate. """
+    """ The title on top of the PDF. """
     HEADER_BORDER = True
     """ Whether the title should be surrounded with a border. """
     DEFAULT_TEXT_ALIGN = "C"
@@ -98,4 +98,4 @@ DEFAULT_PDF_FONTS = DefaultCertificateFonts
 DEFAULT_PDF_CONFIG = DefaultPdfConfig
 
 CERTIFICATE_MIMETYPE = "application/pdf"
-""" Must be a valid MIME type - will be included in response header of certificates. """
+""" Must be a valid MIME type - will be included in response header of PDFs. """

@@ -13,7 +13,7 @@ def test_if_file_is_accessible__via_redirect(client: FlaskClient):
 
 
 def test_if_file_is_accessible__directly(client: FlaskClient):
-    test_request_routes = ["/index.html", "script.js", "/style.css", "/img/certificate_background.png"]
+    test_request_routes = ["/index.html", "script.js", "/style.css", "/img/pdf_logo.png"]
 
     for test_request_route in test_request_routes:
         resp = client.get(test_request_route)

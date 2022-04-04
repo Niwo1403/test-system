@@ -5,10 +5,10 @@ from test_system.models import TestAnswer, Person, EvaluableTestAnswer
 from .pdf import PDF
 
 
-class CertificateManager:
+class PdfManager:
     """
-    Can be used to create a certificate.
-    A certificate includes at first the initially set information about the person who answered the test.
+    Can be used to create a PDF.
+    A PDF includes at first the initially set information about the person who answered the test.
     After the personal information, EvaluableTestAnswers can be added using the add_answer method;
     this will also evaluate the evaluable_test_answer.
     In the end, the PDF can be created and obtained as a file using the get_pdf method.
@@ -21,7 +21,7 @@ class CertificateManager:
 
     def add_answer(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
         """
-        Evaluates the evaluable_test_answer and adds the result to the certificate.
+        Adds the answers of the evaluable_test_answer to the PDF.
         """
         self.pdf.add_default_cell()
         self._add_answer(evaluable_test_answer.test_answer)
