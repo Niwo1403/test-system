@@ -7,7 +7,7 @@ from schema import Schema, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import db, Person, Test, TestAnswer, EvaluableTestAnswer
+from test_system.models import db, Person, Test, TestAnswer, Token, EvaluableTestAnswer
 
 TEST_SCHEMA = Schema({str: lambda v: v is not None})  # Only first key must be string
 
@@ -18,8 +18,13 @@ ROUTE = f'{API_PREFIX}/test-answer/'
 def post_test_answer():
     test_name = request.args.get("test-name", type=str)
     person_id = request.args.get("person-id", type=int)
-    if not all((test_name, person_id)):
+    token_str = request.args.get("token", type=str)
+    if not all((test_name, person_id, token_str)):
         abort(400, "Argument missing or not valid.")
+
+    token: Token = Token.query.filter_by(token=token_str).first()
+    if token is None or token.is_invalid():
+        abort(401, "Token not found or invalid.")
 
     test: Test = Test.query.filter_by(name=test_name).first()
     if test is None:
@@ -49,6 +54,7 @@ def post_test_answer():
         db.session.add(evaluable_answer)
         db.session.commit()
 
+        token.use_for(evaluable_answer)
         return str(evaluable_answer.id), 201
 
     return str(answer.id), 201

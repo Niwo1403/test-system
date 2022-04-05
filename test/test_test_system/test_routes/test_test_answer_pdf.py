@@ -20,28 +20,11 @@ def person(session) -> Person:
 
 
 @fixture()
-def person_with_position(session) -> Person:
-    person = Person(answer_json={"name": "TestName", "age": 33, "gender": "d", "position": "POSITION..."})
-    session.add(person)
-    session.commit()
-    return person
-
-
-def _test_answer(session, token: Token, person: Person) -> TestAnswer:
+def test_answer(session, token, person) -> TestAnswer:
     test_answer = TestAnswer(answer_json={"Q": "A"}, test_name=token.evaluable_test_name, person_id=person.id)
     session.add(test_answer)
     session.commit()
     return test_answer
-
-
-@fixture()
-def test_answer(session, token, person) -> TestAnswer:
-    return _test_answer(session, token, person)
-
-
-@fixture()
-def test_answer_2(session, token, person_with_position) -> TestAnswer:
-    return _test_answer(session, token, person_with_position)
 
 
 @fixture()
@@ -60,22 +43,13 @@ def evaluated_evaluable_test_answer(create_evaluated_evaluable_test_answer_for_t
     return create_evaluated_evaluable_test_answer_for_token(token)
 
 
-def _unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
+@fixture()
+def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
     unevaluated_evaluable_test_answer = EvaluableTestAnswer(was_evaluated_with_token=None,
                                                             test_answer_id=test_answer.id)
     session.add(unevaluated_evaluable_test_answer)
     session.commit()
     return unevaluated_evaluable_test_answer
-
-
-@fixture()
-def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnswer:
-    return _unevaluated_evaluable_test_answer(session, test_answer)
-
-
-@fixture()
-def unevaluated_evaluable_test_answer_2(session, test_answer_2) -> EvaluableTestAnswer:
-    return _unevaluated_evaluable_test_answer(session, test_answer_2)
 
 
 @fixture()
@@ -96,37 +70,16 @@ def incomplete_evaluable_test_answers(session, test_names, token) -> List[Evalua
 
 def test_get_test_answer_pdf__with_success(client: FlaskClient, session,
                                            token, unlimited_token, no_use_token, expired_token,
-                                           create_evaluated_evaluable_test_answer_for_token,
-                                           unevaluated_evaluable_test_answer, unevaluated_evaluable_test_answer_2):
+                                           create_evaluated_evaluable_test_answer_for_token):
     test_cases = [(token, create_evaluated_evaluable_test_answer_for_token(token)),
-                  (token, unevaluated_evaluable_test_answer),
-                  # EvaluableTestAnswers (like unevaluated_evaluable_test_answer) must NOT repeat,
-                  # since the unevaluated answers will be evaluated after first request!
-                  (unlimited_token, unevaluated_evaluable_test_answer_2),
                   (expired_token, create_evaluated_evaluable_test_answer_for_token(expired_token)),
                   (no_use_token, create_evaluated_evaluable_test_answer_for_token(no_use_token))]
 
     for test_token, evaluable_test_answer in test_cases:
-        token_was_evaluated_before = evaluable_test_answer.was_evaluated()
-        pre_max_usage_count = test_token.max_usage_count
         resp = client.get(ROUTE, query_string={"evaluable-test-answer-id": evaluable_test_answer.id,
                                                "token": test_token.token})
-
-        # test_token & evaluable_test_answer must be reloaded after extern change!
-        test_token = Token.query.filter_by(token=test_token.token).first()
-        evaluable_test_answer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer.id).first()
-        assert test_token is not None, (f"Token was deleted while GET test-answer-pdf request at {ROUTE}"
-                                        f"\n\nReceived response:\n{resp.get_data(True)}")
-        assert evaluable_test_answer is not None, ("EvaluableTestAnswer was deleted while GET test-answer-pdf request "
-                                                   f"at {ROUTE}\n\nReceived response:\n{resp.get_data(True)}")
-
         assert resp.status_code == 200, (f"Can't GET test-answer-pdf from {ROUTE} with {evaluable_test_answer}"
                                          f"\n\nReceived response:\n{resp.get_data(True)}")
-
-        assert test_token.max_usage_count == pre_max_usage_count if token_was_evaluated_before \
-            else test_token.max_usage_count is None or test_token.max_usage_count + 1 == pre_max_usage_count, \
-            (f"Got wrong max_usage_count after request with {test_token} & {evaluable_test_answer}"
-             f"\n\nReceived response:\n{resp.get_data(True)}")
 
         try:
             PdfFileReader(BytesIO(resp.data))
@@ -170,15 +123,15 @@ def test_get_test_answer_pdf__with_unknown_data(client: FlaskClient, session, ra
 
 def test_get_test_answer_pdf__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
                                                         unknown_token_name, no_use_token, expired_token,
-                                                        unevaluated_evaluable_test_answer,
+                                                        token, unlimited_token, unevaluated_evaluable_test_answer,
                                                         evaluated_evaluable_test_answer):
     query_strings = [
-        {"token": unknown_token_name, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
-        {"token": no_use_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
-        {"token": expired_token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
+        {"token": "##########", "evaluable-test-answer-id": evaluated_evaluable_test_answer.id},
+        {"token": token.token, "evaluable-test-answer-id": unevaluated_evaluable_test_answer.id},
         # passed token doesn't match used token of evaluated_evaluable_test_answer
         {"token": no_use_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id},
-        {"token": expired_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id}
+        {"token": expired_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id},
+        {"token": unlimited_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id}
     ]
 
     with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
