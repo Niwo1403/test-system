@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "7fc6641b-9f29-4282-90e4-ed02fc8a05fe",
-		"name": "personality_test_system",
+		"name": "test_system",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -140,7 +140,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/test-answer/?test-name=PreCol&person-id=2",
+					"raw": "http://localhost:5000/api/test-answer/?test-name=PreCol&personal-data-answer-id=2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -157,7 +157,7 @@
 							"value": "PreCol"
 						},
 						{
-							"key": "person-id",
+							"key": "personal-data-answer-id",
 							"value": "2"
 						}
 					]
@@ -180,7 +180,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/test-answer/?test-name=PersTest&person-id=2",
+					"raw": "http://localhost:5000/api/test-answer/?test-name=PersTest&personal-data-answer-id=2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -197,7 +197,7 @@
 							"value": "PersTest"
 						},
 						{
-							"key": "person-id",
+							"key": "personal-data-answer-id",
 							"value": "2"
 						}
 					]

@@ -7,21 +7,15 @@ from flask.testing import FlaskClient
 from PyPDF2.pdf import PdfFileReader
 from PyPDF2.utils import PdfReadError
 # custom
-from test_system.models import Token, Person, Test, TestAnswer, EvaluableTestAnswer
+from test_system.models import Token, Test, TestAnswer, EvaluableTestAnswer
 from test_system.routes.test_answer_pdf import ROUTE
 
 
 @fixture()
-def person(session) -> Person:
-    person = Person(answer_json={"name": "TestName", "gender": "d", "age": 22})
-    session.add(person)
-    session.commit()
-    return person
-
-
-@fixture()
-def test_answer(session, token, person) -> TestAnswer:
-    test_answer = TestAnswer(answer_json={"Q": "A"}, test_name=token.evaluable_test_name, person_id=person.id)
+def test_answer(session, token, personal_data_answer) -> TestAnswer:
+    test_answer = TestAnswer(answer_json={"Q": "A"},
+                             test_name=token.evaluable_test_name,
+                             personal_data_answer_id=personal_data_answer.id)
     session.add(test_answer)
     session.commit()
     return test_answer
@@ -54,7 +48,7 @@ def unevaluated_evaluable_test_answer(session, test_answer) -> EvaluableTestAnsw
 
 @fixture()
 def incomplete_evaluable_test_answers(session, test_names, token) -> List[EvaluableTestAnswer]:
-    test_answer = TestAnswer(answer_json={}, test_name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name], person_id=None)
+    test_answer = TestAnswer(answer_json={}, test_name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name])
     session.add(test_answer)
     session.commit()
     incomplete_evaluable_test_answers = [
@@ -100,7 +94,7 @@ def test_get_test_answer_pdf__with_bad_request(client: FlaskClient, session, rai
         {"evaluable-test-answer-id": None, "token": token.token}
     ]
 
-    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
+    with raise_if_change_in_tables(Token, TestAnswer, EvaluableTestAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request with arguments: "
@@ -114,7 +108,7 @@ def test_get_test_answer_pdf__with_unknown_data(client: FlaskClient, session, ra
         for incomplete_evaluable_test_answer in incomplete_evaluable_test_answers
     ] + [{"token": token.token, "evaluable-test-answer-id": "-1"}]
 
-    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
+    with raise_if_change_in_tables(Token, TestAnswer, EvaluableTestAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for request with unknown data & "
@@ -134,7 +128,7 @@ def test_get_test_answer_pdf__with_unauthorized_request(client: FlaskClient, ses
         {"token": unlimited_token.token, "evaluable-test-answer-id": evaluated_evaluable_test_answer.id}
     ]
 
-    with raise_if_change_in_tables(Token, Person, TestAnswer, EvaluableTestAnswer):
+    with raise_if_change_in_tables(Token, TestAnswer, EvaluableTestAnswer):
         for query_string in query_strings:
             resp = client.get(ROUTE, query_string=query_string)
             assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request with "

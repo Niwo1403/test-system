@@ -13,7 +13,7 @@ FILE_DIR = dirname(realpath(__file__))
 
 API_PREFIX = "/api"
 """ A prefix which stand before all flask REST routes. """
-DEFAULT_INDEX_FILE = "/index.html"  # relative to static directory (personality_test_system/static)
+DEFAULT_INDEX_FILE = "/index.html"  # relative to static directory (test_system/static)
 """ Requests to domain root, get redirected to this file. """
 
 PRE_COLLECT_TESTS_SURVEY_KEYWORD = "tests"
@@ -25,7 +25,7 @@ EXPIRES_SURVEY_KEYWORD = "expires"
 
 STATIC_URL_PATH = ""
 """ Prefix for REST routes with static content. """
-STATIC_FOLDER = "../../static"  # relative path from app.py to static directory (personality_test_system/static)
+STATIC_FOLDER = "../../static"  # relative path from app.py to static directory (test_system/static)
 """ Relative path to root of static files. """
 
 LOG_LEVEL = logging.INFO

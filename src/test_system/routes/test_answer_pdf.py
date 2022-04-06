@@ -3,7 +3,7 @@ from flask import request, abort, send_file
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX, CERTIFICATE_MIMETYPE
-from test_system.models import EvaluableTestAnswer, Person, Token
+from test_system.models import EvaluableTestAnswer, TestAnswer, Token
 from test_system.managers.pdf_manager import PdfManager
 
 ROUTE = f'{API_PREFIX}/test-answer-pdf/'
@@ -20,21 +20,21 @@ def get_test_answer_pdf():
     evaluable_answer: EvaluableTestAnswer = EvaluableTestAnswer.query.filter_by(id=evaluable_test_answer_id).first()
     if evaluable_answer is None:
         abort(404, "EvaluableTestAnswer not found.")
-    test_answer = evaluable_answer.test_answer
+    test_answer: TestAnswer = evaluable_answer.test_answer
     if test_answer is None:
         abort(404, "TestAnswer of EvaluableTestAnswer not found.")
-    person: Person = test_answer.answerer
-    if person is None:
-        abort(404, "Person, who answered TestAnswer not found.")
+    person_data_test_answer: TestAnswer = TestAnswer.query.filter_by(id=test_answer.personal_data_answer_id).first()
+    if person_data_test_answer is None:
+        abort(404, "Personal data answer, which belongs to TestAnswer not found.")
 
     token: Token = Token.query.filter_by(token=token_str).first()
     if token is None or not token.was_used_for_answer(evaluable_answer):
         abort(401, "Token not found or invalid.")
 
-    pm = PdfManager(person)
+    pm = PdfManager(person_data_test_answer)
     pm.add_answer(evaluable_answer)
     pdf = pm.get_pdf()
 
-    app.logger.info(f"Generated PDF for {person}")
+    app.logger.info(f"Generated PDF for {person_data_test_answer}")
 
     return send_file(pdf, mimetype=CERTIFICATE_MIMETYPE, as_attachment=download, download_name="answers.pdf")

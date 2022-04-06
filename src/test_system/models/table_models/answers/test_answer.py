@@ -9,13 +9,11 @@ class TestAnswer(db.Model):
     creation_timestamp = db.Column(db.TIMESTAMP, default=db.func.now())
     answer_json = db.Column(db.JSON)
     test_name = db.Column(db.String, db.ForeignKey("test.name"))
-    person_id = db.Column(db.Integer, db.ForeignKey("person.id"))
-
-    answerer = db.relationship("Person")
+    personal_data_answer_id = db.Column(db.Integer, db.ForeignKey("test_answer.id"), default=None)
 
     def __repr__(self):
         return (f"Answer {self.id} ("
                 f"test: {self.test_name},"
-                f"person_id: {self.person_id},"
+                f"personal_data_answer_id: {self.personal_data_answer_id},"
                 f"date: {self.creation_timestamp},"
                 f"answer_json: {self.answer_json})")

@@ -6,10 +6,10 @@
 
 ## Introduction
 **_Note: in the following section links will use "your-domain.com" as domain in links, replace if with your actual domain to get the correct links_**
-- The personality test system is intended to allow customizable personality tests to be displayed, answered and evaluated
-  - Access to execute a personality test is granted using a token
+- The test system is intended to allow customizable tests to be displayed, answered and exported
+  - Access to execute a test is granted using a token
 - A token can be created at https://your-domain.com/token.html, if you got a valid username and password
-- On the start screen at https://your-domain.com/index.html a token (&rarr; [about tokens in database](#token-table)) can be entered to execute a personality [test](#test-table), which consists of:
+- On the start screen at https://your-domain.com/index.html a token (&rarr; [about tokens in database](#token-table)) can be entered to execute a [test](#test-table), which consists of:
   - One _PERSONAL_DATA_TEST_, which collects base data about the person
   - Any number of _PRE_COLLECT_TESTS_, which collect any unevaluated data
   - One _EVALUABLE_TEST_, which can contain evaluable questions, which will be evaluated
@@ -31,15 +31,12 @@
 ### **Test** table
 - Contains the names (to identify the test), descriptions (which define the questions, etc.) and categories of the tests
   - The test category can be:
-    - _PERSONAL_DATA_TEST_: for tests which are used to create a row in table _"person"_ (the test structure & question names must match the API)
-      - If you want to create a _PERSONAL_DATA_TEST_ you should probably copy the description of an existing one and adjust it to your needs (&rarr; [how to add or change tests](#add-or-change-tests))
+    - _PERSONAL_DATA_TEST_: for tests which are used to collect information about the answering person
     - _PRE_COLLECT_TEST_: for tests which won't be evaluated (can have any structure)
     - _EVALUABLE_TEST_: for tests, which should evaluate answers that have a single numeric answer value (non-numeric or multi-value answers will be ignored)
 
 ### Test answer tables
-- Table **_"person"_**: contains the data about a person, which has answered a personality test (the person will be referenced in the actual test_answers)
-  - Note: column _"gender"_ must only contain _"m"_, _"w"_ or _"s"_
-- Table **_"test_answer"_**: contains an answer for a _PRE_COLLECT_TEST_ or _EVALUABLE_TEST_, a reference to the person, which has answered the test, and a reference to the test, which was answered
+- Table **_"test_answer"_**: contains an answer for the tests, a reference to the personal data answer and a reference to the test, which was answered
 - Table **_"evaluable_test_answer"_**: references test answers (in table _"test_answers"_), which can be evaluated
 
 <br><br>

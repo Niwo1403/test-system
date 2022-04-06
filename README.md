@@ -1,4 +1,4 @@
-# Personality test system
+# Test system
 
 ## User manual
 

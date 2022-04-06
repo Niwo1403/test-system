@@ -7,7 +7,7 @@ surveyLocalization.completeText = "Next";
 
 
 // tests & site state:
-let personId = null;
+let personalDataAnswerId = null;
 let tests = null;
 let pre_collect_index = 0;
 
@@ -69,7 +69,7 @@ function showCreatedToken(token) {
 
 function startTests() {
     const personal_data_test = tests["personal_data_test"];
-    displaySurvey(personal_data_test, postPerson);
+    displaySurvey(personal_data_test, postPersonalDataAnswer);
 }
 
 function displaySurvey(test, respHandler) {
@@ -109,21 +109,23 @@ function postAnswer(route, jsonAnswer, onSuccess) {
     xhr.send(JSON.stringify(jsonAnswer));
 }
 
-function postPerson(jsonAnswer, _) {
-    postAnswer(buildApiUrl("person/", true), jsonAnswer, function (responseText) {
-        personId = JSON.parse(responseText);
+function postPersonalDataAnswer(jsonAnswer, testName) {
+    postAnswer(buildApiUrl("person/", true, {"test-name": testName}), jsonAnswer,
+        function (responseText) {
+        personalDataAnswerId = JSON.parse(responseText);
         displayNextSurvey();
     });
 }
 
 function postPreCollectTest(jsonAnswer, testName) {
-    postAnswer(buildApiUrl("test-answer/", false,
-            {"test-name": testName, "person-id": personId}),
+    postAnswer(buildApiUrl("test-answer/", true,
+            {"test-name": testName, "personal-data-answer-id": personalDataAnswerId}),
         jsonAnswer, function (_) { displayNextSurvey(); });
 }
 
 function postEvaluableTest(jsonAnswer, testName) {
-    postAnswer(buildApiUrl("test-answer/", false, {"test-name": testName, "person-id": personId}),
+    postAnswer(buildApiUrl("test-answer/", true,
+            {"test-name": testName, "personal-data-answer-id": personalDataAnswerId}),
         jsonAnswer, function (responseText) {
         window.location.href = buildUrl("result.html", true,
             {"evaluable-test-answer-id": responseText});

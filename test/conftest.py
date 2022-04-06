@@ -15,7 +15,7 @@ load_dotenv(path_join(FILE_DIR, ".env"), override=True)  # load test env variabl
 # custom
 from test_system import app  # must not be at top of file
 from test_system.constants import PRE_COLLECT_TESTS_KEY
-from test_system.models import db, Token, Test
+from test_system.models import db, Token, Test, TestAnswer
 
 app.config['TESTING'] = True
 
@@ -164,3 +164,32 @@ def unlimited_token(create_token) -> Token:
 @fixture()
 def unknown_token_name() -> str:
     return "UNKNOWN TOKEN"
+
+
+@fixture()
+def personal_data_test_name(test_names):
+    return test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
+
+
+@fixture()
+def personal_data_test(personal_data_test_name) -> Test:
+    return Test.query.filter_by(name=personal_data_test_name).first()
+
+
+@fixture()
+def personal_data_answer(session, personal_data_test) -> TestAnswer:
+    personal_data_answer = TestAnswer(answer_json={"name": "TestName", "age": 33, "gender": "d"},
+                                      test_name=personal_data_test.name)
+    session.add(personal_data_answer)
+    session.commit()
+    return personal_data_answer
+
+
+@fixture()
+def pre_collect_test() -> Test:
+    return Test.query.filter_by(name="PreCol").first()
+
+
+@fixture()
+def evaluable_test() -> Test:
+    return Test.query.filter_by(name="PersTest").first()

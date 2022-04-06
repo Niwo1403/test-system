@@ -34,7 +34,7 @@ Note: you maybe should read the [user manual introduction](user%20manual.md#intr
 ### Setting up git
 - Download git [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   - Information about the local setup after installation, like setting your username and password, are described [here](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup#_your_identity)
-- To clone the repository run `git clone https://github.com/Personality-Test-Berlin/personality_test_system.git`, this will create a directory personality_test_system in your current working directory
+- To clone the repository run `git clone https://github.com/...`, this will create a directory test_system in your current working directory
 
 ### Create Python venv (virtual environment)
 _Note: create the venv using the Python installation, you installed earlier_
@@ -43,15 +43,15 @@ _Note: create the venv using the Python installation, you installed earlier_
   - Wait until IDE is done loading, open any Python file of your project and click _"Install requirements"_ at the top of the opened file - this should load your requirements (in case there is no such option at the top of the file, use the pip install command in the next bullet point paragraph)
 - Alternatively, if **PyCharm isn't used** run: `python -m venv venv/`
   - You may not call Python using "python" but instead "py" or "python3", depending on your installation and operating system
-  - Run with [activated venv](#activate-python-venv-virtual-environment) in project directory (personality_test_system) to install required Python packages: `pip install -r requirements.txt`
+  - Run with [activated venv](#activate-python-venv-virtual-environment) in project directory (test_system) to install required Python packages: `pip install -r requirements.txt`
 
 ### Create databases
-- Chose a name for the database (e.g. personality_test_database) and run with your chosen database name instead of "\<database name\>": `psql -c "CREATE DATABASE <database name>;"`
+- Chose a name for the database (e.g. test_database) and run with your chosen database name instead of "\<database name\>": `psql -c "CREATE DATABASE <database name>;"`
   - On Linux you might have to run the command as sudo
-  - Adjust DATABASE_URL in .env file (in directory personality_test_system) by adding your local postgres database password (set in [postgres installer](#setting-up-postgres)) and database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
-- Chose a name for the testing database (e.g. test_personality_test_database) and run with your chosen test database name instead of "\<testing database name\>": `psql -c "CREATE DATABASE <testing database name>;"`
+  - Adjust DATABASE_URL in .env file (in directory test_system) by adding your local postgres database password (set in [postgres installer](#setting-up-postgres)) and database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
+- Chose a name for the testing database (e.g. test_test_database) and run with your chosen test database name instead of "\<testing database name\>": `psql -c "CREATE DATABASE <testing database name>;"`
   - On Linux you might have to run the command as sudo
-  - Adjust DATABASE_URL in the test .env file (in directory personality_test_system/test) by adding your local postgres database password (set in [postgres installer](#setting-up-postgres)) and test database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
+  - Adjust DATABASE_URL in the test .env file (in directory test_system/test) by adding your local postgres database password (set in [postgres installer](#setting-up-postgres)) and test database name in: DATABASE_URL=postgresql://postgres:_PASSWORD_@localhost/_DATABASE_
 - In case git detects the .env files as changed (after entering database name & password), run `git update-index --skip-worktree <file>` for each .env file es _\<file\>_ to tell git to ignore changes in the file (otherwise you may accidentally commit your database password...)
   - In case an ignored .env file shouldn't be ignored anymore, run `git update-index --no-skip-worktree <file>` with the .env file es _\<file\>_
 - If you **use PyCharm**, install the plugins _".env file support"_ & _"EnvFile"_
@@ -86,7 +86,7 @@ _Note: create the venv using the Python installation, you installed earlier_
 ## Manage environment
 
 ### Activate Python venv (virtual environment)
-- Run in your project directory (personality_test_system):
+- Run in your project directory (test_system):
   - On **Windows**: `venv\Scripts\activate`
   - On **Linux** or **macOS**: `source venv/bin/activate`
 
@@ -106,7 +106,7 @@ _Note: before running the application you have to [set up the environment](#sett
     - The command may also be used on other operating systems, if only the Python application should be run (without gunicorn) or the first command doesn't work
 - In case you get a security alert (probably from the firewall of your operating system), confirm and proceed
 - Your app should now be running on [localhost:5000](http://localhost:5000/)
-  - To send specific requests, you can use [Postman](https://www.postman.com/): initially [import](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) the `test/personality_test_system.postman_collection.json` config file in Postman
+  - To send specific requests, you can use [Postman](https://www.postman.com/): initially [import](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) the `test/test_system.postman_collection.json` config file in Postman
     - To send a request: choose a request from the panel on the left side, click on it and click "Send" in the opened main panel in the center to send it (the backend must be running for that...)
 
 <br><br>
@@ -117,7 +117,7 @@ _Note: before running the application you have to [set up the environment](#sett
 _Note: before running the application you have to [set up the environment](#setting-up-environment), in case you haven't done it already_
 - Using **PyCharm**: run all tests with _"Run all tests"_ [run configuration](https://www.jetbrains.com/help/pycharm/running-applications.html)
   - How to run a specific test or all tests in a directory or file using PyCharm is described [here](https://www.jetbrains.com/help/pycharm/performing-tests.html)
-- Using **terminal**: run with [activated venv](#activate-python-venv-virtual-environment) in project directory (personality_test_system): `pytest test`
+- Using **terminal**: run with [activated venv](#activate-python-venv-virtual-environment) in project directory (test_system): `pytest test`
   - How to run a specific test or all tests in a directory or file using terminal is described [here](https://docs.pytest.org/en/7.0.x/how-to/usage.html)
 
 <br><br>

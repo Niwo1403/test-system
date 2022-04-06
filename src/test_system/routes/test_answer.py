@@ -7,7 +7,7 @@ from schema import Schema, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import db, Person, Test, TestAnswer, Token, EvaluableTestAnswer
+from test_system.models import db, Test, TestAnswer, Token, EvaluableTestAnswer
 
 TEST_SCHEMA = Schema({str: lambda v: v is not None})  # Only first key must be string
 
@@ -17,10 +17,10 @@ ROUTE = f'{API_PREFIX}/test-answer/'
 @app.route(ROUTE, methods=['POST'])
 def post_test_answer():
     test_name = request.args.get("test-name", type=str)
-    person_id = request.args.get("person-id", type=int)
+    personal_data_answer_id = request.args.get("personal-data-answer-id", type=int)
     token_str = request.args.get("token", type=str)
-    if not all((test_name, person_id, token_str)):
-        abort(400, "Argument missing or not valid.")
+    if not all((test_name, personal_data_answer_id, token_str)):
+        abort(400, "Argument missing or invalid.")
 
     token: Token = Token.query.filter_by(token=token_str).first()
     if token is None or token.is_invalid():
@@ -31,9 +31,9 @@ def post_test_answer():
         abort(404, "Test doesn't exist.")
     if test.test_category == Test.CATEGORIES.PERSONAL_DATA_TEST:
         abort(400, "Can't post test-answer of personal data test.")
-    person: Person = Person.query.filter_by(id=person_id).first()
-    if person is None:
-        abort(404, "Person doesn't exist.")  # Person not found
+    personal_data_answer: TestAnswer = TestAnswer.query.filter_by(id=personal_data_answer_id).first()
+    if personal_data_answer is None:
+        abort(404, "Personal data TestAnswer doesn't exist.")  # Personal data answer not found
 
     try:
         answer_json = json_loads(request.data.decode())
@@ -43,11 +43,11 @@ def post_test_answer():
     except SchemaError:
         return abort(400, "Data validation failed.")
 
-    answer = TestAnswer(answer_json=answer_json, test_name=test_name, person_id=person.id)
+    answer = TestAnswer(answer_json=answer_json, test_name=test_name, personal_data_answer_id=personal_data_answer.id)
     db.session.add(answer)
     db.session.commit()
 
-    app.logger.info(f"Created answer for test '{answer.test_name}' for {person}")
+    app.logger.info(f"Created answer for test '{answer.test_name}' belonging to {personal_data_answer}")
 
     if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
         evaluable_answer = EvaluableTestAnswer(test_answer_id=answer.id)
