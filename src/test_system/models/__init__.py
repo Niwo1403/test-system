@@ -10,7 +10,7 @@ _create_tables_if_not_exist()  # must be run after import of models ("from .tabl
 
 if User.query.first() is None:  # if no user exist, assume database is empty & create development examples
     default_user = User(username="admin", password="admin")
-    person_test = Test(name="Person", description_json={
+    personal_data_test = Test(name="PersonalDataTest", description_json={
         "title": "Personal data",
         "logoPosition": "right",
         "pages": [
@@ -73,7 +73,7 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
             }
         ]
     }, test_category=Test.CATEGORIES.PRE_COLLECT_TEST)
-    pers_test = Test(name="PersTest", description_json={
+    pers_test = Test(name="Test1", description_json={
         "title": "Test",
         "description": "Matrix Test",
         "logoPosition": "right",
@@ -228,10 +228,10 @@ if User.query.first() is None:  # if no user exist, assume database is empty & c
     }, test_category=Test.CATEGORIES.EVALUABLE_TEST)
     test_token = Token(token="asdf",
                        max_usage_count=2,
-                       personal_data_test_name="Person",
+                       personal_data_test_name="PersonalDataTest",
                        pre_collect_test_names=["PreCol", "PreCol"],
-                       evaluable_test_name="PersTest")
-    db.session.add_all((default_user, person_test, pre_collect_test, pers_test, test_token))
+                       evaluable_test_name="Test1")
+    db.session.add_all((default_user, personal_data_test, pre_collect_test, pers_test, test_token))
     try:
         db.session.commit()
     except IntegrityError:

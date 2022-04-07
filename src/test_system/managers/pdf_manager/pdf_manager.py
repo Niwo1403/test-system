@@ -8,7 +8,7 @@ from .pdf import PDF
 class PdfManager:
     """
     Can be used to create a PDF.
-    A PDF includes at first the initially set information about the person who answered the test.
+    A PDF includes at first the initially set personal data information about the answerer of the test.
     After the personal information, EvaluableTestAnswers can be added using the add_answer method;
     this will also evaluate the evaluable_test_answer.
     In the end, the PDF can be created and obtained as a file using the get_pdf method.

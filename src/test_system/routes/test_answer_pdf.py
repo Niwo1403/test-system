@@ -23,18 +23,18 @@ def get_test_answer_pdf():
     test_answer: TestAnswer = evaluable_answer.test_answer
     if test_answer is None:
         abort(404, "TestAnswer of EvaluableTestAnswer not found.")
-    person_data_test_answer: TestAnswer = TestAnswer.query.filter_by(id=test_answer.personal_data_answer_id).first()
-    if person_data_test_answer is None:
+    personal_data_test_answer: TestAnswer = TestAnswer.query.filter_by(id=test_answer.personal_data_answer_id).first()
+    if personal_data_test_answer is None:
         abort(404, "Personal data answer, which belongs to TestAnswer not found.")
 
     token: Token = Token.query.filter_by(token=token_str).first()
     if token is None or not token.was_used_for_answer(evaluable_answer):
         abort(401, "Token not found or invalid.")
 
-    pm = PdfManager(person_data_test_answer)
+    pm = PdfManager(personal_data_test_answer)
     pm.add_answer(evaluable_answer)
     pdf = pm.get_pdf()
 
-    app.logger.info(f"Generated PDF for {person_data_test_answer}")
+    app.logger.info(f"Generated PDF for {personal_data_test_answer}")
 
     return send_file(pdf, mimetype=CERTIFICATE_MIMETYPE, as_attachment=download, download_name="answers.pdf")

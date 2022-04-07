@@ -23,9 +23,9 @@ app.config['TESTING'] = True
 @fixture()
 def test_names():
     return {
-        Test.CATEGORIES.PERSONAL_DATA_TEST.name: "Person",
+        Test.CATEGORIES.PERSONAL_DATA_TEST.name: "PersonalDataTest",
         PRE_COLLECT_TESTS_KEY: ["PreCol", "PreCol"],
-        Test.CATEGORIES.EVALUABLE_TEST.name: "PersTest"
+        Test.CATEGORIES.EVALUABLE_TEST.name: "Test1"
     }
 
 
@@ -191,5 +191,5 @@ def pre_collect_test() -> Test:
 
 
 @fixture()
-def evaluable_test() -> Test:
-    return Test.query.filter_by(name="PersTest").first()
+def evaluable_test(test_names) -> Test:
+    return Test.query.filter_by(name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name]).first()

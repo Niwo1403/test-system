@@ -106,8 +106,9 @@ _Note: before running the application you have to [set up the environment](#sett
     - The command may also be used on other operating systems, if only the Python application should be run (without gunicorn) or the first command doesn't work
 - In case you get a security alert (probably from the firewall of your operating system), confirm and proceed
 - Your app should now be running on [localhost:5000](http://localhost:5000/)
-  - To send specific requests, you can use [Postman](https://www.postman.com/): initially [import](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) the `test/test_system.postman_collection.json` config file in Postman
+  - To send specific requests, you can use [Postman](https://www.postman.com/): [import](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-data-into-postman) the `test/test_system.postman_collection.json` config file in Postman
     - To send a request: choose a request from the panel on the left side, click on it and click "Send" in the opened main panel in the center to send it (the backend must be running for that...)
+    - If you like to save or load changes to the json configuration file, you have to export or import the json file manually
 
 <br><br>
 

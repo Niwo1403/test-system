@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7fc6641b-9f29-4282-90e4-ed02fc8a05fe",
+		"_postman_id": "40e265ad-4d7a-4d2d-afe5-e8004d34c104",
 		"name": "test_system",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -31,8 +31,12 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"PERSONAL_DATA_TEST\":\"PersonalDataTest\",\r\n    \"PRE_COLLECT_TESTS\":[{\"tests\":\"PreCol\"},{\"tests\":\"UNKNOWN TEST\"},{\"tests\":\"PreCol\"}],\r\n    \"EVALUABLE_TEST\":\"Test1\",\r\n    \"max_usage_count\":1,\r\n    \"expires\":true,\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}"
+				},
 				"url": {
-					"raw": "http://localhost:5000/api/token/?username=admin&password=admin&max-usage-count=2&personal-data-test-name=Person&pre-collect-test-names=[\"UnknownTest\", \"PersTest2\"]&evaluable-test-name=PersTest",
+					"raw": "http://localhost:5000/api/token/",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -42,32 +46,6 @@
 						"api",
 						"token",
 						""
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "admin"
-						},
-						{
-							"key": "password",
-							"value": "admin"
-						},
-						{
-							"key": "max-usage-count",
-							"value": "2"
-						},
-						{
-							"key": "personal-data-test-name",
-							"value": "Person"
-						},
-						{
-							"key": "pre-collect-test-names",
-							"value": "[\"UnknownTest\", \"PersTest2\"]"
-						},
-						{
-							"key": "evaluable-test-name",
-							"value": "PersTest"
-						}
 					]
 				}
 			},
@@ -101,16 +79,16 @@
 			"response": []
 		},
 		{
-			"name": "POST person",
+			"name": "POST personal-data-answer",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\": \"Max M.\", \"age\": 22, \"gender\": \"s\", \"position\": \"abc\"}"
+					"raw": "{\"name\": \"Max M.\", \"age\": 22, \"gender\": \"s\"}"
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/person/",
+					"raw": "http://localhost:5000/api/personal-data-answer/?test-name=PersonalDataTest",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -118,8 +96,14 @@
 					"port": "5000",
 					"path": [
 						"api",
-						"person",
+						"personal-data-answer",
 						""
+					],
+					"query": [
+						{
+							"key": "test-name",
+							"value": "PersonalDataTest"
+						}
 					]
 				}
 			},
@@ -140,7 +124,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/test-answer/?test-name=PreCol&personal-data-answer-id=2",
+					"raw": "http://localhost:5000/api/test-answer/?test-name=PreCol&personal-data-answer-id=2&token=asdf",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -159,6 +143,10 @@
 						{
 							"key": "personal-data-answer-id",
 							"value": "2"
+						},
+						{
+							"key": "token",
+							"value": "asdf"
 						}
 					]
 				}
@@ -180,7 +168,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/test-answer/?test-name=PersTest&personal-data-answer-id=2",
+					"raw": "http://localhost:5000/api/test-answer/?test-name=Test1&personal-data-answer-id=2&token=asdf",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -194,11 +182,15 @@
 					"query": [
 						{
 							"key": "test-name",
-							"value": "PersTest"
+							"value": "Test1"
 						},
 						{
 							"key": "personal-data-answer-id",
 							"value": "2"
+						},
+						{
+							"key": "token",
+							"value": "asdf"
 						}
 					]
 				}

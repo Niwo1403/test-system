@@ -130,8 +130,8 @@ def test_post_test_answer__with_unauthorized_request(client: FlaskClient, sessio
                                              f"{query_string}\n\nReceived response:\n{resp.get_data(True)}")
 
 
-def test_post_test_answer__with_wrong_person(client: FlaskClient, session, raise_if_change_in_tables,
-                                             token, pre_collect_test, evaluable_test):
+def test_post_test_answer__with_wrong_personal_data_answer(client: FlaskClient, session, raise_if_change_in_tables,
+                                                           token, pre_collect_test, evaluable_test):
     unknown_personal_data_answer_id = -1
     test_arguments = [(TEST_ANSWER_JSON, {"test-name": pre_collect_test.name,
                                           "personal-data-answer-id": unknown_personal_data_answer_id,

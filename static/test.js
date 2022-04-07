@@ -110,7 +110,7 @@ function postAnswer(route, jsonAnswer, onSuccess) {
 }
 
 function postPersonalDataAnswer(jsonAnswer, testName) {
-    postAnswer(buildApiUrl("person/", true, {"test-name": testName}), jsonAnswer,
+    postAnswer(buildApiUrl("personal-data-answer/", true, {"test-name": testName}), jsonAnswer,
         function (responseText) {
         personalDataAnswerId = JSON.parse(responseText);
         displayNextSurvey();

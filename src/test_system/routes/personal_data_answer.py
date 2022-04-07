@@ -11,18 +11,18 @@ from test_system.models import db, TestAnswer, Test
 
 PERSONAL_DATA_SCHEMA = Schema({str: lambda v: v is not None})
 
-ROUTE = f"{API_PREFIX}/person/"  # as variable for tests
+ROUTE = f"{API_PREFIX}/personal-data-answer/"  # as variable for tests
 
 
 @app.route(ROUTE, methods=['POST'])
-def post_person():
+def post_personal_data_answer():
     test_name = request.args.get("test-name", type=str)
     if not all((test_name, )):
         abort(400, "Argument missing or invalid.")
 
     try:
-        personal_data = json_loads(request.data.decode())
-        personal_data = PERSONAL_DATA_SCHEMA.validate(personal_data)
+        personal_data_answer = json_loads(request.data.decode())
+        personal_data_answer = PERSONAL_DATA_SCHEMA.validate(personal_data_answer)
     except (JSONDecodeError, TypeError):
         return abort(400, "Data validation failed, wrong JSON.")
     except SchemaError:
@@ -34,9 +34,9 @@ def post_person():
     if test.test_category != Test.CATEGORIES.PERSONAL_DATA_TEST:
         abort(400, "Can't post test-answer of non personal data test.")
 
-    test_answer = TestAnswer(answer_json=personal_data, test_name=test.name)
+    test_answer = TestAnswer(answer_json=personal_data_answer, test_name=test.name)
     db.session.add(test_answer)
-    db.session.commit()  # required to generate id of person
+    db.session.commit()  # required to generate id of test answer
 
     app.logger.info(f"Created {test_answer}")
 
