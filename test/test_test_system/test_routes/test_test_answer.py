@@ -2,7 +2,6 @@
 from json import dumps as json_dumps
 from typing import Optional
 # 3rd party
-from pytest import fixture
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 # custom
