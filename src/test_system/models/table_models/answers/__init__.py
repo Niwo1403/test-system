@@ -1,3 +1,3 @@
 # custom
-from .evaluable_test_answer import EvaluableTestAnswer
+from .exportable_test_answer import ExportableTestAnswer
 from .test_answer import TestAnswer

@@ -22,7 +22,7 @@ def _create_and_commit_token(session: scoped_session, *token_args) -> Token:
 def unknown_test_tokens(session, test_names) -> List[Token]:
     unknown_test_tokens = [
         _create_and_commit_token(session, 10, None, test_names[PRE_COLLECT_TESTS_KEY],
-                                 test_names[Test.CATEGORIES.EVALUABLE_TEST.name]),
+                                 test_names[Test.CATEGORIES.EXPORTABLE_TEST.name]),
         _create_and_commit_token(session, 10, test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
                                  test_names[PRE_COLLECT_TESTS_KEY], None)]
     return unknown_test_tokens
@@ -31,11 +31,11 @@ def unknown_test_tokens(session, test_names) -> List[Token]:
 @fixture()
 def wrong_test_tokens(session, test_names) -> List[Token]:
     personal_data_test = test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
-    evaluable_test = test_names[Test.CATEGORIES.EVALUABLE_TEST.name]
+    exportable_test = test_names[Test.CATEGORIES.EXPORTABLE_TEST.name]
     pre_collect_tests = test_names[PRE_COLLECT_TESTS_KEY]
     wrong_test_tokens = [
-        _create_and_commit_token(session, 10, evaluable_test, pre_collect_tests, evaluable_test),
-        _create_and_commit_token(session, 10, pre_collect_tests[0], pre_collect_tests, evaluable_test),
+        _create_and_commit_token(session, 10, exportable_test, pre_collect_tests, exportable_test),
+        _create_and_commit_token(session, 10, pre_collect_tests[0], pre_collect_tests, exportable_test),
         _create_and_commit_token(session, 10, personal_data_test, pre_collect_tests, personal_data_test),
         _create_and_commit_token(session, 10, personal_data_test, pre_collect_tests, pre_collect_tests[0])]
     return wrong_test_tokens
@@ -54,7 +54,7 @@ def test_get_tests__with_success(client: FlaskClient, session, raise_if_change_i
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: resp_tests["personal_data_test"]["name"],
             PRE_COLLECT_TESTS_KEY: [pre_collect_test_description["name"]
                                     for pre_collect_test_description in resp_tests["pre_collect_tests"]],
-            Test.CATEGORIES.EVALUABLE_TEST.name: resp_tests["evaluable_test"]["name"]
+            Test.CATEGORIES.EXPORTABLE_TEST.name: resp_tests["exportable_test"]["name"]
         }
 
         assert resp_test_names == test_names, (f"Got tests with wrong names in response data at route {ROUTE} "

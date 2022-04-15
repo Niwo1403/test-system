@@ -13,7 +13,7 @@ ROUTE = f'{API_PREFIX}/token-creator/'
 def get_token_creator():
     personal_data_test_names = Test.get_test_names_of_category(Test.CATEGORIES.PERSONAL_DATA_TEST)
     pre_collect_test_names = Test.get_test_names_of_category(Test.CATEGORIES.PRE_COLLECT_TEST)
-    evaluable_test_names = Test.get_test_names_of_category(Test.CATEGORIES.EVALUABLE_TEST)
+    exportable_test_names = Test.get_test_names_of_category(Test.CATEGORIES.EXPORTABLE_TEST)
 
     last_created_token: Token = Token.query.order_by(Token.creation_timestamp.desc()).first()
     token_exist = last_created_token is not None
@@ -42,17 +42,17 @@ def get_token_creator():
                                          for pre_collect_test_name in last_created_token.pre_collect_test_names
                                          ] if token_exist else None,
                         "columns": [{"name": PRE_COLLECT_TESTS_SURVEY_KEYWORD, "title": "Multiple possible"}],
-                        "choices": pre_collect_test_names + evaluable_test_names,
+                        "choices": pre_collect_test_names + exportable_test_names,
                         "rowCount": 1,
                         "allowRowsDragAndDrop": True
                     },
                     {
                         "type": "dropdown",
-                        "name": Test.CATEGORIES.EVALUABLE_TEST.name,
+                        "name": Test.CATEGORIES.EXPORTABLE_TEST.name,
                         "title": "Test whose answers will be exported",
-                        "defaultValueExpression": last_created_token.evaluable_test_name if token_exist else None,
+                        "defaultValueExpression": last_created_token.exportable_test_name if token_exist else None,
                         "isRequired": True,
-                        "choices": evaluable_test_names,
+                        "choices": exportable_test_names,
                         "choicesOrder": "asc"
                     },
                     {

@@ -25,7 +25,7 @@ def test_names():
     return {
         Test.CATEGORIES.PERSONAL_DATA_TEST.name: "PersonalDataTest",
         PRE_COLLECT_TESTS_KEY: ["PreCol", "PreCol"],
-        Test.CATEGORIES.EVALUABLE_TEST.name: "Test1"
+        Test.CATEGORIES.EXPORTABLE_TEST.name: "Test1"
     }
 
 
@@ -130,7 +130,7 @@ def create_token(session, test_names) -> Callable:
         token = Token.generate_token(usages,
                                      test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name],
                                      test_names[PRE_COLLECT_TESTS_KEY],
-                                     test_names[Test.CATEGORIES.EVALUABLE_TEST.name],
+                                     test_names[Test.CATEGORIES.EXPORTABLE_TEST.name],
                                      expires=expires)
         session.add(token)
         session.commit()
@@ -191,5 +191,5 @@ def pre_collect_test() -> Test:
 
 
 @fixture()
-def evaluable_test(test_names) -> Test:
-    return Test.query.filter_by(name=test_names[Test.CATEGORIES.EVALUABLE_TEST.name]).first()
+def exportable_test(test_names) -> Test:
+    return Test.query.filter_by(name=test_names[Test.CATEGORIES.EXPORTABLE_TEST.name]).first()

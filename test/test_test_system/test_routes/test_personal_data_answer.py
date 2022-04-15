@@ -37,7 +37,7 @@ def test_post_personal_data_answer__with_success(client: FlaskClient, session,
 
 def test_post_personal_data_answer__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,
                                                      personal_data_answer_default_query_string,
-                                                     evaluable_test, pre_collect_test):
+                                                     exportable_test, pre_collect_test):
     test_cases = {
         "data with None age": {"age": None, "gender": "d", "position": "POS"},
         "data with None name": {"name": None, "gender": "d", "position": "POS"},
@@ -49,7 +49,7 @@ def test_post_personal_data_answer__with_bad_request(client: FlaskClient, sessio
         "data with wrong json (missing })": '{"name": "Max M.", "age": 20, "gender": "d", "position": "POS" ',
         "data with wrong json (wrong key type)": '{"name": "Max M.", "age": 20, "gender": "d", null: "POS"}'})
 
-    wrong_query_strings = [{}, {"test-name": evaluable_test.name}, {"test-name": pre_collect_test.name}]
+    wrong_query_strings = [{}, {"test-name": exportable_test.name}, {"test-name": pre_collect_test.name}]
 
     with raise_if_change_in_tables(TestAnswer):
         for wrong_query_string in wrong_query_strings:

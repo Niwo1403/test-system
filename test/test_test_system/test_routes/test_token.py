@@ -9,7 +9,7 @@ from test_system.constants import PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURV
 from test_system.models import Token, User, Test
 from test_system.routes.token import ROUTE
 
-MANDATORY_STRING_VALUE_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EVALUABLE_TEST.name,
+MANDATORY_STRING_VALUE_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EXPORTABLE_TEST.name,
                                User.username.key, User.password.key]
 MANDATORY_KEYS = MANDATORY_STRING_VALUE_KEYS + [EXPIRES_SURVEY_KEYWORD]
 
@@ -56,7 +56,7 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
         database_token_data = {
             Test.CATEGORIES.PERSONAL_DATA_TEST.name: token.personal_data_test_name,
             PRE_COLLECT_TESTS_KEY: token.pre_collect_test_names,
-            Test.CATEGORIES.EVALUABLE_TEST.name: token.evaluable_test_name,
+            Test.CATEGORIES.EXPORTABLE_TEST.name: token.exportable_test_name,
             Token.max_usage_count.key: token.max_usage_count,
             EXPIRES_SURVEY_KEYWORD: token.creation_timestamp is not None
         }
@@ -120,7 +120,7 @@ def test_post_token__with_unknown_test(client: FlaskClient, session, raise_if_ch
     unknown_test_data = [
         create_post_data(with_replacements=replacement)
         for replacement in [{Test.CATEGORIES.PERSONAL_DATA_TEST.name: "UNKNOWN TEST"},
-                            {Test.CATEGORIES.EVALUABLE_TEST.name: "UNKNOWN TEST"}]
+                            {Test.CATEGORIES.EXPORTABLE_TEST.name: "UNKNOWN TEST"}]
     ]
 
     with raise_if_change_in_tables(Token, User, Test):
@@ -135,10 +135,10 @@ def test_post_token__with_wrong_test(client: FlaskClient, session, raise_if_chan
     first_pre_collect_test = test_names[PRE_COLLECT_TESTS_KEY][0]
     unknown_test_data = [
         create_post_data(with_replacements=replacement)
-        for replacement in [{Test.CATEGORIES.PERSONAL_DATA_TEST.name: test_names[Test.CATEGORIES.EVALUABLE_TEST.name]},
+        for replacement in [{Test.CATEGORIES.PERSONAL_DATA_TEST.name: test_names[Test.CATEGORIES.EXPORTABLE_TEST.name]},
                             {Test.CATEGORIES.PERSONAL_DATA_TEST.name: first_pre_collect_test},
-                            {Test.CATEGORIES.EVALUABLE_TEST.name: test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name]},
-                            {Test.CATEGORIES.EVALUABLE_TEST.name: first_pre_collect_test}]
+                            {Test.CATEGORIES.EXPORTABLE_TEST.name: test_names[Test.CATEGORIES.PERSONAL_DATA_TEST.name]},
+                            {Test.CATEGORIES.EXPORTABLE_TEST.name: first_pre_collect_test}]
     ]
 
     with raise_if_change_in_tables(Token, User, Test):

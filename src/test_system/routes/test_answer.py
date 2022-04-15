@@ -7,7 +7,7 @@ from schema import Schema, SchemaError
 # custom
 from test_system import app
 from test_system.constants import API_PREFIX
-from test_system.models import db, Test, TestAnswer, Token, EvaluableTestAnswer
+from test_system.models import db, Test, TestAnswer, Token, ExportableTestAnswer
 
 TEST_SCHEMA = Schema({str: lambda v: v is not None})  # Only first key must be string
 
@@ -49,12 +49,12 @@ def post_test_answer():
 
     app.logger.info(f"Created answer for test '{answer.test_name}' belonging to {personal_data_answer}")
 
-    if test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
-        evaluable_answer = EvaluableTestAnswer(test_answer_id=answer.id)
-        db.session.add(evaluable_answer)
+    if test.test_category == Test.CATEGORIES.EXPORTABLE_TEST:
+        exportable_answer = ExportableTestAnswer(test_answer_id=answer.id)
+        db.session.add(exportable_answer)
         db.session.commit()
 
-        token.use_for(evaluable_answer)
-        return str(evaluable_answer.id), 201
+        token.use_for(exportable_answer)
+        return str(exportable_answer.id), 201
 
     return str(answer.id), 201

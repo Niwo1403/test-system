@@ -33,7 +33,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"PERSONAL_DATA_TEST\":\"PersonalDataTest\",\r\n    \"PRE_COLLECT_TESTS\":[{\"tests\":\"PreCol\"},{\"tests\":\"UNKNOWN TEST\"},{\"tests\":\"PreCol\"}],\r\n    \"EVALUABLE_TEST\":\"Test1\",\r\n    \"max_usage_count\":1,\r\n    \"expires\":true,\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}"
+					"raw": "{\r\n    \"PERSONAL_DATA_TEST\":\"PersonalDataTest\",\r\n    \"PRE_COLLECT_TESTS\":[{\"tests\":\"PreCol\"},{\"tests\":\"UNKNOWN TEST\"},{\"tests\":\"PreCol\"}],\r\n    \"EXPORTABLE_TEST\":\"Test1\",\r\n    \"max_usage_count\":1,\r\n    \"expires\":true,\r\n    \"username\":\"admin\",\r\n    \"password\":\"admin\"\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:5000/api/token/",
@@ -154,7 +154,7 @@
 			"response": []
 		},
 		{
-			"name": "POST test-answer (with evaluable test)",
+			"name": "POST test-answer (with exportable test)",
 			"request": {
 				"method": "POST",
 				"header": [],

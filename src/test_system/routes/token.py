@@ -14,7 +14,7 @@ ROUTE = f'{API_PREFIX}/token/'
 TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, len),
                             Optional(PRE_COLLECT_TESTS_KEY, default=[]): [
                                 And(Use(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD]), str, len)],
-                            Test.CATEGORIES.EVALUABLE_TEST.name: And(str, len),
+                            Test.CATEGORIES.EXPORTABLE_TEST.name: And(str, len),
                             Optional(Token.max_usage_count.key, default=None): And(int, lambda n: 0 <= n),
                             EXPIRES_SURVEY_KEYWORD: bool,
                             User.username.key: And(str, len),
@@ -36,7 +36,7 @@ def post_token():
 
     personal_data_test_name = post_token_data[Test.CATEGORIES.PERSONAL_DATA_TEST.name]
     pre_collect_test_names = post_token_data[PRE_COLLECT_TESTS_KEY]
-    evaluable_test_name = post_token_data[Test.CATEGORIES.EVALUABLE_TEST.name]
+    exportable_test_name = post_token_data[Test.CATEGORIES.EXPORTABLE_TEST.name]
     max_usage_count = post_token_data[Token.max_usage_count.key]
     expires = post_token_data[EXPIRES_SURVEY_KEYWORD]
     username = post_token_data[User.username.key]
@@ -46,16 +46,16 @@ def post_token():
     if user is None or not user.is_password_valid(password):
         abort(401, "User doesn't exist or password is wrong.")
 
-    # Test if personal data and evaluable test exist
+    # Test if personal data and exportable test exist
     Test.get_category_test_or_abort(personal_data_test_name, Test.CATEGORIES.PERSONAL_DATA_TEST)
-    Test.get_category_test_or_abort(evaluable_test_name, Test.CATEGORIES.EVALUABLE_TEST)
+    Test.get_category_test_or_abort(exportable_test_name, Test.CATEGORIES.EXPORTABLE_TEST)
 
     app.logger.info(f"Requested token as {user}")
 
     token = Token.generate_token(max_usage_count,
                                  personal_data_test_name,
                                  pre_collect_test_names,
-                                 evaluable_test_name,
+                                 exportable_test_name,
                                  expires=expires)
     db.session.add(token)
     db.session.commit()

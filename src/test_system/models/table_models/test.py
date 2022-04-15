@@ -11,7 +11,7 @@ class TestCategory(Enum):
     # str values use for error message generation (as category name)
     PERSONAL_DATA_TEST = "personal data"
     PRE_COLLECT_TEST = "pre collect"
-    EVALUABLE_TEST = "evaluable"
+    EXPORTABLE_TEST = "exportable"
 
 
 class Test(db.Model):

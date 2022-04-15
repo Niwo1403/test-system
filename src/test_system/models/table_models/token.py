@@ -6,7 +6,7 @@ from sqlalchemy.sql.expression import text
 from test_system.constants import MAX_HASH_GENERATION_TRY_COUNT, TOKEN_PERIOD_OF_VALIDITY_IN_DAYS
 from test_system.util import generate_unknown_hash_token
 from test_system.models.database import db
-from .answers import EvaluableTestAnswer
+from .answers import ExportableTestAnswer
 from .test import Test
 
 
@@ -17,18 +17,18 @@ class Token(db.Model):
     max_usage_count: db.Column = db.Column(db.Integer)
     personal_data_test_name = db.Column(db.String, db.ForeignKey("test.name"))
     pre_collect_test_names = db.Column(db.ARRAY(db.String))  # references name (column) from test (table)
-    evaluable_test_name = db.Column(db.String, db.ForeignKey("test.name"))
+    exportable_test_name = db.Column(db.String, db.ForeignKey("test.name"))
     creation_timestamp: db.Column = db.Column(db.TIMESTAMP)  # no default value here, otherwise None can't be inserted
 
     personal_data_test = db.relationship("Test", foreign_keys=[personal_data_test_name])
-    evaluable_test = db.relationship("Test", foreign_keys=[evaluable_test_name])
+    exportable_test = db.relationship("Test", foreign_keys=[exportable_test_name])
 
     @classmethod
     def generate_token(cls,
                        max_usage_count: Optional[int],
                        personal_data_test_name: str,
                        pre_collect_test_names: List[str],
-                       evaluable_test_name: str,
+                       exportable_test_name: str,
                        expires: bool = True) -> "Token":
         token_hash = generate_unknown_hash_token(
             lambda test_token: cls.query.filter_by(token=test_token).first() is None, MAX_HASH_GENERATION_TRY_COUNT)
@@ -37,7 +37,7 @@ class Token(db.Model):
                    max_usage_count=max_usage_count,
                    personal_data_test_name=personal_data_test_name,
                    pre_collect_test_names=pre_collect_test_names,
-                   evaluable_test_name=evaluable_test_name)
+                   exportable_test_name=exportable_test_name)
 
     @staticmethod
     def get_earliest_valid_sql_timestamp():
@@ -55,14 +55,14 @@ class Token(db.Model):
         return (f"Token '{self.token}' ("
                 f"personal data test: {self.personal_data_test_name}, "
                 f"pre collect Tests: {self.pre_collect_test_names}, "
-                f"evaluable test: {self.evaluable_test_name}, "
+                f"exportable test: {self.exportable_test_name}, "
                 f"usages: {self.max_usage_count})")
 
-    def was_used_for_answer(self, evaluable_test_answer: EvaluableTestAnswer) -> bool:
+    def was_used_for_answer(self, exportable_test_answer: ExportableTestAnswer) -> bool:
         """
-        Returns True, if this token was used to evaluate the evaluable_test_answer earlier.
+        Returns True, if this token was used to export the exportable_test_answer earlier.
         """
-        return evaluable_test_answer.was_evaluated_with_token == self.token
+        return exportable_test_answer.was_exported_with_token == self.token
 
     def is_invalid(self) -> bool:
         """
@@ -70,11 +70,11 @@ class Token(db.Model):
         """
         return self._is_expired() or self._has_no_usage_left()
 
-    def use_for(self, evaluable_test_answer: EvaluableTestAnswer) -> None:
+    def use_for(self, exportable_test_answer: ExportableTestAnswer) -> None:
         """
-        Should be called, when the token was used for the evaluable_test_answer.
+        Should be called, when the token was used for the exportable_test_answer.
         """
-        evaluable_test_answer.was_evaluated_with_token = self.token
+        exportable_test_answer.was_exported_with_token = self.token
         if self.max_usage_count is not None:
             self.max_usage_count -= 1
             db.session.commit()

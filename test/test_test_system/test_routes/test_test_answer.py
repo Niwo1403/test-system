@@ -6,57 +6,57 @@ from pytest import fixture
 from flask.testing import FlaskClient
 from werkzeug.test import TestResponse
 # custom
-from test_system.models import Test, TestAnswer, Token, EvaluableTestAnswer
+from test_system.models import Test, TestAnswer, Token, ExportableTestAnswer
 from test_system.routes.test_answer import ROUTE
 
 
 TEST_ANSWER = {"Question A": "Answer A"}
 TEST_ANSWER_JSON = json_dumps(TEST_ANSWER)
-EVALUABLE_TEST_ANSWER = {"Category A": {"Question 1": "1", "Question 2": "2"},
-                         "Category B": {"Question 1": "3", "Question 2": "4"},
-                         "Question X": "5",
-                         "Ignored question": "TEXT!"}
-EVALUABLE_TEST_ANSWER_JSON = json_dumps(EVALUABLE_TEST_ANSWER)
+EXPORTABLE_TEST_ANSWER = {"Category A": {"Question 1": "1", "Question 2": "2"},
+                          "Category B": {"Question 1": "3", "Question 2": "4"},
+                          "Question X": "5",
+                          "Ignored question": "TEXT!"}
+EXPORTABLE_TEST_ANSWER_JSON = json_dumps(EXPORTABLE_TEST_ANSWER)
 
 
-def _check_token_usage(evaluable_answer: Optional[EvaluableTestAnswer], test_token: Token, resp: TestResponse):
+def _check_token_usage(exportable_answer: Optional[ExportableTestAnswer], test_token: Token, resp: TestResponse):
     pre_max_usage_count = test_token.max_usage_count  # is still the old value
     # token must be reloaded after extern change:
     test_token = Token.query.filter_by(token=test_token.token).first()
     assert test_token.max_usage_count is None or test_token.max_usage_count + 1 == pre_max_usage_count, \
         (f"Got wrong max_usage_count after request at {ROUTE} with {test_token}"
          f"\n\nReceived response:\n{resp.get_data(True)}")
-    assert evaluable_answer is not None, ("Could not write EvaluableTestAnswer to database"
-                                          f"\n\nReceived response:\n{resp.get_data(True)}")
-    assert evaluable_answer.was_evaluated_with_token == test_token.token, \
-        f"Wrong token was used to save EvaluableTestAnswer\n\nReceived response:\n{resp.get_data(True)}"
+    assert exportable_answer is not None, ("Could not write ExportableTestAnswer to database"
+                                           f"\n\nReceived response:\n{resp.get_data(True)}")
+    assert exportable_answer.was_exported_with_token == test_token.token, \
+        f"Wrong token was used to save ExportableTestAnswer\n\nReceived response:\n{resp.get_data(True)}"
 
 
 def test_post_test_answer__with_success(client: FlaskClient, session, personal_data_answer, token, unlimited_token,
-                                        pre_collect_test, evaluable_test):
+                                        pre_collect_test, exportable_test):
     test_cases = [
         (token, pre_collect_test),
-        (token, evaluable_test),
-        (unlimited_token, evaluable_test),
+        (token, exportable_test),
+        (unlimited_token, exportable_test),
     ]
 
     for test_token, test_test in test_cases:
-        resp = client.post(ROUTE, data=EVALUABLE_TEST_ANSWER_JSON, query_string={
+        resp = client.post(ROUTE, data=EXPORTABLE_TEST_ANSWER_JSON, query_string={
             "test-name": test_test.name, "personal-data-answer-id": personal_data_answer.id, "token": test_token.token})
-        assert resp.status_code == 201, (f"Can't POST test answer to {ROUTE} with data {EVALUABLE_TEST_ANSWER}, "
+        assert resp.status_code == 201, (f"Can't POST test answer to {ROUTE} with data {EXPORTABLE_TEST_ANSWER}, "
                                          f"{test_test}, {test_token}\n\nReceived response:\n{resp.get_data(True)}")
 
         resp_id = resp.get_data(True)
-        if test_test.test_category == Test.CATEGORIES.EVALUABLE_TEST:
-            evaluable_answer: EvaluableTestAnswer = EvaluableTestAnswer.query.filter_by(id=resp_id).first()
-            _check_token_usage(evaluable_answer, test_token, resp)
-            answer: TestAnswer = evaluable_answer.test_answer
+        if test_test.test_category == Test.CATEGORIES.EXPORTABLE_TEST:
+            exportable_answer: ExportableTestAnswer = ExportableTestAnswer.query.filter_by(id=resp_id).first()
+            _check_token_usage(exportable_answer, test_token, resp)
+            answer: TestAnswer = exportable_answer.test_answer
         else:
             answer: TestAnswer = TestAnswer.query.filter_by(id=resp_id).first()
 
         assert answer is not None, (f"Could not write TestAnswer to database"
                                     f"\n\nReceived response:\n{resp.get_data(True)}")
-        assert answer.answer_json == EVALUABLE_TEST_ANSWER and \
+        assert answer.answer_json == EXPORTABLE_TEST_ANSWER and \
                answer.test_name == test_test.name and \
                answer.personal_data_answer_id == personal_data_answer.id, (
                 f"TestAnswer which was written to database has wrong data: {answer}"
@@ -64,15 +64,15 @@ def test_post_test_answer__with_success(client: FlaskClient, session, personal_d
 
 
 def test_post_test_answer__with_bad_request(client: FlaskClient, session, raise_if_change_in_tables,
-                                            personal_data_answer, token, pre_collect_test, evaluable_test):
-    correct_query_string = {"test-name": evaluable_test.name, "personal-data-answer-id": personal_data_answer.id}
+                                            personal_data_answer, token, pre_collect_test, exportable_test):
+    correct_query_string = {"test-name": exportable_test.name, "personal-data-answer-id": personal_data_answer.id}
     test_arguments = [
                       # missing argument
                       (TEST_ANSWER_JSON, {"personal-data-answer-id": personal_data_answer.id, "token": token.token}),
-                      (EVALUABLE_TEST_ANSWER_JSON, {"test-name": evaluable_test.name, "token": token.token}),
+                      (EXPORTABLE_TEST_ANSWER_JSON, {"test-name": exportable_test.name, "token": token.token}),
                       (TEST_ANSWER_JSON, {"test-name": pre_collect_test.name, "token": token.token}),
-                      (EVALUABLE_TEST_ANSWER_JSON,
-                       {"test-name": evaluable_test.name, "personal-data-answer-id": personal_data_answer.id}),
+                      (EXPORTABLE_TEST_ANSWER_JSON,
+                       {"test-name": exportable_test.name, "personal-data-answer-id": personal_data_answer.id}),
                       (TEST_ANSWER_JSON,
                        {"test-name": pre_collect_test.name, "personal-data-answer-id": personal_data_answer.id}),
                       # invalid JSON
@@ -83,7 +83,7 @@ def test_post_test_answer__with_bad_request(client: FlaskClient, session, raise_
                       # invalid schema
                       ("{\"key\": null}", correct_query_string)]
 
-    with raise_if_change_in_tables(Test, TestAnswer, EvaluableTestAnswer, Token):
+    with raise_if_change_in_tables(Test, TestAnswer, ExportableTestAnswer, Token):
         for data, query_string in test_arguments:
             resp = client.post(ROUTE, data=data, query_string=query_string)
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for arguments: {query_string}, "
@@ -94,7 +94,7 @@ def test_post_test_answer__with_wrong_test(client: FlaskClient, session, raise_i
                                            personal_data_answer, token, personal_data_test):
     unknown_test_name = "?`?`?`?`?`?`?`?`?`?`?`?`?`?`?"
 
-    with raise_if_change_in_tables(Test, TestAnswer, EvaluableTestAnswer, Token):
+    with raise_if_change_in_tables(Test, TestAnswer, ExportableTestAnswer, Token):
         resp = client.post(ROUTE, data=TEST_ANSWER_JSON, query_string={
             "test-name": unknown_test_name, "personal-data-answer-id": personal_data_answer.id, "token": token.token})
         assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for unknown test name: {unknown_test_name}"
@@ -110,7 +110,7 @@ def test_post_test_answer__with_wrong_test(client: FlaskClient, session, raise_i
 
 
 def test_post_test_answer__with_unauthorized_request(client: FlaskClient, session, raise_if_change_in_tables,
-                                                     personal_data_answer, pre_collect_test, evaluable_test,
+                                                     personal_data_answer, pre_collect_test, exportable_test,
                                                      expired_token, no_use_token):
     unknown_token = "#####################"
     test_arguments = []
@@ -119,11 +119,11 @@ def test_post_test_answer__with_unauthorized_request(client: FlaskClient, sessio
             (TEST_ANSWER_JSON, {"test-name": pre_collect_test.name,
                                 "personal-data-answer-id": personal_data_answer.id,
                                 "token": wrong_token}),
-            (EVALUABLE_TEST_ANSWER_JSON, {"test-name": evaluable_test.name,
-                                          "personal-data-answer-id": personal_data_answer.id,
-                                          "token": wrong_token})]
+            (EXPORTABLE_TEST_ANSWER_JSON, {"test-name": exportable_test.name,
+                                           "personal-data-answer-id": personal_data_answer.id,
+                                           "token": wrong_token})]
 
-    with raise_if_change_in_tables(Test, TestAnswer, EvaluableTestAnswer, Token):
+    with raise_if_change_in_tables(Test, TestAnswer, ExportableTestAnswer, Token):
         for data, query_string in test_arguments:
             resp = client.post(ROUTE, data=data, query_string=query_string)
             assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for data: {data} and query_string: "
@@ -131,16 +131,16 @@ def test_post_test_answer__with_unauthorized_request(client: FlaskClient, sessio
 
 
 def test_post_test_answer__with_wrong_personal_data_answer(client: FlaskClient, session, raise_if_change_in_tables,
-                                                           token, pre_collect_test, evaluable_test):
+                                                           token, pre_collect_test, exportable_test):
     unknown_personal_data_answer_id = -1
     test_arguments = [(TEST_ANSWER_JSON, {"test-name": pre_collect_test.name,
                                           "personal-data-answer-id": unknown_personal_data_answer_id,
                                           "token": token.token}),
-                      (EVALUABLE_TEST_ANSWER_JSON, {"test-name": evaluable_test.name,
-                                                    "personal-data-answer-id": unknown_personal_data_answer_id,
-                                                    "token": token.token})]
+                      (EXPORTABLE_TEST_ANSWER_JSON, {"test-name": exportable_test.name,
+                                                     "personal-data-answer-id": unknown_personal_data_answer_id,
+                                                     "token": token.token})]
 
-    with raise_if_change_in_tables(Test, TestAnswer, EvaluableTestAnswer, Token):
+    with raise_if_change_in_tables(Test, TestAnswer, ExportableTestAnswer, Token):
         for data, query_string in test_arguments:
             resp = client.post(ROUTE, data=data, query_string=query_string)
             assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for data: {data} and query_string: "

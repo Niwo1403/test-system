@@ -31,10 +31,10 @@ function backToLogin() {
 }
 
 function loadResult() {
-    const evaluableTestAnswerId = getArgumentFromUrl("evaluable-test-answer-id");
+    const exportableTestAnswerId = getArgumentFromUrl("exportable-test-answer-id");
     const pdfView = document.getElementById("pdf-view");
     pdfView.data = buildApiUrl("test-answer-pdf/", true,
-        {"evaluable-test-answer-id": evaluableTestAnswerId});
+        {"exportable-test-answer-id": exportableTestAnswerId});
 }
 
 function copyFromElm(elmId) {

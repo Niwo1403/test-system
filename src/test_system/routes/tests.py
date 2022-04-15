@@ -22,19 +22,19 @@ def get_tests():
 
     personal_data_test = token.personal_data_test
     Test.assert_test_existence_and_category(personal_data_test, Test.CATEGORIES.PERSONAL_DATA_TEST)
-    evaluable_test = token.evaluable_test
-    Test.assert_test_existence_and_category(evaluable_test, Test.CATEGORIES.EVALUABLE_TEST)
+    exportable_test = token.exportable_test
+    Test.assert_test_existence_and_category(exportable_test, Test.CATEGORIES.EXPORTABLE_TEST)
     pre_collect_tests = token.get_pre_collect_tests()
 
     pre_collect_test_names = ', '.join(test.name for test in pre_collect_tests)
     app.logger.info(f"Requested personal data test '{personal_data_test.name}', "
                     f"pre collect tests '{pre_collect_test_names}' "
-                    f"and evaluable test '{evaluable_test.name}' with token '{token.token}'")
+                    f"and exportable test '{exportable_test.name}' with token '{token.token}'")
 
     tests = {
         "personal_data_test": personal_data_test.get_named_description_dict(),
         "pre_collect_tests": [test.get_named_description_dict() for test in pre_collect_tests],
-        "evaluable_test": evaluable_test.get_named_description_dict()
+        "exportable_test": exportable_test.get_named_description_dict()
     }
     tests_json = json.dumps(tests)
     return tests_json

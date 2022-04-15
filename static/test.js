@@ -81,12 +81,12 @@ function displaySurvey(test, respHandler) {
 	survey.render("test-element");
 }
 
-/** Used after personal data was collected, to load pre collect or evaluable test. */
+/** Used after personal data was collected, to load pre collect or exportable test. */
 function displayNextSurvey() {
     const pre_collect_tests = tests["pre_collect_tests"];
     if (pre_collect_index >= pre_collect_tests.length) {
         surveyLocalization.completeText = originalCompleteText;
-        displaySurvey(tests["evaluable_test"], postEvaluableTest);
+        displaySurvey(tests["exportable_test"], postExportableTest);
     } else {
         displaySurvey(pre_collect_tests[pre_collect_index], postPreCollectTest);
         pre_collect_index++;
@@ -123,12 +123,12 @@ function postPreCollectTest(jsonAnswer, testName) {
         jsonAnswer, function (_) { displayNextSurvey(); });
 }
 
-function postEvaluableTest(jsonAnswer, testName) {
+function postExportableTest(jsonAnswer, testName) {
     postAnswer(buildApiUrl("test-answer/", true,
             {"test-name": testName, "personal-data-answer-id": personalDataAnswerId}),
         jsonAnswer, function (responseText) {
         window.location.href = buildUrl("result.html", true,
-            {"evaluable-test-answer-id": responseText});
+            {"exportable-test-answer-id": responseText});
     });
     pre_collect_index = 0;
 }
