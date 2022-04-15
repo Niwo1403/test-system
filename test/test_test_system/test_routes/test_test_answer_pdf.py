@@ -29,7 +29,7 @@ def test_answer(session, token, personal_data_answer) -> TestAnswer:
 @fixture()
 def create_exported_exportable_test_answer_for_token(session, test_answer) -> Callable[[Token], ExportableTestAnswer]:
     def _create_exported_exportable_test_answer_for_token(token: Token) -> ExportableTestAnswer:
-        exported_exportable_test_answer = ExportableTestAnswer(was_exported_with_token=token.token,
+        exported_exportable_test_answer = ExportableTestAnswer(was_saved_with_token=token.token,
                                                                test_answer_id=test_answer.id)
         session.add(exported_exportable_test_answer)
         session.commit()
@@ -45,7 +45,7 @@ def exported_exportable_test_answer(create_exported_exportable_test_answer_for_t
 
 @fixture()
 def not_exported_exportable_test_answer(session, test_answer) -> ExportableTestAnswer:
-    not_exported_exportable_test_answer = ExportableTestAnswer(was_exported_with_token=None,
+    not_exported_exportable_test_answer = ExportableTestAnswer(was_saved_with_token=None,
                                                                test_answer_id=test_answer.id)
     session.add(not_exported_exportable_test_answer)
     session.commit()
@@ -58,10 +58,10 @@ def incomplete_exportable_test_answers(session, test_names, token) -> List[Expor
     session.add(test_answer)
     session.commit()
     incomplete_exportable_test_answers = [
-        ExportableTestAnswer(was_exported_with_token=token.token, test_answer_id=None),
-        ExportableTestAnswer(was_exported_with_token=None, test_answer_id=None),
-        ExportableTestAnswer(was_exported_with_token=token.token, test_answer_id=test_answer.id),
-        ExportableTestAnswer(was_exported_with_token=None, test_answer_id=test_answer.id)
+        ExportableTestAnswer(was_saved_with_token=token.token, test_answer_id=None),
+        ExportableTestAnswer(was_saved_with_token=None, test_answer_id=None),
+        ExportableTestAnswer(was_saved_with_token=token.token, test_answer_id=test_answer.id),
+        ExportableTestAnswer(was_saved_with_token=None, test_answer_id=test_answer.id)
     ]
     session.add_all(incomplete_exportable_test_answers)
     session.commit()

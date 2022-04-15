@@ -28,7 +28,7 @@ def _check_token_usage(exportable_answer: Optional[ExportableTestAnswer], test_t
          f"\n\nReceived response:\n{resp.get_data(True)}")
     assert exportable_answer is not None, ("Could not write ExportableTestAnswer to database"
                                            f"\n\nReceived response:\n{resp.get_data(True)}")
-    assert exportable_answer.was_exported_with_token == test_token.token, \
+    assert exportable_answer.was_saved_with_token == test_token.token, \
         f"Wrong token was used to save ExportableTestAnswer\n\nReceived response:\n{resp.get_data(True)}"
 
 

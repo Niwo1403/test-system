@@ -62,7 +62,7 @@ class Token(db.Model):
         """
         Returns True, if this token was used to export the exportable_test_answer earlier.
         """
-        return exportable_test_answer.was_exported_with_token == self.token
+        return exportable_test_answer.was_saved_with_token == self.token
 
     def is_invalid(self) -> bool:
         """
@@ -74,7 +74,7 @@ class Token(db.Model):
         """
         Should be called, when the token was used for the exportable_test_answer.
         """
-        exportable_test_answer.was_exported_with_token = self.token
+        exportable_test_answer.was_saved_with_token = self.token
         if self.max_usage_count is not None:
             self.max_usage_count -= 1
             db.session.commit()
