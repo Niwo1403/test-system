@@ -7,7 +7,7 @@ from test_system.constants import DATA_URL_START
 from .pdf import PDF
 
 
-class PdfManager:
+class TestAnswerPdf:
     """
     Can be used to create a PDF.
     A PDF includes at first the initially set personal data information about the answerer of the test.

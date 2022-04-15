@@ -4,7 +4,7 @@ from flask import request, abort, send_file
 from test_system import app
 from test_system.constants import API_PREFIX, CERTIFICATE_MIMETYPE
 from test_system.models import ExportableTestAnswer, TestAnswer, Token
-from test_system.managers.pdf_manager import PdfManager
+from test_system.modules.pdf import TestAnswerPdf
 
 ROUTE = f'{API_PREFIX}/test-answer-pdf/'
 
@@ -31,7 +31,7 @@ def get_test_answer_pdf():
     if token is None or not token.was_used_for_answer(exportable_answer):
         abort(401, "Token not found or invalid.")
 
-    pm = PdfManager(personal_data_test_answer)
+    pm = TestAnswerPdf(personal_data_test_answer)
     pm.add_answer(exportable_answer)
     pdf = pm.get_pdf()
 
