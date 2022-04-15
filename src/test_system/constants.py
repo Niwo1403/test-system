@@ -80,7 +80,7 @@ class DefaultPdfConfig:
 
     LOGO_PATH = path_join(FILE_DIR, "../../static/img/pdf_logo.png")  # relative to this file
     """ Relative path to location of logo image for PDF. """
-    TITLE = "Antworten"
+    TITLE = "Answers"
     """ The title on top of the PDF. """
     HEADER_BORDER = True
     """ Whether the title should be surrounded with a border. """
@@ -96,6 +96,11 @@ class DefaultPdfConfig:
 
 DEFAULT_PDF_FONTS = DefaultCertificateFonts
 DEFAULT_PDF_CONFIG = DefaultPdfConfig
+
+DATA_URL_START = "data:image/"
+""" The beginning of a data URI string. """
+BASE64_SEPARATOR = ";base64,"
+""" The separator of the data URI header and the actual data. """
 
 CERTIFICATE_MIMETYPE = "application/pdf"
 """ Must be a valid MIME type - will be included in response header of PDFs. """

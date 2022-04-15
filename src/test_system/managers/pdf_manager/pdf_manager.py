@@ -1,7 +1,9 @@
 # std
 from io import BytesIO
+from typing import Dict
 # custom
 from test_system.models import TestAnswer, ExportableTestAnswer
+from test_system.constants import DATA_URL_START
 from .pdf import PDF
 
 
@@ -15,7 +17,7 @@ class PdfManager:
 
     def __init__(self, test_answer: TestAnswer):
         self.pdf = PDF()
-        self.pdf.add_formatted_json(test_answer.answer_json)
+        self._add_answer_json(test_answer.answer_json)
 
     def add_answer(self, exportable_test_answer: ExportableTestAnswer) -> None:
         """
@@ -31,9 +33,21 @@ class PdfManager:
         pdf_bytes = self.pdf.get_pdf_bytes()
         return BytesIO(pdf_bytes)
 
-    def _add_answer(self, test_answer: TestAnswer):
+    def _add_answer(self, test_answer: TestAnswer) -> None:
         self._add_answer_header(test_answer)
-        self.pdf.add_formatted_json(test_answer.answer_json)
+        self._add_answer_json(test_answer.answer_json)
+
+    def _add_answer_json(self, answer_json: Dict) -> None:
+        image_data = {}
+        non_image_data = {}
+        for k, v in answer_json.items():
+            if type(v) is str and v.startswith(DATA_URL_START):
+                image_data[k] = v
+            else:
+                non_image_data[k] = v
+
+        self.pdf.add_formatted_json(non_image_data)
+        self.pdf.add_titled_data_urls(image_data)
 
     def _add_answer_header(self, test_answer: TestAnswer) -> None:
         self.pdf.add_default_cell(f'Test "{test_answer.test_name}" '
