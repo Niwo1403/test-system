@@ -76,6 +76,7 @@ _Note: create the venv using the Python installation, you installed earlier_
 - If you don't have a Heroku account, create a Heroku account [here](https://signup.heroku.com/login)
 - Login using command `heroku login` in terminal, confirming browser opening and login with your Heroku account
 - If you don't have an existing Heroku app, [create a Heroku app](https://heroku.com/deploy)
+  - After creating switch to _Settings_ tab, scroll to _Buildpacks_, click _Add buildpack_, select Python and confirm
 - If you don't have an existing Heroku database, [create Heroku Postgres database](https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1#step-3-add-a-postresql-database)
   - You may also [create some "Heroku Dataclips"](https://devcenter.heroku.com/articles/dataclips#quickstart), to easily access important data
 - To connect to Heroku app as remote, run in project directory with _"\<heroku-app-name\>"_ being your app name: `heroku git:remote -a <heroku-app-name>`
