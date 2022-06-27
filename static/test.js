@@ -40,14 +40,14 @@ function loadTestForTokenCreation() {
     const xhr = new XMLHttpRequest();
     xhr.onload = function() {
         if (this.status === 200) {
-            const tokenCreationTest = {description: JSON.parse(this.responseText), name: "token-creator"};
+            const tokenCreationTest = {description: JSON.parse(this.responseText), name: "create-token"};
             surveyLocalization.completeText = "Create token";
             displaySurvey(tokenCreationTest, postToken);
         } else {
             displayError(this.responseText);
         }
     }
-    xhr.open("GET", buildApiUrl("token-creator/"), true);
+    xhr.open("GET", buildApiUrl("token-creator-json/"), true);
     xhr.send();
 }
 

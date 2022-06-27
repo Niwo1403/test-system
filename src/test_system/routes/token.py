@@ -7,7 +7,7 @@ from schema import Schema, And, Use, SchemaError, Optional
 from test_system import app
 from test_system.constants import API_PREFIX, PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD, \
     PRE_COLLECT_TESTS_KEY
-from test_system.models import db, Token, User, Test
+from test_system.models import db, Token, TokenCreator, Test
 
 ROUTE = f'{API_PREFIX}/token/'
 
@@ -17,8 +17,8 @@ TOKEN_DATA_SCHEMA = Schema({Test.CATEGORIES.PERSONAL_DATA_TEST.name: And(str, le
                             Test.CATEGORIES.EXPORTABLE_TEST.name: And(str, len),
                             Optional(Token.max_usage_count.key, default=None): And(int, lambda n: 0 <= n),
                             EXPIRES_SURVEY_KEYWORD: bool,
-                            User.username.key: And(str, len),
-                            User.password.key: And(str, len)})
+                            TokenCreator.username.key: And(str, len),
+                            TokenCreator.password.key: And(str, len)})
 
 
 @app.route(ROUTE, methods=['POST'])
@@ -39,18 +39,18 @@ def post_token():
     exportable_test_name = post_token_data[Test.CATEGORIES.EXPORTABLE_TEST.name]
     max_usage_count = post_token_data[Token.max_usage_count.key]
     expires = post_token_data[EXPIRES_SURVEY_KEYWORD]
-    username = post_token_data[User.username.key]
-    password = post_token_data[User.password.key]
+    username = post_token_data[TokenCreator.username.key]
+    password = post_token_data[TokenCreator.password.key]
 
-    user: User = User.query.filter_by(username=username).first()
-    if user is None or not user.is_password_valid(password):
-        abort(401, "User doesn't exist or password is wrong.")
+    token_creator: TokenCreator = TokenCreator.query.filter_by(username=username).first()
+    if token_creator is None or not token_creator.is_password_valid(password):
+        abort(401, "TokenCreator doesn't exist or password is wrong.")
 
     # Test if personal data and exportable test exist
     Test.get_category_test_or_abort(personal_data_test_name, Test.CATEGORIES.PERSONAL_DATA_TEST)
     Test.get_category_test_or_abort(exportable_test_name, Test.CATEGORIES.EXPORTABLE_TEST)
 
-    app.logger.info(f"Requested token as {user}")
+    app.logger.info(f"Requested token as {token_creator}")
 
     token = Token.generate_token(max_usage_count,
                                  personal_data_test_name,

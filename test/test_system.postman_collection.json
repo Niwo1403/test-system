@@ -6,12 +6,12 @@
 	},
 	"item": [
 		{
-			"name": "GET token-creator",
+			"name": "GET token-creator-json",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/token-creator/",
+					"raw": "http://localhost:5000/api/token-creator-json/",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -19,7 +19,7 @@
 					"port": "5000",
 					"path": [
 						"api",
-						"token-creator",
+						"token-creator-json",
 						""
 					]
 				}

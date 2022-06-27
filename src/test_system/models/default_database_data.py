@@ -2,11 +2,11 @@
 from sqlalchemy.exc import IntegrityError
 # custom
 from test_system import app
-from .table_models import User, Test, Token
+from .table_models import TokenCreator, Test, Token
 from .database import db
 
 
-default_user = User(username="admin", password="admin")
+default_token_creator = TokenCreator(username="admin", password="admin")
 
 default_personal_data_test = Test(name="PersonalDataTest", description_json={
     "title": "Personal data",
@@ -179,7 +179,7 @@ test_token = Token(token="asdf",
                    pre_collect_test_names=["PreCol", "PreCol"],
                    exportable_test_name="Test1")
 
-DEFAULT_ORM_OBJECTS = [default_user, default_personal_data_test, default_pre_collect_test, default_test, test_token]
+DEFAULT_ORM_OBJECTS = [default_token_creator, default_personal_data_test, default_pre_collect_test, default_test, test_token]
 
 
 def _create_default_database_data():

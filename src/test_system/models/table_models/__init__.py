@@ -1,5 +1,5 @@
 # custom
 from .test import Test
 from .token import Token
-from .user import User
+from .token_creator import TokenCreator
 from .answers import *

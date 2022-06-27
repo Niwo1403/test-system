@@ -6,11 +6,11 @@ from pytest import fixture
 from flask.testing import FlaskClient
 # custom
 from test_system.constants import PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD, PRE_COLLECT_TESTS_KEY
-from test_system.models import Token, User, Test
+from test_system.models import Token, TokenCreator, Test
 from test_system.routes.token import ROUTE
 
 MANDATORY_STRING_VALUE_KEYS = [Test.CATEGORIES.PERSONAL_DATA_TEST.name, Test.CATEGORIES.EXPORTABLE_TEST.name,
-                               User.username.key, User.password.key]
+                               TokenCreator.username.key, TokenCreator.password.key]
 MANDATORY_KEYS = MANDATORY_STRING_VALUE_KEYS + [EXPIRES_SURVEY_KEYWORD]
 
 
@@ -21,8 +21,8 @@ def create_post_data(username, password, test_names) -> Callable[..., Dict]:
             Token.max_usage_count.key: 10,
             EXPIRES_SURVEY_KEYWORD: expires,
 
-            User.username.key: username,
-            User.password.key: password}
+            TokenCreator.username.key: username,
+            TokenCreator.password.key: password}
         base_post_data.update(test_names)
         base_post_data[PRE_COLLECT_TESTS_KEY] = list(map(
             lambda test_name: {PRE_COLLECT_TESTS_SURVEY_KEYWORD: test_name}, base_post_data[PRE_COLLECT_TESTS_KEY]))
@@ -68,8 +68,8 @@ def test_post_token__with_success(client: FlaskClient, session, create_post_data
             correct_token_data[PRE_COLLECT_TESTS_KEY] = list(map(lambda e: e[PRE_COLLECT_TESTS_SURVEY_KEYWORD],
                                                                  correct_token_data[PRE_COLLECT_TESTS_KEY]))
         # drop user data, so only token data remains
-        correct_token_data.pop(User.username.key, None)
-        correct_token_data.pop(User.password.key, None)
+        correct_token_data.pop(TokenCreator.username.key, None)
+        correct_token_data.pop(TokenCreator.password.key, None)
 
         assert database_token_data == correct_token_data and len(token_hash) == 128, \
             (f"Got token with wrong data in database at route {ROUTE} with post data {test_data}: {token}"
@@ -95,7 +95,7 @@ def test_post_token__with_bad_request(client: FlaskClient, session, raise_if_cha
         for wrong_usage_counts in ["", None, 3.14, ["asdf"], "asdf"]
     ]
 
-    with raise_if_change_in_tables(Token, User, Test):
+    with raise_if_change_in_tables(Token, TokenCreator, Test):
         for bad_post_data in bad_data:
             resp = client.post(ROUTE, data=json_dumps(bad_post_data))
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for bad request with data: "
@@ -106,10 +106,10 @@ def test_post_token__with_unauthorized_request(client: FlaskClient, session, rai
                                                create_post_data):
     unauthorized_data = [
         create_post_data(with_replacements=replacement)
-        for replacement in [{User.username.key: "UNKNOWN USERNAME"}, {User.password.key: "WRONG PASSWORD"}]
+        for replacement in [{TokenCreator.username.key: "UNKNOWN USERNAME"}, {TokenCreator.password.key: "WRONG PASSWORD"}]
     ]
 
-    with raise_if_change_in_tables(Token, User, Test):
+    with raise_if_change_in_tables(Token, TokenCreator, Test):
         for unauthorized_post_data in unauthorized_data:
             resp = client.post(ROUTE, data=json_dumps(unauthorized_post_data))
             assert resp.status_code == 401, (f"Got wrong status code at {ROUTE} for unauthorized request with data: "
@@ -123,7 +123,7 @@ def test_post_token__with_unknown_test(client: FlaskClient, session, raise_if_ch
                             {Test.CATEGORIES.EXPORTABLE_TEST.name: "UNKNOWN TEST"}]
     ]
 
-    with raise_if_change_in_tables(Token, User, Test):
+    with raise_if_change_in_tables(Token, TokenCreator, Test):
         for unknown_test_post_data in unknown_test_data:
             resp = client.post(ROUTE, data=json_dumps(unknown_test_post_data))
             assert resp.status_code == 404, (f"Got wrong status code at {ROUTE} for unknown test name with data: "
@@ -141,7 +141,7 @@ def test_post_token__with_wrong_test(client: FlaskClient, session, raise_if_chan
                             {Test.CATEGORIES.EXPORTABLE_TEST.name: first_pre_collect_test}]
     ]
 
-    with raise_if_change_in_tables(Token, User, Test):
+    with raise_if_change_in_tables(Token, TokenCreator, Test):
         for unknown_test_post_data in unknown_test_data:
             resp = client.post(ROUTE, data=json_dumps(unknown_test_post_data))
             assert resp.status_code == 400, (f"Got wrong status code at {ROUTE} for wrong test name with data: "

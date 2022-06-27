@@ -4,9 +4,9 @@ from json import dumps as json_dumps
 from test_system import app
 from test_system.constants import API_PREFIX, PRE_COLLECT_TESTS_SURVEY_KEYWORD, EXPIRES_SURVEY_KEYWORD, \
     PRE_COLLECT_TESTS_KEY
-from test_system.models import User, Test, Token
+from test_system.models import TokenCreator, Test, Token
 
-ROUTE = f'{API_PREFIX}/token-creator/'
+ROUTE = f'{API_PREFIX}/token-creator-json/'
 
 
 @app.route(ROUTE, methods=['GET'])
@@ -72,13 +72,13 @@ def get_token_creator():
                     },
                     {
                         "type": "text",
-                        "name": User.username.key,
+                        "name": TokenCreator.username.key,
                         "title": "Username",
                         "isRequired": True
                     },
                     {
                         "type": "text",
-                        "name": User.password.key,
+                        "name": TokenCreator.password.key,
                         "title": "Password",
                         "isRequired": True
                     }
@@ -86,5 +86,5 @@ def get_token_creator():
             }
         ]
     }
-    app.logger.info("Sending token-creator JSON.")
+    app.logger.info("Sending token-creator-json.")
     return json_dumps(token_creator_test)

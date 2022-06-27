@@ -141,10 +141,10 @@ _Note: before running the application you have to [set up the environment](#sett
     - On "Columns" right click, select "Create" \> "Column", enter column information and save
 - Some actions in the database doesn't work, while the backend is running - e.g. deleting tables, while the backend is running, probably fails or loads until the backend has terminated...
 
-### Changing user password or adding user
+### Changing token_creator password or adding token_creator
 
-- The password in the user table is saved as [salted](https://en.wikipedia.org/wiki/Salt_(cryptography)) & [peppered](https://en.wikipedia.org/wiki/Pepper_(cryptography)) [hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
-- If you want to add or change the username or password in the [user table](user%20manual.md#user-table), the password must be regenerated
+- The password in the token_creator table is saved as [salted](https://en.wikipedia.org/wiki/Salt_(cryptography)) & [peppered](https://en.wikipedia.org/wiki/Pepper_(cryptography)) [hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
+- If you want to add or change the username or password in the [token_creator table](user%20manual.md#token_creator-table), the password must be regenerated
   - Start the `src/test_system/util.py` file as main (call file directly from terminal), enter the updated username & password, and you will get the newly hashed password
 
 <br><br>

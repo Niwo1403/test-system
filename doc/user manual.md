@@ -20,15 +20,15 @@
 
 ## General database structure
 
-### **User** table
+### **token_creator** table
 - Contains usernames & hashed passwords for authorization of token creation
   - Note: the password will be encrypted, so you can (& should) neither read nor change the password like the other values in the database (in case you need another user or like to change username or password, you probably should ask a developer)
 
-### **Token** table
+### **token** table
 - Contains the tokens, consisting of the actual token, information regarding usages & expiring, and the tests, which should be answered
   - Each token got exactly one _PERSONAL_DATA_TEST_ (to identify test answerer) and _EXPORTABLE_TEST_ (which will be exported), but there can be any number of _PRE_COLLECT_TESTS_
 
-### **Test** table
+### **test** table
 - Contains the names (to identify the test), descriptions (which define the questions, etc.) and categories of the tests
   - The test category can be:
     - _PERSONAL_DATA_TEST_: for tests which are used to collect information about the answering person
