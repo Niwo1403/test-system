@@ -3,7 +3,7 @@ from json import loads as json_loads, JSONDecodeError
 # 3rd party
 from flask.testing import FlaskClient
 # custom
-from test_system.routes.token_creator import ROUTE
+from test_system.routes.token_creator_json import ROUTE
 
 
 def test_token_creator__with_success(client: FlaskClient, session):
