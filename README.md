@@ -11,7 +11,7 @@ A developer manual can be found at [doc/developer manual.md](doc/developer%20man
 ## Overview
 
 In the linked manuals, information about the following can be found
-- [Introduction into domain](doc/user%20manual.md#introduction)
+- [Introduction into system](doc/user%20manual.md#introduction)
 - [Setting up the environment](doc/developer%20manual.md#setting-up-environment)
 - [Running the application locally](doc/developer%20manual.md#run-application-locally)
 - [Running tests](doc/developer%20manual.md#run-tests)

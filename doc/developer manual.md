@@ -34,7 +34,7 @@ Note: you maybe should read the [user manual introduction](user%20manual.md#intr
 ### Setting up git
 - Download git [here](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   - Information about the local setup after installation, like setting your username and password, are described [here](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup#_your_identity)
-- To clone the repository run `git clone https://github.com/...`, this will create a directory test_system in your current working directory
+- To clone the repository run `git clone https://github.com/Niwo1403/test-system.git`, this will create a directory test_system in your current working directory
 
 ### Create Python venv (virtual environment)
 _Note: create the venv using the Python installation, you installed earlier_
@@ -183,7 +183,7 @@ _**src/run.py**_: starts the server
 
 _Structure of sub-package **src/test_system**:_
 
-- _**managers**_: contains logic
+- _**modules**_: contains logic
   - business logic, etc. (e.g. generating images / pdfs, analysing data, running algorithms, ...)
 - _**models**_: represent tables and contain methods to access or process data from them
   - define database schema / tables using [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/) as [ORM](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) framework
@@ -193,7 +193,7 @@ _Structure of sub-package **src/test_system**:_
   - validates requests
   - adds, edits, removes models
   - send response data
-  - uses managers for more complex tasks
+  - uses modules for more complex tasks
 - _**app**_: contains the flask app used by the sub-packages
 - _**constants**_: constants for all files
 - _**util**_: general functionality used on multiple places (e.g. hash generation)
